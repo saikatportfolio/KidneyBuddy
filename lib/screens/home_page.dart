@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
+import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
+import 'package:myapp/screens/settings_page.dart'; // Import SettingsPage
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,9 +10,20 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('HomePage: build called'); // Keep the print statement
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KidneyBuddy'),
+        title: Text(localizations.homePageTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -19,11 +32,11 @@ class HomePage extends StatelessWidget {
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
           children: [
-            _buildFeatureCard(context, 'Diet Management', Icons.food_bank),
-            _buildFeatureCard(context, 'Blood Pressure Monitoring', Icons.monitor_heart),
-            _buildFeatureCard(context, 'eGFR Calculator', Icons.calculate),
-            _buildFeatureCard(context, 'Contact Dietician', Icons.person_pin),
-            _buildFeatureCard(context, 'Give your Feedback', Icons.feedback),
+            _buildFeatureCard(context, localizations.dietManagementCard, Icons.food_bank),
+            _buildFeatureCard(context, localizations.bloodPressureMonitoringCard, Icons.monitor_heart),
+            _buildFeatureCard(context, localizations.eGFRCalculatorCard, Icons.calculate),
+            _buildFeatureCard(context, localizations.contactDieticianCard, Icons.person_pin),
+            _buildFeatureCard(context, localizations.giveYourFeedbackCard, Icons.feedback),
           ],
         ),
       ),
@@ -31,17 +44,18 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildFeatureCard(BuildContext context, String title, IconData icon) {
+    final localizations = AppLocalizations.of(context)!;
     return Card(
       elevation: 4.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: InkWell(
         onTap: () {
-          if (title == 'Give your Feedback') {
+          if (title == localizations.giveYourFeedbackCard) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => FeedbackPage()),
             );
-          } else if (title == 'Contact Dietician') {
+          } else if (title == localizations.contactDieticianCard) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => DieticianListPage()),
@@ -49,7 +63,7 @@ class HomePage extends StatelessWidget {
           }
           else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Navigating to $title (Not yet implemented)')),
+              SnackBar(content: Text(localizations.notYetImplemented(title))),
             );
           }
         },

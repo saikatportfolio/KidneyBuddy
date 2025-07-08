@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/screens/onboarding_screen.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -11,6 +10,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Re-add for conditional logic
 import 'dart:async'; // Import for runZonedGuarded
 import 'dart:ui'; // Import for PlatformDispatcher
+import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,27 +48,43 @@ class MyApp extends StatefulWidget {
 
   @override
   MyAppState createState() => MyAppState();
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    MyAppState? state = context.findAncestorStateOfType<MyAppState>();
+    state?.setLocale(newLocale);
+  }
 }
 
 class MyAppState extends State<MyApp> {
   bool _hasSeenOnboarding = false;
   bool _isLoading = true;
+  Locale? _locale;
 
   @override
   void initState() {
     super.initState();
     print('MyAppState: initState called');
-    _checkOnboardingStatus();
+    _loadPreferencesAndSetLocale();
   }
 
-  _checkOnboardingStatus() async {
-    print('MyAppState: _checkOnboardingStatus started');
+  _loadPreferencesAndSetLocale() async {
+    print('MyAppState: _loadPreferencesAndSetLocale started');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false);
+      String? langCode = prefs.getString('languageCode');
+      if (langCode != null) {
+        _locale = Locale(langCode);
+      }
       _isLoading = false;
     });
-    print('MyAppState: _checkOnboardingStatus completed. hasSeenOnboarding: $_hasSeenOnboarding');
+    print('MyAppState: _loadPreferencesAndSetLocale completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
+  }
+
+  void setLocale(Locale newLocale) {
+    setState(() {
+      _locale = newLocale;
+    });
   }
 
   @override
@@ -87,12 +103,15 @@ class MyAppState extends State<MyApp> {
 
     print('MyAppState: Building main app. Navigating to: ${_hasSeenOnboarding ? 'HomePage' : 'OnboardingScreen'}');
     return MaterialApp(
-      title: 'CKD Care App',
+      title: 'CKD Care App', // This will be replaced by localized string later
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: false, // Temporarily set to false for debugging ANR
       ),
+      locale: _locale, // Apply the selected locale
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: _hasSeenOnboarding ? HomePage() : OnboardingScreen(),
       // Temporarily removed FirebaseAnalyticsObserver for debugging ANR
       // navigatorObservers: [

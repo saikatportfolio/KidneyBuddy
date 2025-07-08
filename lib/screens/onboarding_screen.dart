@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:myapp/screens/patient_details_page.dart';
+import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
+import 'package:myapp/screens/language_selection_screen.dart'; // Import LanguageSelectionScreen
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -16,18 +18,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "title": "Welcome to KidneyBuddy",
-      "description": "This app is designed to simplify life for CKD patients by helping them manage their condition and prevent further Progression",
+      "titleKey": "welcomeTitle",
+      "descriptionKey": "welcomeDescription",
       "image": "assets/images/onboarding1.png", // Placeholder
     },
     {
-      "title": "Renal Diet Management",
-      "description": "Maintain a proper renal diet with personalized guidance and easy-to-follow meal plans tailored to your CKD stage.",
+      "titleKey": "renalDietTitle",
+      "descriptionKey": "renalDietDescription",
       "image": "assets/images/onboarding2.png", // Placeholder
     },
     {
-      "title": "Connect with Dieticians",
-      "description": "Easily connect with the best dieticians for personalized consultations and expert advice to support your kidney health journey.",
+      "titleKey": "connectDieticiansTitle",
+      "descriptionKey": "connectDieticiansDescription",
       "image": "assets/images/onboarding3.png", // Placeholder
     },
   ];
@@ -72,13 +74,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      if (index == 0) // Add language selection only on the first page
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const LanguageSelectionScreen(fromOnboarding: true),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.selectLanguageTitle,
+                              style: const TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ),
                       Image.asset(
                         item["image"]!,
                         height: 200,
                       ),
                       SizedBox(height: 30),
                       Text(
-                        item["title"]!,
+                        _getLocalizedText(context, item["titleKey"]!),
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -87,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       SizedBox(height: 20),
                       Text(
-                        item["description"]!,
+                        _getLocalizedText(context, item["descriptionKey"]!),
                         style: TextStyle(fontSize: 16.0),
                         textAlign: TextAlign.center,
                       ),
@@ -129,7 +148,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         backgroundColor: WidgetStateProperty.all<Color>(Color(0xFF00B4D8)),
                         foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                       ),
-                      child: Text("Get Started"),
+                      child: Text(AppLocalizations.of(context)!.getStartedButton),
                     ),
                   ),
                 )
@@ -148,12 +167,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         backgroundColor: WidgetStateProperty.all<Color>(Color(0xFF00B4D8)),
                         foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                       ),
-                      child: Text("Next"),
+                      child: Text(AppLocalizations.of(context)!.nextButton),
                     ),
                   ),
                 ),
         ],
       ),
     );
+  }
+
+  String _getLocalizedText(BuildContext context, String key) {
+    final localizations = AppLocalizations.of(context)!;
+    switch (key) {
+      case "welcomeTitle": return localizations.welcomeTitle;
+      case "welcomeDescription": return localizations.welcomeDescription;
+      case "renalDietTitle": return localizations.renalDietTitle;
+      case "renalDietDescription": return localizations.renalDietDescription;
+      case "connectDieticiansTitle": return localizations.connectDieticiansTitle;
+      case "connectDieticiansDescription": return localizations.connectDieticiansDescription;
+      default: return ''; // Fallback
+    }
   }
 }
