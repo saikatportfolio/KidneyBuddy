@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:myapp/screens/feedback_page.dart';
+import 'package:myapp/screens/dietician_list_page.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    print('HomePage: build called'); // Keep the print statement
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('KidneyBuddy'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          children: [
+            _buildFeatureCard(context, 'Diet Management', Icons.food_bank),
+            _buildFeatureCard(context, 'Blood Pressure Monitoring', Icons.monitor_heart),
+            _buildFeatureCard(context, 'eGFR Calculator', Icons.calculate),
+            _buildFeatureCard(context, 'Contact Dietician', Icons.person_pin),
+            _buildFeatureCard(context, 'Give your Feedback', Icons.feedback),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(BuildContext context, String title, IconData icon) {
+    return Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      child: InkWell(
+        onTap: () {
+          if (title == 'Give your Feedback') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FeedbackPage()),
+            );
+          } else if (title == 'Contact Dietician') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DieticianListPage()),
+            );
+          }
+          else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Navigating to $title (Not yet implemented)')),
+            );
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 50.0, color: Theme.of(context).primaryColor),
+            SizedBox(height: 10.0),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
