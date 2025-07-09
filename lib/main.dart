@@ -73,10 +73,8 @@ class MyAppState extends State<MyApp> {
     setState(() {
       _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false);
       String? langCode = prefs.getString('languageCode');
-      if (langCode != null) {
-        _locale = Locale(langCode);
-      }
-      _isLoading = false;
+      _locale = langCode != null ? Locale(langCode) : null;
+          _isLoading = false;
     });
     print('MyAppState: _loadPreferencesAndSetLocale completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
   }

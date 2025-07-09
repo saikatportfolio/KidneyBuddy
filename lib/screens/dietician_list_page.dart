@@ -110,19 +110,19 @@ class _DieticianListPageState extends State<DieticianListPage> {
                                     Text(
                                       'Experience: ${dietician.experience}',
                                       style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       'Specialty: ${dietician.specialty}',
                                       style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       'Education: ${dietician.education}',
                                       style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
                                     ),
                                   ],
                                 ),

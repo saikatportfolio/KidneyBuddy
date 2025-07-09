@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/models/dietician.dart'; // Import Dietician model
+import 'package:myapp/models/review.dart'; // Import Review model
 
 class SupabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -57,6 +58,29 @@ class SupabaseService {
       return dieticians;
     } catch (e) {
       print('Error fetching dieticians from Supabase: $e');
+      return []; // Return empty list on error
+    }
+  }
+
+  // Review Operations
+  Future<List<Review>> getReviewsForDietician(String dieticianId) async {
+    try {
+      final response = await _supabase
+          .from('reviews')
+          .select('id, dietician_id, patient_name, patient_details, comment, created_at')
+          .eq('dietician_id', dieticianId) // Changed to camelCase
+          .order('created_at', ascending: false); // Order by newest first
+
+      if (response.isEmpty) {
+        print('No reviews found for dietician ID: $dieticianId');
+        return [];
+      }
+
+      final List<Review> reviews = (response as List).map((map) => Review.fromMap(map)).toList();
+      print('Fetched reviews for dietician $dieticianId: $reviews');
+      return reviews;
+    } catch (e) {
+      print('Error fetching reviews for dietician $dieticianId from Supabase: $e');
       return []; // Return empty list on error
     }
   }

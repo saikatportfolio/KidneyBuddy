@@ -24,9 +24,9 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   _loadSelectedLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? langCode = prefs.getString('languageCode');
-    if (langCode != null && AppLocalizations.supportedLocales.any((element) => element.languageCode == langCode)) {
+    if (AppLocalizations.supportedLocales.any((element) => element.languageCode == langCode)) {
       setState(() {
-        _selectedLocale = Locale(langCode);
+        _selectedLocale = langCode != null ? Locale(langCode) : null;
       });
     }
   }
