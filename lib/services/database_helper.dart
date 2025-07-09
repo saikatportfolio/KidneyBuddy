@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
+import 'package:uuid/uuid.dart'; // Import uuid package
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -31,7 +32,7 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE patient_details(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         name TEXT,
         phone_number TEXT,
         weight REAL,
@@ -41,7 +42,7 @@ class DatabaseHelper {
     ''');
     await db.execute('''
       CREATE TABLE feedback(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         name TEXT,
         phone_number TEXT,
         feedback_text TEXT,
@@ -51,10 +52,12 @@ class DatabaseHelper {
   }
 
   // Patient Details Operations
-  Future<int> insertPatientDetails(PatientDetails details) async {
+  Future<String> insertPatientDetails(PatientDetails details) async {
     Database db = await database;
-    return await db.insert('patient_details', details.toMap(),
+    details.id ??= Uuid().v4();
+    await db.insert('patient_details', details.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    return details.id!;
   }
 
   Future<PatientDetails?> getPatientDetails() async {
@@ -66,21 +69,13 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<int> updatePatientDetails(PatientDetails details) async {
-    Database db = await database;
-    return await db.update(
-      'patient_details',
-      details.toMap(),
-      where: 'id = ?',
-      whereArgs: [details.id],
-    );
-  }
-
   // Feedback Operations
-  Future<int> insertFeedback(FeedbackModel feedback) async {
+  Future<String> insertFeedback(FeedbackModel feedback) async {
     Database db = await database;
-    return await db.insert('feedback', feedback.toMap(),
+    feedback.id ??= Uuid().v4(); // Generate UUID if not provided
+    await db.insert('feedback', feedback.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    return feedback.id!;
   }
 
   Future<List<FeedbackModel>> getFeedbacks() async {

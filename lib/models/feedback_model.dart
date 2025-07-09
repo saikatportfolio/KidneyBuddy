@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class FeedbackModel {
-  int? id;
+  String? id; // Changed to String for UUID
   String name;
   String phoneNumber;
   String feedbackText;
@@ -30,7 +30,7 @@ class FeedbackModel {
 
   factory FeedbackModel.fromMap(Map<String, dynamic> map) {
     return FeedbackModel(
-      id: map['id'],
+      id: map['id'] as String?, // Cast to String?
       name: map['name'],
       phoneNumber: map['phone_number'],
       feedbackText: map['feedback_text'],

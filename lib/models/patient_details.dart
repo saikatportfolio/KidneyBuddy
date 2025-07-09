@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class PatientDetails {
-  int? id;
+  String? id; // Changed to String for UUID
   String name;
   String phoneNumber;
   double weight;
@@ -30,7 +30,7 @@ class PatientDetails {
 
   factory PatientDetails.fromMap(Map<String, dynamic> map) {
     return PatientDetails(
-      id: map['id'],
+      id: map['id'] as String?, // Cast to String?
       name: map['name'],
       phoneNumber: map['phone_number'],
       weight: map['weight'],

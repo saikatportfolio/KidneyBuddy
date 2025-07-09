@@ -48,6 +48,7 @@ dependencies:
 
   flutter_localizations: # Added for multi-lingual support
     sdk: flutter
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

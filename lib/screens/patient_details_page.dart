@@ -5,6 +5,7 @@ import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart'; // Import uuid package
 
 class PatientDetailsPage extends StatefulWidget {
   const PatientDetailsPage({super.key});
@@ -33,6 +34,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   void _savePatientDetails() async {
     if (_formKey.currentState!.validate()) {
       final patientDetails = PatientDetails(
+        id: Uuid().v4(), // Generate a new UUID for the patient
         name: _nameController.text,
         phoneNumber: _phoneController.text,
         weight: double.parse(_weightController.text),
@@ -40,15 +42,15 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         ckdStage: _ckdStage!,
       );
 
-      // Save to SQLite
+      // Save to SQLite (will insert or update based on ID)
       final dbHelper = DatabaseHelper();
-      int id = await dbHelper.insertPatientDetails(patientDetails);
-      patientDetails.id = id; // Update ID after insertion
+      // insertPatientDetails now returns String, and patientDetails already has the UUID
+      await dbHelper.insertPatientDetails(patientDetails);
 
-      // Sync to Supabase
+      // Sync to Supabase (patientDetails already has the UUID)
       await SupabaseService().upsertPatientDetails(patientDetails);
 
-      // Update provider
+      // Update provider (using the local patientDetails object)
       Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
 
       // Set onboarding seen status

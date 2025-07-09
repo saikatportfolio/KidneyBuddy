@@ -5,6 +5,7 @@ import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/home_page.dart';
+import 'package:uuid/uuid.dart'; // Import uuid package
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -29,17 +30,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
     PatientDetails? details = patientDetailsProvider.patientDetails;
 
-    if (details == null) {
-      // Try to load from database if not in provider
-      details = await DatabaseHelper().getPatientDetails();
-      if (details != null) {
-        patientDetailsProvider.setPatientDetails(details);
-      }
-    }
+    // The FeedbackPage should rely on the PatientDetailsProvider for the active patient.
+    // If details are not in the provider, it means no patient is currently active/selected.
+    // We should not attempt to load a random patient from the database here.
 
     if (details != null) {
       setState(() {
-        _name = details!.name;
+        _name = details.name;
         _phoneNumber = details.phoneNumber;
       });
     }
@@ -48,6 +45,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   void _submitFeedback() async {
     if (_formKey.currentState!.validate()) {
       final feedback = FeedbackModel(
+        id: Uuid().v4(), // Generate a new UUID for the feedback
         name: _name,
         phoneNumber: _phoneNumber,
         feedbackText: _feedbackController.text,
