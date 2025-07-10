@@ -40,9 +40,21 @@ class TempDataUploader {
         potassium: 450,
         phosphorus: 200,
         protein: 15.0,
-        category: 'Main Course',
+        category: 'Vegetable', // Changed category to Vegetable
         isIndianFood: true,
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Palak_Paneer.jpg/1200px-Palak_Paneer.jpg',
+      ),
+      FoodItem(
+        id: uuid.v4(),
+        name: 'Carrot',
+        description: 'A root vegetable, generally low in potassium.',
+        sodium: 40,
+        potassium: 320,
+        phosphorus: 35,
+        protein: 0.9,
+        category: 'Vegetable',
+        isIndianFood: false,
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Carrots_in_a_basket.jpg/1200px-Carrots_in_a_basket.jpg',
       ),
       FoodItem(
         id: uuid.v4(),

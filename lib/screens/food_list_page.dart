@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../models/food_item.dart';
-import '../models/patient_details.dart';
-import '../services/food_recommendation_service.dart';
-import 'food_detail_page.dart'; // We will create this next
+import 'food_category_tab.dart'; // Import the new FoodCategoryTab
 
 class FoodListPage extends StatefulWidget {
   const FoodListPage({super.key});
@@ -12,23 +8,41 @@ class FoodListPage extends StatefulWidget {
   State<FoodListPage> createState() => _FoodListPageState();
 }
 
-class _FoodListPageState extends State<FoodListPage> {
-  late Future<List<FoodItem>> _foodItemsFuture;
+class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final List<Tab> _tabs = const [
+    Tab(text: 'All Foods'),
+    Tab(text: 'Vegetables'),
+    Tab(text: 'Fruits'),
+    Tab(text: 'Grains'),
+    Tab(text: 'Main Course'),
+    Tab(text: 'Breakfast'),
+    Tab(text: 'Bread'),
+    Tab(text: 'Other'),
+  ];
+
+  final List<Widget> _tabViews = const [
+    FoodCategoryTab(categories: ['All']),
+    FoodCategoryTab(categories: ['Vegetable']),
+    FoodCategoryTab(categories: ['Fruit']),
+    FoodCategoryTab(categories: ['Grains']),
+    FoodCategoryTab(categories: ['Main Course']),
+    FoodCategoryTab(categories: ['Breakfast']),
+    FoodCategoryTab(categories: ['Bread']),
+    FoodCategoryTab(categories: ['Other']), // Catch-all for categories not explicitly listed
+  ];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadFoodItems();
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
-  void _loadFoodItems() {
-    final patientDetails = Provider.of<PatientDetailsProvider>(context).patientDetails;
-    if (patientDetails != null) {
-      _foodItemsFuture = FoodRecommendationService().getRecommendedFoods(patientDetails.ckdStage);
-    } else {
-      // Handle case where patient details are not available (e.g., show empty list or error)
-      _foodItemsFuture = Future.value([]);
-    }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,52 +50,15 @@ class _FoodListPageState extends State<FoodListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Food Recommendations'),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true, // Allows more tabs than fit on screen
+          tabs: _tabs,
+        ),
       ),
-      body: FutureBuilder<List<FoodItem>>(
-        future: _foodItemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No food recommendations available.'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final foodItem = snapshot.data![index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: foodItem.flagColor,
-                      radius: 10,
-                    ),
-                    title: Text(foodItem.name),
-                    subtitle: Text(foodItem.safetyExplanation ?? 'Tap for details'),
-                    trailing: foodItem.imageUrl != null && foodItem.imageUrl!.isNotEmpty
-                        ? Image.network(
-                            foodItem.imageUrl!,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FoodDetailPage(foodItem: foodItem),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            );
-          }
-        },
+      body: TabBarView(
+        controller: _tabController,
+        children: _tabViews,
       ),
     );
   }
