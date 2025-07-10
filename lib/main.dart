@@ -11,12 +11,27 @@ import 'package:shared_preferences/shared_preferences.dart'; // Re-add for condi
 import 'dart:async'; // Import for runZonedGuarded
 import 'dart:ui'; // Import for PlatformDispatcher
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
+import 'package:myapp/temp_data_uploader.dart'; // Import the temporary data uploader
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('main: WidgetsFlutterBinding initialized');
   await Firebase.initializeApp();
   print('main: Firebase initialized');
+
+  // Check if food_items collection is empty before uploading sample data
+  final firestore = FirebaseFirestore.instance;
+  final foodItemsCollection = firestore.collection('food_items');
+  final snapshot = await foodItemsCollection.limit(1).get();
+
+  if (snapshot.docs.isEmpty) {
+    // Only upload sample data if the collection is empty
+    await TempDataUploader.uploadSampleFoods();
+    print('main: Sample food data uploaded.');
+  } else {
+    print('main: Food items already exist, skipping sample data upload.');
+  }
 
   // Initialize Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

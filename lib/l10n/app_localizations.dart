@@ -289,11 +289,23 @@ abstract class AppLocalizations {
   /// **'Diet Management'**
   String get dietManagementCard;
 
+  /// No description provided for @dietManagementDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your diet with personalized recommendations.'**
+  String get dietManagementDescription;
+
   /// No description provided for @bloodPressureMonitoringCard.
   ///
   /// In en, this message translates to:
   /// **'Blood Pressure Monitoring'**
   String get bloodPressureMonitoringCard;
+
+  /// No description provided for @bloodPressureMonitoringDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Track and monitor your blood pressure.'**
+  String get bloodPressureMonitoringDescription;
 
   /// No description provided for @eGFRCalculatorCard.
   ///
@@ -301,17 +313,35 @@ abstract class AppLocalizations {
   /// **'eGFR Calculator'**
   String get eGFRCalculatorCard;
 
+  /// No description provided for @eGFRCalculatorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate your eGFR to assess kidney function.'**
+  String get eGFRCalculatorDescription;
+
   /// No description provided for @contactDieticianCard.
   ///
   /// In en, this message translates to:
   /// **'Contact Dietician'**
   String get contactDieticianCard;
 
+  /// No description provided for @contactDieticianDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect with expert dieticians for personalized advice.'**
+  String get contactDieticianDescription;
+
   /// No description provided for @giveYourFeedbackCard.
   ///
   /// In en, this message translates to:
   /// **'Give your Feedback'**
   String get giveYourFeedbackCard;
+
+  /// No description provided for @giveYourFeedbackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your thoughts and help us improve the app.'**
+  String get giveYourFeedbackDescription;
 
   /// No description provided for @notYetImplemented.
   ///

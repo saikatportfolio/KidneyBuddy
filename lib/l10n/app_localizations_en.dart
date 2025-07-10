@@ -113,16 +113,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietManagementCard => 'Diet Management';
 
   @override
+  String get dietManagementDescription => 'Manage your diet with personalized recommendations.';
+
+  @override
   String get bloodPressureMonitoringCard => 'Blood Pressure Monitoring';
+
+  @override
+  String get bloodPressureMonitoringDescription => 'Track and monitor your blood pressure.';
 
   @override
   String get eGFRCalculatorCard => 'eGFR Calculator';
 
   @override
+  String get eGFRCalculatorDescription => 'Calculate your eGFR to assess kidney function.';
+
+  @override
   String get contactDieticianCard => 'Contact Dietician';
 
   @override
+  String get contactDieticianDescription => 'Connect with expert dieticians for personalized advice.';
+
+  @override
   String get giveYourFeedbackCard => 'Give your Feedback';
+
+  @override
+  String get giveYourFeedbackDescription => 'Share your thoughts and help us improve the app.';
 
   @override
   String notYetImplemented(Object title) {

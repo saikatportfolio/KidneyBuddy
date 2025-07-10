@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapp"
+    namespace = "com.saikatportfolio.kidneybuddy"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -23,10 +23,10 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.myapp"
+        applicationId = "com.saikatportfolio.kidneybuddy"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23 // Increased to 23 to be compatible with Firebase libraries
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

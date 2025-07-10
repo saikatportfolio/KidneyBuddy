@@ -113,16 +113,31 @@ class AppLocalizationsBn extends AppLocalizations {
   String get dietManagementCard => 'ডায়েট ম্যানেজমেন্ট';
 
   @override
+  String get dietManagementDescription => 'ব্যক্তিগত সুপারিশ সহ আপনার ডায়েট পরিচালনা করুন।';
+
+  @override
   String get bloodPressureMonitoringCard => 'রক্তচাপ পর্যবেক্ষণ';
+
+  @override
+  String get bloodPressureMonitoringDescription => 'আপনার রক্তচাপ ট্র্যাক এবং নিরীক্ষণ করুন।';
 
   @override
   String get eGFRCalculatorCard => 'ইজিএফআর ক্যালকুলেটর';
 
   @override
+  String get eGFRCalculatorDescription => 'কিডনি ফাংশন মূল্যায়নের জন্য আপনার ইজিএফআর গণনা করুন।';
+
+  @override
   String get contactDieticianCard => 'ডায়েটিশিয়ানের সাথে যোগাযোগ করুন';
 
   @override
+  String get contactDieticianDescription => 'ব্যক্তিগত পরামর্শের জন্য বিশেষজ্ঞ ডায়েটিশিয়ানদের সাথে সংযোগ করুন।';
+
+  @override
   String get giveYourFeedbackCard => 'আপনার মতামত দিন';
+
+  @override
+  String get giveYourFeedbackDescription => 'আপনার চিন্তা শেয়ার করুন এবং অ্যাপ উন্নত করতে আমাদের সাহায্য করুন।';
 
   @override
   String notYetImplemented(Object title) {

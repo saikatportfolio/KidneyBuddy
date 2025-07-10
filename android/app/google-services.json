@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "110575029375",
-    "project_id": "kidneybuddy-d7764",
-    "storage_bucket": "kidneybuddy-d7764.firebasestorage.app"
+    "project_number": "998282656789",
+    "project_id": "ckdbuddy",
+    "storage_bucket": "ckdbuddy.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:110575029375:android:361ab12e97f75f1f22834a",
+        "mobilesdk_app_id": "1:998282656789:android:26d1a2523fee434ec6221c",
         "android_client_info": {
-          "package_name": "com.example.myapp"
+          "package_name": "com.saikatportfolio.kidneybuddy"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAZg4XCAH98zif3V8GuXc2KAcbkr-_7GJ0"
+          "current_key": "AIzaSyCRtW7GvL2OxhPucIG3RnENbzPfXGbOpIg"
         }
       ],
       "services": {

@@ -113,20 +113,35 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dietManagementCard => 'आहार प्रबंधन';
 
   @override
+  String get dietManagementDescription => 'व्यक्तिगत सिफारिशों के साथ अपने आहार का प्रबंधन करें।';
+
+  @override
   String get bloodPressureMonitoringCard => 'रक्तचाप की निगरानी';
+
+  @override
+  String get bloodPressureMonitoringDescription => 'अपने रक्तचाप को ट्रैक और मॉनिटर करें।';
 
   @override
   String get eGFRCalculatorCard => 'ईजीएफआर कैलकुलेटर';
 
   @override
+  String get eGFRCalculatorDescription => 'किडनी के कार्य का आकलन करने के लिए अपने ईजीएफआर की गणना करें।';
+
+  @override
   String get contactDieticianCard => 'आहार विशेषज्ञ से संपर्क करें';
+
+  @override
+  String get contactDieticianDescription => 'व्यक्तिगत सलाह के लिए विशेषज्ञ आहार विशेषज्ञों से जुड़ें।';
 
   @override
   String get giveYourFeedbackCard => 'अपनी प्रतिक्रिया दें';
 
   @override
+  String get giveYourFeedbackDescription => 'अपने विचार साझा करें और ऐप को बेहतर बनाने में हमारी मदद करें।';
+
+  @override
   String notYetImplemented(Object title) {
-    return '$title पर नेविगेट कर रहा है (अभी तक लागू नहीं किया गया)';
+    return '$title पर नेविगेट करना (अभी तक लागू नहीं किया गया)';
   }
 
   @override
@@ -136,7 +151,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get chooseYourLanguage => 'अपनी पसंदीदा भाषा चुनें';
 
   @override
-  String get english => 'अंग्रेजी';
+  String get english => 'अंग्रेज़ी';
 
   @override
   String get hindi => 'हिंदी';
