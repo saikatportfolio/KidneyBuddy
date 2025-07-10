@@ -13,6 +13,7 @@ import 'dart:ui'; // Import for PlatformDispatcher
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 import 'package:myapp/temp_data_uploader.dart'; // Import the temporary data uploader
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,11 +44,15 @@ void main() async {
   await SupabaseService.initialize(); // Initialize Supabase
   print('main: Supabase initialized');
 
+  // Load patient details from local database on app startup
+  final patientDetails = await DatabaseHelper().getPatientDetails();
+  print('main: Loaded patient details from DB: $patientDetails');
+
   runZonedGuarded(() {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => PatientDetailsProvider()),
+          ChangeNotifierProvider(create: (_) => PatientDetailsProvider()..setPatientDetails(patientDetails!)), // Initialize with loaded data
           ChangeNotifierProvider(create: (_) => FeedbackProvider()),
         ],
         child: MyApp(),

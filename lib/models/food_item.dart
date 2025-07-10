@@ -81,4 +81,18 @@ class FoodItem {
         return Colors.grey; // Default for uncalculated or unknown
     }
   }
+
+  // Helper to get text for the safety flag
+  String get flagText {
+    switch (safetyFlag) {
+      case SafetyFlag.green:
+        return 'Safe';
+      case SafetyFlag.yellow:
+        return 'Limit';
+      case SafetyFlag.red:
+        return 'Avoid';
+      default:
+        return 'N/A'; // Default for uncalculated or unknown
+    }
+  }
 }

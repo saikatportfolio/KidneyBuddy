@@ -112,7 +112,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  foodItem.safetyFlag?.name.toUpperCase() ?? 'N/A',
+                                  foodItem.flagText, // Use the new flagText getter
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: foodItem.flagColor,

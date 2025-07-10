@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
-          childAspectRatio: 0.8, // Adjust this value as needed
+          childAspectRatio: 0.7, // Adjust this value as needed
           children: [
             _buildFeatureCard(
               context,
@@ -111,12 +111,16 @@ class HomePage extends StatelessWidget {
               style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                description,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12.0, color: Colors.grey[600]),
+            Expanded( // Wrap description in Expanded
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  description,
+                  textAlign: TextAlign.center,
+                  maxLines: 3, // Limit to 3 lines
+                  overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
+                  style: TextStyle(fontSize: 10.0, color: Colors.grey[600]), // Reduced font size
+                ),
               ),
             ),
           ],
