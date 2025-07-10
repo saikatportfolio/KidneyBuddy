@@ -92,7 +92,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center, // Center align content
                           children: [
                             Text(
                               foodItem.name,
@@ -100,31 +100,32 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
+                              textAlign: TextAlign.center, // Center the text
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: foodItem.flagColor,
-                                  radius: 8,
+                            const SizedBox(height: 8), // Increased spacing
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              decoration: BoxDecoration(
+                                color: foodItem.flagColor.withOpacity(0.2), // Subtle background color
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: foodItem.flagColor, width: 1),
+                              ),
+                              child: Text(
+                                foodItem.flagText,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: foodItem.flagColor,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  foodItem.flagText, // Use the new flagText getter
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: foodItem.flagColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8), // Increased spacing
                             Text(
                               foodItem.safetyExplanation ?? '',
                               style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              textAlign: TextAlign.center, // Center the explanation
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

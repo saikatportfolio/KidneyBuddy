@@ -11,6 +11,17 @@ class FoodListPage extends StatefulWidget {
 class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  final List<Map<String, dynamic>> _categoryCards = [
+    {'name': 'All Foods', 'icon': Icons.fastfood},
+    {'name': 'Vegetables', 'icon': Icons.local_florist},
+    {'name': 'Fruits', 'icon': Icons.apple},
+    {'name': 'Grains', 'icon': Icons.grain},
+    {'name': 'Plant Protein', 'icon': Icons.eco},
+    {'name': 'Animal Protein', 'icon': Icons.egg},
+    {'name': 'Dairy', 'icon': Icons.local_drink},
+    {'name': 'Other', 'icon': Icons.category},
+  ];
+
   final List<Tab> _tabs = const [
     Tab(text: 'All Foods'),
     Tab(text: 'Vegetables'),
@@ -50,15 +61,69 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
     return Scaffold(
       appBar: AppBar(
         title: const Text('Food Recommendations'),
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true, // Allows more tabs than fit on screen
-          tabs: _tabs,
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: _tabViews,
+      body: Column(
+        children: [
+          // Category Cards at the top
+          SizedBox(
+            height: 120, // Adjust height as needed for the category cards
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              itemCount: _categoryCards.length,
+              itemBuilder: (context, index) {
+                final category = _categoryCards[index];
+                return GestureDetector(
+                  onTap: () {
+                    _tabController.animateTo(index); // Switch to the corresponding tab
+                  },
+                  child: Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                    child: Container(
+                      width: 100, // Fixed width for each card
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            category['icon'],
+                            size: 40,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            category['name'],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // TabBar and TabBarView for food lists
+          TabBar(
+            controller: _tabController,
+            isScrollable: true, // Allows more tabs than fit on screen
+            tabs: _tabs,
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: _tabViews,
+            ),
+          ),
+        ],
       ),
     );
   }
