@@ -32,6 +32,7 @@ class HomePage extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
+          childAspectRatio: 0.8, // Adjust this value as needed
           children: [
             _buildFeatureCard(
               context,

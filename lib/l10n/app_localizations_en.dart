@@ -12,19 +12,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeTitle => 'Welcome to KidneyBuddy';
 
   @override
-  String get welcomeDescription => 'This app is designed to simplify life for CKD patients by helping them manage their condition and prevent further Progression';
+  String get welcomeDescription =>
+      'This app is designed to simplify life for CKD patients by helping them manage their condition and prevent further Progression';
 
   @override
   String get renalDietTitle => 'Renal Diet Management';
 
   @override
-  String get renalDietDescription => 'Maintain a proper renal diet with personalized guidance and easy-to-follow meal plans tailored to your CKD stage.';
+  String get renalDietDescription =>
+      'Maintain a proper renal diet with personalized guidance and easy-to-follow meal plans tailored to your CKD stage.';
 
   @override
   String get connectDieticiansTitle => 'Connect with Dieticians';
 
   @override
-  String get connectDieticiansDescription => 'Easily connect with the best dieticians for personalized consultations and expert advice to support your kidney health journey.';
+  String get connectDieticiansDescription =>
+      'Easily connect with the best dieticians for personalized consultations and expert advice to support your kidney health journey.';
 
   @override
   String get getStartedButton => 'Get Started';
@@ -104,7 +107,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactWhatsappButton => 'Contact via WhatsApp';
 
   @override
-  String get couldNotLaunchWhatsapp => 'Could not launch WhatsApp. Make sure it is installed.';
+  String get couldNotLaunchWhatsapp =>
+      'Could not launch WhatsApp. Make sure it is installed.';
 
   @override
   String get homePageTitle => 'KidneyBuddy';
@@ -113,31 +117,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietManagementCard => 'Diet Management';
 
   @override
-  String get dietManagementDescription => 'Manage your diet with personalized recommendations.';
+  String get dietManagementDescription =>
+      'Manage your diet with personalized recommendations.';
 
   @override
   String get bloodPressureMonitoringCard => 'Blood Pressure Monitoring';
 
   @override
-  String get bloodPressureMonitoringDescription => 'Track and monitor your blood pressure.';
+  String get bloodPressureMonitoringDescription =>
+      'Track and monitor your blood pressure.';
 
   @override
   String get eGFRCalculatorCard => 'eGFR Calculator';
 
   @override
-  String get eGFRCalculatorDescription => 'Calculate your eGFR to assess kidney function.';
+  String get eGFRCalculatorDescription =>
+      'Calculate your eGFR to assess kidney function.';
 
   @override
   String get contactDieticianCard => 'Contact Dietician';
 
   @override
-  String get contactDieticianDescription => 'Connect with expert dieticians for personalized advice.';
+  String get contactDieticianDescription =>
+      'Connect with expert dieticians for personalized advice.';
 
   @override
   String get giveYourFeedbackCard => 'Give your Feedback';
 
   @override
-  String get giveYourFeedbackDescription => 'Share your thoughts and help us improve the app.';
+  String get giveYourFeedbackDescription =>
+      'Share your thoughts and help us improve the app.';
 
   @override
   String notYetImplemented(Object title) {

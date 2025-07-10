@@ -12,19 +12,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get welcomeTitle => 'किडनीबडी में आपका स्वागत है';
 
   @override
-  String get welcomeDescription => 'यह ऐप सीकेडी रोगियों के लिए उनकी स्थिति का प्रबंधन करने और आगे बढ़ने से रोकने में मदद करके जीवन को सरल बनाने के लिए डिज़ाइन किया गया है';
+  String get welcomeDescription =>
+      'यह ऐप सीकेडी रोगियों के लिए उनकी स्थिति का प्रबंधन करने और आगे बढ़ने से रोकने में मदद करके जीवन को सरल बनाने के लिए डिज़ाइन किया गया है';
 
   @override
   String get renalDietTitle => 'गुर्दा आहार प्रबंधन';
 
   @override
-  String get renalDietDescription => 'अपने सीकेडी चरण के अनुरूप व्यक्तिगत मार्गदर्शन और पालन करने में आसान भोजन योजनाओं के साथ उचित गुर्दा आहार बनाए रखें।';
+  String get renalDietDescription =>
+      'अपने सीकेडी चरण के अनुरूप व्यक्तिगत मार्गदर्शन और पालन करने में आसान भोजन योजनाओं के साथ उचित गुर्दा आहार बनाए रखें।';
 
   @override
   String get connectDieticiansTitle => 'आहार विशेषज्ञों से जुड़ें';
 
   @override
-  String get connectDieticiansDescription => 'अपने गुर्दे के स्वास्थ्य यात्रा का समर्थन करने के लिए व्यक्तिगत परामर्श और विशेषज्ञ सलाह के लिए सर्वश्रेष्ठ आहार विशेषज्ञों से आसानी से जुड़ें।';
+  String get connectDieticiansDescription =>
+      'अपने गुर्दे के स्वास्थ्य यात्रा का समर्थन करने के लिए व्यक्तिगत परामर्श और विशेषज्ञ सलाह के लिए सर्वश्रेष्ठ आहार विशेषज्ञों से आसानी से जुड़ें।';
 
   @override
   String get getStartedButton => 'शुरू करें';
@@ -104,7 +107,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get contactWhatsappButton => 'व्हाट्सएप के माध्यम से संपर्क करें';
 
   @override
-  String get couldNotLaunchWhatsapp => 'व्हाट्सएप लॉन्च नहीं हो सका। सुनिश्चित करें कि यह स्थापित है।';
+  String get couldNotLaunchWhatsapp =>
+      'व्हाट्सएप लॉन्च नहीं हो सका। सुनिश्चित करें कि यह स्थापित है।';
 
   @override
   String get homePageTitle => 'किडनीबडी';
@@ -113,31 +117,36 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dietManagementCard => 'आहार प्रबंधन';
 
   @override
-  String get dietManagementDescription => 'व्यक्तिगत सिफारिशों के साथ अपने आहार का प्रबंधन करें।';
+  String get dietManagementDescription =>
+      'व्यक्तिगत सिफारिशों के साथ अपने आहार का प्रबंधन करें।';
 
   @override
   String get bloodPressureMonitoringCard => 'रक्तचाप की निगरानी';
 
   @override
-  String get bloodPressureMonitoringDescription => 'अपने रक्तचाप को ट्रैक और मॉनिटर करें।';
+  String get bloodPressureMonitoringDescription =>
+      'अपने रक्तचाप को ट्रैक और मॉनिटर करें।';
 
   @override
   String get eGFRCalculatorCard => 'ईजीएफआर कैलकुलेटर';
 
   @override
-  String get eGFRCalculatorDescription => 'किडनी के कार्य का आकलन करने के लिए अपने ईजीएफआर की गणना करें।';
+  String get eGFRCalculatorDescription =>
+      'किडनी के कार्य का आकलन करने के लिए अपने ईजीएफआर की गणना करें।';
 
   @override
   String get contactDieticianCard => 'आहार विशेषज्ञ से संपर्क करें';
 
   @override
-  String get contactDieticianDescription => 'व्यक्तिगत सलाह के लिए विशेषज्ञ आहार विशेषज्ञों से जुड़ें।';
+  String get contactDieticianDescription =>
+      'व्यक्तिगत सलाह के लिए विशेषज्ञ आहार विशेषज्ञों से जुड़ें।';
 
   @override
   String get giveYourFeedbackCard => 'अपनी प्रतिक्रिया दें';
 
   @override
-  String get giveYourFeedbackDescription => 'अपने विचार साझा करें और ऐप को बेहतर बनाने में हमारी मदद करें।';
+  String get giveYourFeedbackDescription =>
+      'अपने विचार साझा करें और ऐप को बेहतर बनाने में हमारी मदद करें।';
 
   @override
   String notYetImplemented(Object title) {
