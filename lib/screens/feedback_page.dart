@@ -17,8 +17,16 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _feedbackController = TextEditingController();
-  String _name = '';
-  String _phoneNumber = '';
+  String? _selectedCategory; // New state variable for selected category
+  String _patientName = ''; // To store patient's name from provider
+  String _patientPhoneNumber = ''; // To store patient's phone number from provider
+
+  final List<String> _feedbackCategories = [
+    'App Experience',
+    'Feature Request',
+    'Bug Report',
+    'Other',
+  ];
 
   @override
   void initState() {
@@ -26,29 +34,39 @@ class _FeedbackPageState extends State<FeedbackPage> {
     _loadPatientDetails();
   }
 
-  _loadPatientDetails() async {
-    final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
-    PatientDetails? details = patientDetailsProvider.patientDetails;
+  _loadPatientDetails() {
+    // Using WidgetsBinding.instance.addPostFrameCallback to ensure context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
+      PatientDetails? details = patientDetailsProvider.patientDetails;
 
-    // The FeedbackPage should rely on the PatientDetailsProvider for the active patient.
-    // If details are not in the provider, it means no patient is currently active/selected.
-    // We should not attempt to load a random patient from the database here.
-
-    if (details != null) {
-      setState(() {
-        _name = details.name;
-        _phoneNumber = details.phoneNumber;
-      });
-    }
+      if (details != null) {
+        setState(() {
+          _patientName = details.name;
+          _patientPhoneNumber = details.phoneNumber;
+        });
+      } else {
+        // Handle case where patient details are not available (e.g., show a message or disable feedback)
+        print('Patient details not available for feedback submission.');
+      }
+    });
   }
 
   void _submitFeedback() async {
     if (_formKey.currentState!.validate()) {
+      if (_selectedCategory == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a feedback category.')),
+        );
+        return;
+      }
+
       final feedback = FeedbackModel(
         id: Uuid().v4(), // Generate a new UUID for the feedback
-        name: _name,
-        phoneNumber: _phoneNumber,
+        name: _patientName, // Use patient's name from provider
+        phoneNumber: _patientPhoneNumber, // Use patient's phone number from provider
         feedbackText: _feedbackController.text,
+        category: _selectedCategory!, // Use the selected category
         timestamp: DateTime.now(),
       );
 
@@ -63,6 +81,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
       );
 
       _feedbackController.clear();
+      setState(() {
+        _selectedCategory = null; // Clear selected category after submission
+      });
 
       // Navigate to Home Page
       Navigator.of(context).pushReplacement(
@@ -89,18 +110,34 @@ class _FeedbackPageState extends State<FeedbackPage> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                initialValue: _name,
-                decoration: InputDecoration(labelText: 'Your Name'),
-                readOnly: true, // Name should be pre-filled and not editable
+              // Dropdown for Feedback Category
+              DropdownButtonFormField<String>(
+                value: _selectedCategory,
+                decoration: InputDecoration(
+                  labelText: 'Feedback Category',
+                  border: OutlineInputBorder(),
+                ),
+                hint: Text('Select a category'),
+                items: _feedbackCategories.map((String category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedCategory = newValue;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 16),
-              TextFormField(
-                initialValue: _phoneNumber,
-                decoration: InputDecoration(labelText: 'Your Phone Number'),
-                readOnly: true, // Phone number should be pre-filled and not editable
-              ),
-              SizedBox(height: 16),
+              // Feedback Text Field
               TextFormField(
                 controller: _feedbackController,
                 decoration: InputDecoration(

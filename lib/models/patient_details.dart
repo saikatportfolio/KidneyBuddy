@@ -43,9 +43,13 @@ class PatientDetails {
 class PatientDetailsProvider with ChangeNotifier {
   PatientDetails? _patientDetails;
 
+  PatientDetailsProvider(PatientDetails? initialDetails) {
+    _patientDetails = initialDetails;
+  }
+
   PatientDetails? get patientDetails => _patientDetails;
 
-  void setPatientDetails(PatientDetails details) {
+  void setPatientDetails(PatientDetails? details) {
     _patientDetails = details;
     notifyListeners();
   }

@@ -5,6 +5,7 @@ class FeedbackModel {
   String name;
   String phoneNumber;
   String feedbackText;
+  String category; // Added for feedback category
   DateTime timestamp;
 
   FeedbackModel({
@@ -12,6 +13,7 @@ class FeedbackModel {
     required this.name,
     required this.phoneNumber,
     required this.feedbackText,
+    required this.category, // Added to constructor
     required this.timestamp,
   });
 
@@ -20,6 +22,7 @@ class FeedbackModel {
       'name': name,
       'phone_number': phoneNumber,
       'feedback_text': feedbackText,
+      'category': category, // Added to map
       'timestamp': timestamp.toIso8601String(),
     };
     if (id != null) {
@@ -34,6 +37,7 @@ class FeedbackModel {
       name: map['name'],
       phoneNumber: map['phone_number'],
       feedbackText: map['feedback_text'],
+      category: map['category'], // Added from map
       timestamp: DateTime.parse(map['timestamp']),
     );
   }

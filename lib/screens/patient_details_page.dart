@@ -51,6 +51,8 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       await SupabaseService().upsertPatientDetails(patientDetails);
 
       // Update provider (using the local patientDetails object)
+      // Ensure context is still valid before updating provider and navigating
+      if (!mounted) return;
       Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
 
       // Set onboarding seen status
@@ -58,6 +60,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       await prefs.setBool('hasSeenOnboarding', true);
 
       // Navigate to Home Page
+      if (!mounted) return; // Check mounted again before navigation
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => HomePage()),
       );

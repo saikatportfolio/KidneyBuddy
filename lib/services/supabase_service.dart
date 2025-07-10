@@ -84,4 +84,43 @@ class SupabaseService {
       return []; // Return empty list on error
     }
   }
+
+  // App Messages Operations
+  Future<String?> getMessageByKey(String key) async {
+    try {
+      final response = await _supabase
+          .from('app_messages')
+          .select('message_text')
+          .eq('message_key', key)
+          .limit(1);
+
+      if (response.isNotEmpty) {
+        return response.first['message_text'] as String;
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching message by key "$key" from Supabase: $e');
+      return null;
+    }
+  }
+
+  Future<List<String>> getAllTips() async {
+    try {
+      final response = await _supabase
+          .from('app_messages')
+          .select('message_text')
+          .like('message_key', 'tip_%') // Assuming tips are keyed as 'tip_1', 'tip_2', etc.
+          .order('message_key', ascending: true); // Order to ensure consistent rotation
+
+      if (response.isEmpty) {
+        print('No tips found in Supabase.');
+        return [];
+      }
+
+      return (response as List).map((map) => map['message_text'] as String).toList();
+    } catch (e) {
+      print('Error fetching all tips from Supabase: $e');
+      return [];
+    }
+  }
 }

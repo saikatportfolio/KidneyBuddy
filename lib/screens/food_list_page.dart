@@ -16,9 +16,9 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
     Tab(text: 'Vegetables'),
     Tab(text: 'Fruits'),
     Tab(text: 'Grains'),
-    Tab(text: 'Main Course'),
-    Tab(text: 'Breakfast'),
-    Tab(text: 'Bread'),
+    Tab(text: 'Plant Protein'),
+    Tab(text: 'Animal Protein'),
+    Tab(text: 'Dairy'),
     Tab(text: 'Other'),
   ];
 
@@ -27,9 +27,9 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
     FoodCategoryTab(categories: ['Vegetable']),
     FoodCategoryTab(categories: ['Fruit']),
     FoodCategoryTab(categories: ['Grains']),
-    FoodCategoryTab(categories: ['Main Course']),
-    FoodCategoryTab(categories: ['Breakfast']),
-    FoodCategoryTab(categories: ['Bread']),
+    FoodCategoryTab(categories: ['Plant Protein']),
+    FoodCategoryTab(categories: ['Animal Protein']),
+    FoodCategoryTab(categories: ['Dairy']),
     FoodCategoryTab(categories: ['Other']), // Catch-all for categories not explicitly listed
   ];
 

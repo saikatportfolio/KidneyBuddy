@@ -7,15 +7,16 @@ enum SafetyFlag {
 }
 
 class FoodItem {
-  final String id;
+  final int id;
   final String name;
-  final String description;
   final double sodium; // in mg
   final double potassium; // in mg
   final double phosphorus; // in mg
   final double protein; // in grams
+  final double carbs; // in grams
+  final double fat; // in grams
   final String category;
-  final bool isIndianFood;
+  final String? source;
   final String? imageUrl;
 
   // Properties to be calculated dynamically based on patient's CKD stage
@@ -25,13 +26,14 @@ class FoodItem {
   FoodItem({
     required this.id,
     required this.name,
-    required this.description,
     required this.sodium,
     required this.potassium,
     required this.phosphorus,
     required this.protein,
+    required this.carbs,
+    required this.fat,
     required this.category,
-    this.isIndianFood = true,
+    this.source,
     this.imageUrl,
     this.safetyFlag,
     this.safetyExplanation,
@@ -39,15 +41,16 @@ class FoodItem {
 
   factory FoodItem.fromMap(Map<String, dynamic> map) {
     return FoodItem(
-      id: map['id'] as String,
+      id: map['id'] as int,
       name: map['name'] as String,
-      description: map['description'] as String,
       sodium: (map['sodium'] as num).toDouble(),
       potassium: (map['potassium'] as num).toDouble(),
       phosphorus: (map['phosphorus'] as num).toDouble(),
       protein: (map['protein'] as num).toDouble(),
+      carbs: (map['carbs'] as num).toDouble(),
+      fat: (map['fat'] as num).toDouble(),
       category: map['category'] as String,
-      isIndianFood: map['is_indian_food'] as bool? ?? true,
+      source: map['source'] as String?,
       imageUrl: map['image_url'] as String?,
       // Safety flag and explanation are not stored in DB, calculated dynamically
     );
@@ -57,13 +60,14 @@ class FoodItem {
     return {
       'id': id,
       'name': name,
-      'description': description,
       'sodium': sodium,
       'potassium': potassium,
       'phosphorus': phosphorus,
       'protein': protein,
+      'carbs': carbs,
+      'fat': fat,
       'category': category,
-      'is_indian_food': isIndianFood,
+      'source': source,
       'image_url': imageUrl,
     };
   }

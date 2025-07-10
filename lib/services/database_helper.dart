@@ -24,8 +24,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'ckd_care_app.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Increment database version
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade, // Add onUpgrade callback
     );
   }
 
@@ -46,9 +47,29 @@ class DatabaseHelper {
         name TEXT,
         phone_number TEXT,
         feedback_text TEXT,
+        category TEXT, -- Added category column
         timestamp TEXT
       )
     ''');
+  }
+
+  // Handle database upgrades
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // This is a simple migration strategy for development: drop and recreate table.
+      // For production, you would use ALTER TABLE to add the column without losing data.
+      await db.execute('DROP TABLE IF EXISTS feedback');
+      await db.execute('''
+        CREATE TABLE feedback(
+          id TEXT PRIMARY KEY,
+          name TEXT,
+          phone_number TEXT,
+          feedback_text TEXT,
+          category TEXT, -- Added category column
+          timestamp TEXT
+        )
+      ''');
+    }
   }
 
   // Patient Details Operations
