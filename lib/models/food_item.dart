@@ -51,7 +51,7 @@ class FoodItem {
       fat: (map['fat'] as num).toDouble(),
       category: map['category'] as String,
       source: map['source'] as String?,
-      imageUrl: map['image_url'] as String?,
+      imageUrl: map['imageUrl'] as String?,
       // Safety flag and explanation are not stored in DB, calculated dynamically
     );
   }
@@ -68,7 +68,7 @@ class FoodItem {
       'fat': fat,
       'category': category,
       'source': source,
-      'image_url': imageUrl,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -94,7 +94,7 @@ class FoodItem {
       case SafetyFlag.yellow:
         return 'Limit';
       case SafetyFlag.red:
-        return 'Avoid';
+        return 'Danger';
       default:
         return 'N/A'; // Default for uncalculated or unknown
     }

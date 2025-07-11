@@ -56,6 +56,65 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
     super.dispose();
   }
 
+  void _showSafetyFlagMeaningDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Safety Flag Meanings'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFlagMeaningRow(Colors.green, 'Safe', 'Generally suitable.'),
+              _buildFlagMeaningRow(Colors.yellow[700]!, 'Limit', 'Generally can consume in moderation.'),
+              _buildFlagMeaningRow(Colors.red, 'Danger', 'Generally can be harmful.'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFlagMeaningRow(Color color, String flagText, String explanation) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: color,
+            radius: 8,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  flagText,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+                Text(
+                  explanation,
+                  style: const TextStyle(fontSize: 12, color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,6 +168,17 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
                   ),
                 );
               },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: ElevatedButton(
+              onPressed: () => _showSafetyFlagMeaningDialog(context),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40), // Make button full width
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              child: const Text('See Safety Flag Meanings'),
             ),
           ),
           // TabBar and TabBarView for food lists

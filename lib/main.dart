@@ -19,7 +19,7 @@ import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('main: WidgetsFlutterBinding initialized');
-  await Firebase.initializeApp(); // Keep Firebase initialization for Crashlytics
+  await Firebase.initializeApp(); // Keep Firebase Core for Crashlytics
   print('main: Firebase initialized');
 
   // Initialize Crashlytics
@@ -28,10 +28,6 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-
-  await SupabaseService.initialize(); // Initialize Supabase
-  print('main: Supabase initialized');
-
 
   // Load patient details from local database on app startup
   final patientDetails = await DatabaseHelper().getPatientDetails();
@@ -68,24 +64,38 @@ class MyAppState extends State<MyApp> {
   bool _hasSeenOnboarding = false;
   bool _isLoading = true;
   Locale? _locale;
+  // PatientDetails? _patientDetails; // Removed as it's now passed via provider
 
   @override
   void initState() {
     super.initState();
     print('MyAppState: initState called');
-    _loadPreferencesAndSetLocale();
+    _initializeAppData(); // Call a new method for async initializations
   }
 
-  _loadPreferencesAndSetLocale() async {
-    print('MyAppState: _loadPreferencesAndSetLocale started');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
+  Future<void> _initializeAppData() async {
+    print('MyAppState: _initializeAppData started');
+    try {
+      // Initialize Supabase
+      await SupabaseService.initialize();
+      print('MyAppState: Supabase initialized');
+
+      // Load preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false);
       String? langCode = prefs.getString('languageCode');
       _locale = langCode != null ? Locale(langCode) : null;
+    } catch (e) {
+      print('MyAppState: Error during initialization: $e');
+      // Handle error, e.g., show an error screen or retry
+    } finally {
+      if (mounted) {
+        setState(() {
           _isLoading = false;
-    });
-    print('MyAppState: _loadPreferencesAndSetLocale completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
+        });
+        print('MyAppState: _initializeAppData completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
+      }
+    }
   }
 
   void setLocale(Locale newLocale) {

@@ -35,57 +35,153 @@ class FoodDetailPage extends StatelessWidget {
                 ),
               ),
             const SizedBox(height: 16),
-            Text(
-              foodItem.name,
-              style: Theme.of(context).textTheme.headlineMedium,
+            // Disclaimer
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Disclaimer : This is just a general guidance. Please consult with renal deitician before choosing any food for you",
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: foodItem.flagColor,
-                  radius: 12,
+            const SizedBox(height: 16),
+            // Food Details Card
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      foodItem.name,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: foodItem.flagColor,
+                          radius: 14,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          foodItem.flagText,
+                          style: TextStyle(
+                            color: foodItem.flagColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      foodItem.safetyExplanation ?? 'No specific safety explanation available.',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const Divider(height: 24, thickness: 1),
+                    Text(
+                      'Category: ${foodItem.category}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    if (foodItem.source != null && foodItem.source!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Source: ${foodItem.source}',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ],
                 ),
-                const SizedBox(width: 8),
+              ),
+            ),
+            const SizedBox(height: 16), // Spacing between cards
+
+            // Safety Flag Explanations (Legend)
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Safety Flag Meanings:',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildFlagMeaningRow(Colors.green, 'Safe', 'Generally suitable for consumption.'),
+                    _buildFlagMeaningRow(Colors.yellow[700]!, 'Limit', 'Generally can Consume in moderation.'),
+                    _buildFlagMeaningRow(Colors.red, 'Danger', 'Generally be harmful.'),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16), // Spacing between cards and next element (Nutrition Info Card)
+
+            // Nutrition Info Card
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nutrition Info (per 100g):',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildNutrientRow('Sodium', foodItem.sodium, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.sodium, 'Sodium', ckdStage)),
+                    _buildNutrientRow('Potassium', foodItem.potassium, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.potassium, 'Potassium', ckdStage)),
+                    _buildNutrientRow('Phosphorus', foodItem.phosphorus, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.phosphorus, 'Phosphorus', ckdStage)),
+                    _buildNutrientRow('Protein', foodItem.protein, 'g', CKDDietCalculator.getNutrientFlag(foodItem.protein, 'Protein', ckdStage)),
+                    _buildNutrientRow('Carbohydrates', foodItem.carbs, 'g', null),
+                    _buildNutrientRow('Fat', foodItem.fat, 'g', null),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlagMeaningRow(Color color, String flagText, String explanation) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: color,
+            radius: 8,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  foodItem.flagText, // Use flagText getter for display
-                  style: TextStyle(
-                    color: foodItem.flagColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                  flagText,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+                Text(
+                  explanation,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              foodItem.safetyExplanation ?? 'No specific safety explanation available.',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Nutritional Information (per 100g):',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            _buildNutrientRow('Sodium', foodItem.sodium, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.sodium, 'Sodium', ckdStage)),
-            _buildNutrientRow('Potassium', foodItem.potassium, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.potassium, 'Potassium', ckdStage)),
-            _buildNutrientRow('Phosphorus', foodItem.phosphorus, 'mg', CKDDietCalculator.getNutrientFlag(foodItem.phosphorus, 'Phosphorus', ckdStage)),
-            _buildNutrientRow('Protein', foodItem.protein, 'g', CKDDietCalculator.getNutrientFlag(foodItem.protein, 'Protein', ckdStage)),
-            _buildNutrientRow('Carbohydrates', foodItem.carbs, 'g', null), // No safety flag for carbs
-            _buildNutrientRow('Fat', foodItem.fat, 'g', null), // No safety flag for fat
-            const SizedBox(height: 16),
-            Text(
-              'Category: ${foodItem.category}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            if (foodItem.source != null && foodItem.source!.isNotEmpty)
-              Text(
-                'Source: ${foodItem.source}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -122,7 +218,7 @@ class FoodDetailPage extends StatelessWidget {
                       ? 'Safe'
                       : flag == SafetyFlag.yellow
                           ? 'Limit'
-                          : 'Avoid',
+                          : 'Danger',
                   style: TextStyle(
                     fontSize: 12,
                     color: flag == SafetyFlag.green

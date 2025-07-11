@@ -124,7 +124,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                             const SizedBox(height: 8), // Increased spacing
                             Text(
                               foodItem.safetyExplanation ?? '',
-                              style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              style: const TextStyle(fontSize: 10, color: Colors.black),
                               textAlign: TextAlign.center, // Center the explanation
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
