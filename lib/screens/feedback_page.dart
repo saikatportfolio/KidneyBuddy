@@ -6,6 +6,7 @@ import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:uuid/uuid.dart'; // Import uuid package
+import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -70,10 +71,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
         timestamp: DateTime.now(),
       );
 
-      // Save to SQLite
-      await DatabaseHelper().insertFeedback(feedback);
-
-      // Sync to Supabase
+      // Conditional Save Logic for Feedback
+      if (!kIsWeb) {
+        // Save to SQLite for mobile
+        await DatabaseHelper().insertFeedback(feedback);
+      }
+      
+      // Always sync to Supabase
       await SupabaseService().insertFeedback(feedback);
 
       ScaffoldMessenger.of(context).showSnackBar(

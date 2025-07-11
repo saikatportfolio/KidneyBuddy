@@ -28,6 +28,23 @@ class SupabaseService {
     }
   }
 
+  Future<PatientDetails?> getPatientDetails() async {
+    try {
+      final response = await _supabase
+          .from('patient_details')
+          .select()
+          .limit(1); // Assuming only one patient's details are stored
+
+      if (response.isNotEmpty) {
+        return PatientDetails.fromMap(response.first);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching patient details from Supabase: $e');
+      return null;
+    }
+  }
+
   // Feedback Operations
   Future<void> insertFeedback(FeedbackModel feedback) async {
     try {

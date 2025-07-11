@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:uuid/uuid.dart'; // Import uuid package
+import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -16,7 +17,9 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDatabase();
+    if (!kIsWeb) { // Only initialize database if not on web
+      _database = await _initDatabase();
+    }
     return _database!;
   }
 
@@ -73,7 +76,8 @@ class DatabaseHelper {
   }
 
   // Patient Details Operations
-  Future<String> insertPatientDetails(PatientDetails details) async {
+  Future<String?> insertPatientDetails(PatientDetails details) async {
+    if (kIsWeb) return null; // Do not use SQLite on web
     Database db = await database;
     details.id ??= Uuid().v4();
     await db.insert('patient_details', details.toMap(),
@@ -82,6 +86,7 @@ class DatabaseHelper {
   }
 
   Future<PatientDetails?> getPatientDetails() async {
+    if (kIsWeb) return null; // Do not use SQLite on web
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query('patient_details', limit: 1);
     if (maps.isNotEmpty) {
@@ -91,7 +96,8 @@ class DatabaseHelper {
   }
 
   // Feedback Operations
-  Future<String> insertFeedback(FeedbackModel feedback) async {
+  Future<String?> insertFeedback(FeedbackModel feedback) async {
+    if (kIsWeb) return null; // Do not use SQLite on web
     Database db = await database;
     feedback.id ??= Uuid().v4(); // Generate UUID if not provided
     await db.insert('feedback', feedback.toMap(),
@@ -100,6 +106,7 @@ class DatabaseHelper {
   }
 
   Future<List<FeedbackModel>> getFeedbacks() async {
+    if (kIsWeb) return []; // Do not fetch from SQLite on web
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query('feedback', orderBy: 'timestamp DESC');
     return List.generate(maps.length, (i) {

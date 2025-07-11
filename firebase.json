@@ -1,0 +1,32 @@
+{"flutter":{
+    "platforms":{
+        "android":{
+            "default":{
+                "projectId":"ckdbuddy","appId":"1:998282656789:android:26d1a2523fee434ec6221c",
+                "fileOutput":"android/app/google-services.json"}}
+                ,"dart":{
+                    "lib/firebase_options.dart":{
+                        "projectId":"ckdbuddy",
+                        "configurations":{
+                            "android":"1:998282656789:android:26d1a2523fee434ec6221c",
+                            "web":"1:998282656789:web:1c8d3585d736220bc6221c"
+                        }
+                            }
+                            }
+                            }
+                            },
+                            "hosting": {
+    "public": "build/web", 
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+                        }

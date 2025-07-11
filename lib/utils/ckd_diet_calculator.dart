@@ -21,7 +21,7 @@ class CKDDietCalculator {
       'Stage 1': {'safe': 120, 'limit': 180},
       'Stage 2': {'safe': 120, 'limit': 180},
       'Stage 3': {'safe': 100, 'limit': 150},
-      'Stage 4': {'safe': 80, 'limit': 120},
+      'Stage 4': {'safe': 80, 'limit': 150},
       'Stage 5': {'safe': 80, 'limit': 120}, // Assuming Stage 5 follows Stage 4 for now
     },
     'Protein': {

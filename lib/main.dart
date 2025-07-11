@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/onboarding_screen.dart';
 import 'package:myapp/screens/home_page.dart';
-import 'package:flutter/material.dart';
-import 'package:myapp/screens/onboarding_screen.dart';
-import 'package:myapp/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart'; // Keep Firebase Core for Crashlytics/Analytics
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
 import 'package:provider/provider.dart';
@@ -15,12 +12,20 @@ import 'dart:async'; // Import for runZonedGuarded
 import 'dart:ui'; // Import for PlatformDispatcher
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
+import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'firebase_options.dart'; // Import generated Firebase options
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   print('main: WidgetsFlutterBinding initialized');
-  await Firebase.initializeApp(); // Keep Firebase Core for Crashlytics
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   print('main: Firebase initialized');
+
+  // Initialize Supabase here, before any service tries to use it
+  await SupabaseService.initialize();
+  print('main: Supabase initialized');
 
   // Initialize Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -29,9 +34,15 @@ void main() async {
     return true;
   };
 
-  // Load patient details from local database on app startup
-  final patientDetails = await DatabaseHelper().getPatientDetails();
-  print('main: Loaded patient details from DB: $patientDetails');
+  // Load patient details conditionally on app startup
+  PatientDetails? patientDetails;
+  if (kIsWeb) {
+    patientDetails = await SupabaseService().getPatientDetails();
+    print('main: Loaded patient details from Supabase (Web): $patientDetails');
+  } else {
+    patientDetails = await DatabaseHelper().getPatientDetails();
+    print('main: Loaded patient details from SQLite (Mobile): $patientDetails');
+  }
 
   runZonedGuarded(() {
     runApp(
@@ -76,9 +87,7 @@ class MyAppState extends State<MyApp> {
   Future<void> _initializeAppData() async {
     print('MyAppState: _initializeAppData started');
     try {
-      // Initialize Supabase
-      await SupabaseService.initialize();
-      print('MyAppState: Supabase initialized');
+      // Supabase is now initialized in main(), no need to initialize here
 
       // Load preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -6,6 +6,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart'; // Import uuid package
+import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 
 class PatientDetailsPage extends StatefulWidget {
   const PatientDetailsPage({super.key});
@@ -21,6 +22,34 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   String? _ckdStage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatientDetails();
+  }
+
+  void _loadPatientDetails() async {
+    PatientDetails? loadedDetails;
+    if (kIsWeb) {
+      loadedDetails = await SupabaseService().getPatientDetails();
+    } else {
+      loadedDetails = await DatabaseHelper().getPatientDetails();
+    }
+
+    if (loadedDetails != null) {
+      setState(() {
+        _nameController.text = loadedDetails!.name;
+        _phoneController.text = loadedDetails!.phoneNumber;
+        _weightController.text = loadedDetails!.weight.toString();
+        _heightController.text = loadedDetails!.height.toString();
+        _ckdStage = loadedDetails!.ckdStage;
+      });
+      // Update provider with loaded details
+      if (!mounted) return;
+      Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(loadedDetails);
+    }
+  }
 
   @override
   void dispose() {
@@ -42,12 +71,14 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         ckdStage: _ckdStage!,
       );
 
-      // Save to SQLite (will insert or update based on ID)
-      final dbHelper = DatabaseHelper();
-      // insertPatientDetails now returns String, and patientDetails already has the UUID
-      await dbHelper.insertPatientDetails(patientDetails);
-
-      // Sync to Supabase (patientDetails already has the UUID)
+      // Conditional Save Logic
+      if (!kIsWeb) {
+        // Save to SQLite for mobile
+        final dbHelper = DatabaseHelper();
+        await dbHelper.insertPatientDetails(patientDetails);
+      }
+      
+      // Always sync to Supabase
       await SupabaseService().upsertPatientDetails(patientDetails);
 
       // Update provider (using the local patientDetails object)
