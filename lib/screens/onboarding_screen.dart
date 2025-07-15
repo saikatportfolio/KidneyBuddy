@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:myapp/screens/patient_details_page.dart';
+import 'package:myapp/screens/home_page.dart'; // Import HomePage
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 import 'package:myapp/screens/language_selection_screen.dart'; // Import LanguageSelectionScreen
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -35,13 +36,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   _onIntroEnd(context) async {
-    print('OnboardingScreen: _onIntroEnd started');
+    logger.d('OnboardingScreen: _onIntroEnd started');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSeenOnboarding', true);
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => PatientDetailsPage()),
+      MaterialPageRoute(builder: (_) => HomePage()), // Navigate to HomePage
     );
-    print('OnboardingScreen: Navigated to PatientDetailsPage');
+    logger.i('OnboardingScreen: Navigated to HomePage');
   }
 
   @override
@@ -52,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('OnboardingScreen: build called. Current page: $_currentPage');
+    logger.d('OnboardingScreen: build called. Current page: $_currentPage');
     return Scaffold(
       body: Column(
         children: [
@@ -64,11 +65,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 setState(() {
                   _currentPage = index;
                 });
-                print('OnboardingScreen: Page changed to $index');
+                logger.d('OnboardingScreen: Page changed to $index');
               },
               itemBuilder: (context, index) {
                 final item = onboardingData[index];
-                print('OnboardingScreen: Building page $index');
+                logger.d('OnboardingScreen: Building page $index');
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(

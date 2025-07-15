@@ -298,17 +298,17 @@ abstract class AppLocalizations {
   /// **'Manage your diet with personalized recommendations.'**
   String get dietManagementDescription;
 
-  /// No description provided for @bloodPressureMonitoringCard.
+  /// No description provided for @vitalMonitoringCard.
   ///
   /// In en, this message translates to:
-  /// **'Blood Pressure Monitoring'**
-  String get bloodPressureMonitoringCard;
+  /// **'Vital Monitoring'**
+  String get vitalMonitoringCard;
 
-  /// No description provided for @bloodPressureMonitoringDescription.
+  /// No description provided for @vitalMonitoringDescription.
   ///
   /// In en, this message translates to:
-  /// **'Track and monitor your blood pressure.'**
-  String get bloodPressureMonitoringDescription;
+  /// **'Track and monitor your vital signs.'**
+  String get vitalMonitoringDescription;
 
   /// No description provided for @eGFRCalculatorCard.
   ///
@@ -393,6 +393,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get languageSetting;
+
+  /// No description provided for @vitalTrackingPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vital Tracking'**
+  String get vitalTrackingPageTitle;
+
+  /// No description provided for @bpTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Pressure'**
+  String get bpTab;
+
+  /// No description provided for @creatinineTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Creatinine'**
+  String get creatinineTab;
+
+  /// No description provided for @potassiumTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Potassium'**
+  String get potassiumTab;
+
+  /// No description provided for @noDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available for this category.'**
+  String get noDataAvailable;
+
+  /// No description provided for @addBpButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Blood Pressure'**
+  String get addBpButton;
+
+  /// No description provided for @addCreatinineButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Creatinine'**
+  String get addCreatinineButton;
+
+  /// No description provided for @addPotassiumButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Potassium'**
+  String get addPotassiumButton;
+
+  /// No description provided for @addBpPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Blood Pressure Reading'**
+  String get addBpPageTitle;
+
+  /// No description provided for @systolicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Systolic'**
+  String get systolicLabel;
+
+  /// No description provided for @diastolicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diastolic'**
+  String get diastolicLabel;
+
+  /// No description provided for @addCommentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Comment'**
+  String get addCommentLabel;
+
+  /// No description provided for @selectDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get selectDateLabel;
+
+  /// No description provided for @selectTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get selectTimeLabel;
+
+  /// No description provided for @saveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveButton;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginTitle;
+
+  /// No description provided for @signupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signupTitle;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @signInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signInButton;
+
+  /// No description provided for @signUpButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUpButton;
+
+  /// No description provided for @noAccountPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Sign Up'**
+  String get noAccountPrompt;
+
+  /// No description provided for @haveAccountPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign In'**
+  String get haveAccountPrompt;
+
+  /// No description provided for @loginSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged in successfully!'**
+  String get loginSuccessMessage;
+
+  /// No description provided for @signupSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully! Please check your email to verify.'**
+  String get signupSuccessMessage;
+
+  /// No description provided for @authErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Error: {error}'**
+  String authErrorMessage(Object error);
+
+  /// No description provided for @pdfGenerationErrorNoPatientDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient details not available for PDF report. Please update your profile.'**
+  String get pdfGenerationErrorNoPatientDetails;
+
+  /// No description provided for @pdfGenerationErrorNoReadings.
+  ///
+  /// In en, this message translates to:
+  /// **'No blood pressure readings available to generate a PDF report.'**
+  String get pdfGenerationErrorNoReadings;
+
+  /// No description provided for @pdfGenerationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error generating PDF report: {error}'**
+  String pdfGenerationError(Object error);
+
+  /// No description provided for @userNotLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in. Please sign in to view this content.'**
+  String get userNotLoggedIn;
 }
 
 class _AppLocalizationsDelegate

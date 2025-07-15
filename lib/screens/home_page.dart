@@ -6,14 +6,10 @@ import 'package:myapp/screens/settings_page.dart'; // Import SettingsPage
 import 'package:myapp/screens/food_list_page.dart'; // Import the new food list page
 import 'package:provider/provider.dart'; // Import provider
 import 'package:myapp/models/patient_details.dart'; // Import PatientDetailsProvider
-
-import 'package:myapp/screens/dietician_list_page.dart';
-import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
-import 'package:myapp/screens/settings_page.dart'; // Import SettingsPage
-import 'package:myapp/screens/food_list_page.dart'; // Import the new food list page
-import 'package:provider/provider.dart'; // Import provider
-import 'package:myapp/models/patient_details.dart'; // Import PatientDetailsProvider
+import 'package:myapp/screens/egfr_calculator_screen.dart'; // Import eGFR Calculator Screen
 import 'package:myapp/services/supabase_service.dart'; // Import SupabaseService
+import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         }
       });
     } catch (e) {
-      print('Error loading dynamic content: $e');
+      logger.e('Error loading dynamic content: $e');
       setState(() {
         _welcomeMessage = 'Error loading message.';
         _tipOfTheDay = 'Error loading tip.';
@@ -67,7 +63,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('HomePage: build called'); // Keep the print statement
+    logger.d('HomePage: build called'); // Keep the print statement
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
     final patientName = patientDetailsProvider.patientDetails?.name ?? 'User';
@@ -223,17 +219,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       _buildFeatureItem(
                         context,
-                        localizations.bloodPressureMonitoringCard,
-                        localizations.bloodPressureMonitoringDescription,
+                        localizations.vitalMonitoringCard,
+                        localizations.vitalMonitoringDescription,
                         Icons.monitor_heart,
-                        null,
+                        const VitalTrackingPage(),
                       ),
                       _buildFeatureItem(
                         context,
                         localizations.eGFRCalculatorCard,
                         localizations.eGFRCalculatorDescription,
                         Icons.calculate,
-                        null,
+                        const EgfrCalculatorScreen(), // Navigate to the new screen
                       ),
                     ],
                   ),

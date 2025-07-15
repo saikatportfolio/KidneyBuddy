@@ -121,11 +121,11 @@ class AppLocalizationsBn extends AppLocalizations {
       'ব্যক্তিগত সুপারিশ সহ আপনার ডায়েট পরিচালনা করুন।';
 
   @override
-  String get bloodPressureMonitoringCard => 'রক্তচাপ পর্যবেক্ষণ';
+  String get vitalMonitoringCard => 'ভাইটাল মনিটরিং';
 
   @override
-  String get bloodPressureMonitoringDescription =>
-      'আপনার রক্তচাপ ট্র্যাক এবং নিরীক্ষণ করুন।';
+  String get vitalMonitoringDescription =>
+      'আপনার গুরুত্বপূর্ণ লক্ষণগুলি ট্র্যাক এবং নিরীক্ষণ করুন।';
 
   @override
   String get eGFRCalculatorCard => 'ইজিএফআর ক্যালকুলেটর';
@@ -173,4 +173,105 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get languageSetting => 'ভাষা';
+
+  @override
+  String get vitalTrackingPageTitle => 'ভাইটাল ট্র্যাকিং';
+
+  @override
+  String get bpTab => 'রক্তচাপ';
+
+  @override
+  String get creatinineTab => 'ক্রিয়েটিনিন';
+
+  @override
+  String get potassiumTab => 'পটাশিয়াম';
+
+  @override
+  String get noDataAvailable => 'এই বিভাগের জন্য কোন ডেটা উপলব্ধ নেই।';
+
+  @override
+  String get addBpButton => 'রক্তচাপ যোগ করুন';
+
+  @override
+  String get addCreatinineButton => 'ক্রিয়েটিনিন যোগ করুন';
+
+  @override
+  String get addPotassiumButton => 'পটাশিয়াম যোগ করুন';
+
+  @override
+  String get addBpPageTitle => 'রক্তচাপ রিডিং যোগ করুন';
+
+  @override
+  String get systolicLabel => 'সিস্টোলিক';
+
+  @override
+  String get diastolicLabel => 'ডায়াস্টোলিক';
+
+  @override
+  String get addCommentLabel => 'মন্তব্য যোগ করুন';
+
+  @override
+  String get selectDateLabel => 'তারিখ নির্বাচন করুন';
+
+  @override
+  String get selectTimeLabel => 'সময় নির্বাচন করুন';
+
+  @override
+  String get saveButton => 'সংরক্ষণ করুন';
+
+  @override
+  String get loginTitle => 'লগইন';
+
+  @override
+  String get signupTitle => 'সাইন আপ';
+
+  @override
+  String get emailLabel => 'ইমেল';
+
+  @override
+  String get passwordLabel => 'পাসওয়ার্ড';
+
+  @override
+  String get confirmPasswordLabel => 'পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get signInButton => 'সাইন ইন করুন';
+
+  @override
+  String get signUpButton => 'সাইন আপ করুন';
+
+  @override
+  String get noAccountPrompt => 'কোন অ্যাকাউন্ট নেই? সাইন আপ করুন';
+
+  @override
+  String get haveAccountPrompt => 'ইতিমধ্যে একটি অ্যাকাউন্ট আছে? সাইন ইন করুন';
+
+  @override
+  String get loginSuccessMessage => 'সফলভাবে লগইন করা হয়েছে!';
+
+  @override
+  String get signupSuccessMessage =>
+      'অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! যাচাই করার জন্য আপনার ইমেল চেক করুন।';
+
+  @override
+  String authErrorMessage(Object error) {
+    return 'প্রমাণীকরণ ত্রুটি: $error';
+  }
+
+  @override
+  String get pdfGenerationErrorNoPatientDetails =>
+      'পিডিএফ প্রতিবেদনের জন্য রোগীর বিবরণ উপলব্ধ নেই। অনুগ্রহ করে আপনার প্রোফাইল আপডেট করুন।';
+
+  @override
+  String get pdfGenerationErrorNoReadings =>
+      'পিডিএফ প্রতিবেদন তৈরি করার জন্য কোনো রক্তচাপ রিডিং উপলব্ধ নেই।';
+
+  @override
+  String pdfGenerationError(Object error) {
+    return 'পিডিএফ প্রতিবেদন তৈরি করতে ত্রুটি: $error';
+  }
+
+  @override
+  String get userNotLoggedIn =>
+      'ব্যবহারকারী লগ ইন করেননি। এই সামগ্রী দেখতে অনুগ্রহ করে সাইন ইন করুন।';
 }

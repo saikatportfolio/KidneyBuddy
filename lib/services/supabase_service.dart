@@ -3,9 +3,68 @@ import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/models/dietician.dart'; // Import Dietician model
 import 'package:myapp/models/review.dart'; // Import Review model
+import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
+import 'package:google_sign_in/google_sign_in.dart'; // Import google_sign_in
+import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class SupabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
+
+  // --- Authentication Methods ---
+  Future<void> signUp(String email, String password) async {
+    await _supabase.auth.signUp(email: email, password: password);
+  }
+
+  Future<void> signInWithPassword(String email, String password) async {
+    await _supabase.auth.signInWithPassword(email: email, password: password);
+  }
+
+  Future<void> signOut() async {
+    await _supabase.auth.signOut();
+  }
+
+  Future<void> signInWithGoogle() async {
+    // For web, Supabase handles the redirect. For mobile, google_sign_in handles the native flow.
+    // This example focuses on the general approach.
+    // You might need platform-specific logic for GoogleSignIn.
+
+    if (kIsWeb) {
+      await _supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'https://ukhmymbgfzbpulwsfmrd.supabase.co/auth/v1/callback', // Use actual Supabase URL
+      );
+      // For web, the navigation happens via redirect, so no direct AuthResponse is returned here.
+      // The auth state listener in main.dart will handle the session.
+    } else {
+      // Mobile implementation using google_sign_in
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: '998282656789-og31pr3bvcdi7b49p1emo5bsuc9s5t5m.apps.googleusercontent.com', // IMPORTANT: Replace with your Web client ID
+      );
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      if (googleAuth != null) {
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          await _supabase.auth.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: googleAuth.idToken!,
+          accessToken: googleAuth.accessToken!,
+        );
+        } else {
+          throw AuthException('Google Sign-In: Access token or ID token not found.');
+        }
+      } else {
+        throw AuthException('Google Sign-In aborted or authentication object is null.');
+      }
+    }
+  }
+
+  String? getCurrentUserId() {
+    return _supabase.auth.currentUser?.id;
+  }
+
+  // --- End Authentication Methods ---
 
   // Initialize Supabase (call this in main.dart)
   static Future<void> initialize() async {
@@ -18,29 +77,42 @@ class SupabaseService {
   // Patient Details Operations
   Future<void> upsertPatientDetails(PatientDetails details) async {
     try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('upsertPatientDetails: No authenticated user found. Cannot upsert patient details.');
+        return;
+      }
+      details.userId = user.id; // Assign the current user's ID
       final data = details.toMap();
       // Supabase will automatically handle insert/update based on primary key
       await _supabase.from('patient_details').upsert(data);
-      print('Patient details upserted to Supabase: ${details.name}');
+      logger.i('Patient details upserted to Supabase: ${details.name} for user ${user.id}');
     } catch (e) {
-      print('Error upserting patient details to Supabase: $e');
+      logger.e('Error upserting patient details to Supabase: $e');
       // TODO: Implement retry mechanism or error logging
     }
   }
 
   Future<PatientDetails?> getPatientDetails() async {
     try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getPatientDetails: No authenticated user found. Cannot fetch patient details.');
+        return null;
+      }
+
       final response = await _supabase
           .from('patient_details')
           .select()
-          .limit(1); // Assuming only one patient's details are stored
+          .eq('user_id', user.id) // Filter by user_id
+          .limit(1); // Assuming only one patient's details are stored per user
 
       if (response.isNotEmpty) {
         return PatientDetails.fromMap(response.first);
       }
       return null;
     } catch (e) {
-      print('Error fetching patient details from Supabase: $e');
+      logger.e('Error fetching patient details from Supabase: $e');
       return null;
     }
   }
@@ -50,9 +122,9 @@ class SupabaseService {
     try {
       final data = feedback.toMap();
       await _supabase.from('feedback').insert(data);
-      print('Feedback inserted to Supabase: ${feedback.feedbackText}');
+      logger.i('Feedback inserted to Supabase: ${feedback.feedbackText}');
     } catch (e) {
-      print('Error inserting feedback to Supabase: $e');
+      logger.e('Error inserting feedback to Supabase: $e');
       // TODO: Implement retry mechanism or error logging
     }
   }
@@ -62,19 +134,19 @@ class SupabaseService {
     try {
       final response = await _supabase
           .from('dieticians')
-          .select('id, name, experience, specialty, image_url, whatsapp_number, education, available_day, available_hour');
-      print('Supabase raw response for dieticians: $response'); // Debugging line
+          .select('id, name, experience, specialty, image_url, whatsapp_number, education, available_day, available_hour, fees, languages');
+      logger.d('Supabase raw response for dieticians: $response'); // Debugging line
       
       if ((response.isEmpty)) {
-        print('No data or empty response from Supabase for dieticians.');
+        logger.i('No data or empty response from Supabase for dieticians.');
         return [];
       }
 
       final List<Dietician> dieticians = (response as List).map((map) => Dietician.fromMap(map)).toList();
-      print('Parsed dieticians: $dieticians'); // Debugging line
+      logger.d('Parsed dieticians: $dieticians'); // Debugging line
       return dieticians;
     } catch (e) {
-      print('Error fetching dieticians from Supabase: $e');
+      logger.e('Error fetching dieticians from Supabase: $e');
       return []; // Return empty list on error
     }
   }
@@ -89,15 +161,61 @@ class SupabaseService {
           .order('created_at', ascending: false); // Order by newest first
 
       if (response.isEmpty) {
-        print('No reviews found for dietician ID: $dieticianId');
+        logger.i('No reviews found for dietician ID: $dieticianId');
         return [];
       }
 
       final List<Review> reviews = (response as List).map((map) => Review.fromMap(map)).toList();
-      print('Fetched reviews for dietician $dieticianId: $reviews');
+      logger.d('Fetched reviews for dietician $dieticianId: $reviews');
       return reviews;
     } catch (e) {
-      print('Error fetching reviews for dietician $dieticianId from Supabase: $e');
+      logger.e('Error fetching reviews for dietician $dieticianId from Supabase: $e');
+      return []; // Return empty list on error
+    }
+  }
+
+  // Blood Pressure Operations
+  Future<void> insertBloodPressure(BloodPressure bp) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('insertBloodPressure: No authenticated user found. Cannot insert blood pressure reading.');
+        return;
+      }
+      bp.userId = user.id; // Assign the current user's ID
+      final data = bp.toMap();
+      await _supabase.from('blood_pressure_readings').insert(data);
+      logger.i('Blood pressure reading inserted to Supabase: ${bp.systolic}/${bp.diastolic} for user ${user.id}');
+    } catch (e) {
+      logger.e('Error inserting blood pressure reading to Supabase: $e');
+      // TODO: Implement retry mechanism or error logging
+    }
+  }
+
+  Future<List<BloodPressure>> getBloodPressureReadings() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getBloodPressureReadings: No authenticated user found. Cannot fetch blood pressure readings.');
+        return [];
+      }
+
+      final response = await _supabase
+          .from('blood_pressure_readings')
+          .select()
+          .eq('user_id', user.id) // Filter by user_id
+          .order('timestamp', ascending: false); // Order by newest first
+
+      if (response.isEmpty) {
+        logger.i('No blood pressure readings found for user ${user.id}.');
+        return [];
+      }
+
+      final List<BloodPressure> readings = (response as List).map((map) => BloodPressure.fromMap(map)).toList();
+      logger.d('Fetched ${readings.length} blood pressure readings for user ${user.id}.');
+      return readings;
+    } catch (e) {
+      logger.e('Error fetching blood pressure readings from Supabase: $e');
       return []; // Return empty list on error
     }
   }
@@ -116,7 +234,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching message by key "$key" from Supabase: $e');
+      logger.e('Error fetching message by key "$key" from Supabase: $e');
       return null;
     }
   }
@@ -130,13 +248,13 @@ class SupabaseService {
           .order('message_key', ascending: true); // Order to ensure consistent rotation
 
       if (response.isEmpty) {
-        print('No tips found in Supabase.');
+        logger.i('No tips found in Supabase.');
         return [];
       }
 
       return (response as List).map((map) => map['message_text'] as String).toList();
     } catch (e) {
-      print('Error fetching all tips from Supabase: $e');
+      logger.e('Error fetching all tips from Supabase: $e');
       return [];
     }
   }

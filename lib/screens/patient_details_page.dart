@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/home_page.dart';
+import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 
@@ -40,10 +39,10 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
     if (loadedDetails != null) {
       setState(() {
         _nameController.text = loadedDetails!.name;
-        _phoneController.text = loadedDetails!.phoneNumber;
-        _weightController.text = loadedDetails!.weight.toString();
-        _heightController.text = loadedDetails!.height.toString();
-        _ckdStage = loadedDetails!.ckdStage;
+        _phoneController.text = loadedDetails.phoneNumber;
+        _weightController.text = loadedDetails.weight.toString();
+        _heightController.text = loadedDetails.height.toString();
+        _ckdStage = loadedDetails.ckdStage;
       });
       // Update provider with loaded details
       if (!mounted) return;
@@ -62,8 +61,12 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
 
   void _savePatientDetails() async {
     if (_formKey.currentState!.validate()) {
+      // Get existing patient details from provider if available
+      final existingDetails = Provider.of<PatientDetailsProvider>(context, listen: false).patientDetails;
+
       final patientDetails = PatientDetails(
-        id: Uuid().v4(), // Generate a new UUID for the patient
+        id: existingDetails?.id ?? Uuid().v4(), // Use existing ID or generate new UUID
+        userId: existingDetails?.userId, // Preserve existing userId if available
         name: _nameController.text,
         phoneNumber: _phoneController.text,
         weight: double.parse(_weightController.text),
@@ -87,13 +90,13 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
 
       // Set onboarding seen status
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('hasSeenOnboarding', true);
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setBool('hasSeenOnboarding', true); // Removed to always show onboarding
 
-      // Navigate to Home Page
+      // Navigate to Vital Tracking Page
       if (!mounted) return; // Check mounted again before navigation
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomePage()),
+        MaterialPageRoute(builder: (_) => VitalTrackingPage()),
       );
     }
   }

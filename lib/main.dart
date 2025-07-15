@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/onboarding_screen.dart';
+import 'package:myapp/screens/onboarding_screen.dart'; // Import OnboardingScreen
 import 'package:myapp/screens/home_page.dart';
+import 'package:myapp/screens/auth_screen.dart'; // Import AuthScreen
+import 'package:myapp/screens/patient_details_page.dart'; // Import PatientDetailsPage
 import 'package:firebase_core/firebase_core.dart'; // Keep Firebase Core for Crashlytics/Analytics
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
+import 'package:firebase_analytics/firebase_analytics.dart'; // Import Firebase Analytics
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
@@ -13,21 +16,27 @@ import 'dart:ui'; // Import for PlatformDispatcher
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import 'firebase_options.dart'; // Import generated Firebase options
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print('main: WidgetsFlutterBinding initialized');
+  logger.d('main: WidgetsFlutterBinding initialized');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print('main: Firebase initialized');
+  logger.d('main: Firebase initialized');
 
   // Initialize Supabase here, before any service tries to use it
   await SupabaseService.initialize();
-  print('main: Supabase initialized');
+  logger.d('main: Supabase initialized');
 
   // Initialize Crashlytics
+  if(!kIsWeb){
+await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  }
+   // Explicitly enable Crashlytics collection
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -38,10 +47,10 @@ void main() async {
   PatientDetails? patientDetails;
   if (kIsWeb) {
     patientDetails = await SupabaseService().getPatientDetails();
-    print('main: Loaded patient details from Supabase (Web): $patientDetails');
+    logger.d('main: Loaded patient details from Supabase (Web): $patientDetails');
   } else {
     patientDetails = await DatabaseHelper().getPatientDetails();
-    print('main: Loaded patient details from SQLite (Mobile): $patientDetails');
+    logger.d('main: Loaded patient details from SQLite (Mobile): $patientDetails');
   }
 
   runZonedGuarded(() {
@@ -67,7 +76,7 @@ class MyApp extends StatefulWidget {
 
   static void setLocale(BuildContext context, Locale newLocale) {
     MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-    state?.setLocale(newLocale);
+    state?.setLocale(newLocale); // Use null-safe call
   }
 }
 
@@ -75,36 +84,64 @@ class MyAppState extends State<MyApp> {
   bool _hasSeenOnboarding = false;
   bool _isLoading = true;
   Locale? _locale;
-  // PatientDetails? _patientDetails; // Removed as it's now passed via provider
+  StreamSubscription<AuthState>? _authStateSubscription;
 
   @override
   void initState() {
     super.initState();
-    print('MyAppState: initState called');
+    logger.d('MyAppState: initState called');
     _initializeAppData(); // Call a new method for async initializations
+    _setupAuthStateListener(); // Setup auth state listener
   }
 
   Future<void> _initializeAppData() async {
-    print('MyAppState: _initializeAppData started');
+    logger.d('MyAppState: _initializeAppData started');
     try {
-      // Supabase is now initialized in main(), no need to initialize here
-
       // Load preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false);
+      // _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false); // Always show onboarding
+      _hasSeenOnboarding = false; // Force onboarding to show every time
       String? langCode = prefs.getString('languageCode');
       _locale = langCode != null ? Locale(langCode) : null;
     } catch (e) {
-      print('MyAppState: Error during initialization: $e');
+      logger.e('MyAppState: Error during initialization: $e');
       // Handle error, e.g., show an error screen or retry
     } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-        print('MyAppState: _initializeAppData completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
+        logger.d('MyAppState: _initializeAppData completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
       }
     }
+  }
+
+  void _setupAuthStateListener() {
+    _authStateSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+      logger.d('MyAppState: Auth state changed: ${data.event}');
+      if (mounted) {
+        final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
+        if (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession) {
+          logger.d('MyAppState: User signed in or initial session. Attempting to load patient details.');
+          PatientDetails? fetchedDetails;
+          if (kIsWeb) {
+            fetchedDetails = await SupabaseService().getPatientDetails();
+            logger.d('MyAppState: Fetched patient details from Supabase (Web): $fetchedDetails');
+          } else {
+            fetchedDetails = await DatabaseHelper().getPatientDetails();
+            logger.d('MyAppState: Fetched patient details from SQLite (Mobile): $fetchedDetails');
+          }
+          patientDetailsProvider.setPatientDetails(fetchedDetails);
+          logger.d('MyAppState: PatientDetailsProvider updated with: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}');
+        } else if (data.event == AuthChangeEvent.signedOut) {
+          logger.d('MyAppState: User signed out. Clearing patient details.');
+          patientDetailsProvider.setPatientDetails(null);
+        }
+        setState(() {
+          // Trigger rebuild to re-evaluate home screen based on new auth state and patient details
+        });
+      }
+    });
   }
 
   void setLocale(Locale newLocale) {
@@ -114,10 +151,17 @@ class MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    _authStateSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('MyAppState: build called. _isLoading: $_isLoading');
+    logger.d('MyAppState: build called. _isLoading: $_isLoading');
+
     if (_isLoading) {
-      print('MyAppState: Building loading screen');
+      logger.d('MyAppState: Building loading screen');
       return MaterialApp(
         home: Scaffold(
           body: Center(
@@ -127,7 +171,30 @@ class MyAppState extends State<MyApp> {
       );
     }
 
-    print('MyAppState: Building main app. Navigating to: ${_hasSeenOnboarding ? 'HomePage' : 'OnboardingScreen'}');
+    // Determine the actual home screen based on auth and onboarding
+    final supabase = Supabase.instance.client;
+    final currentUser = supabase.auth.currentUser;
+    final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
+
+    logger.d('MyAppState: currentUser: ${currentUser?.id != null ? 'Logged In' : 'Logged Out'}');
+    logger.d('MyAppState: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}');
+    logger.d('MyAppState: _hasSeenOnboarding: $_hasSeenOnboarding');
+
+    Widget homeScreen;
+    if (!_hasSeenOnboarding) {
+      homeScreen = const OnboardingScreen();
+      logger.d('MyAppState: Initial route: OnboardingScreen');
+    } else if (currentUser == null) {
+      homeScreen = const AuthScreen();
+      logger.d('MyAppState: Initial route: AuthScreen (User not logged in)');
+    } else if (patientDetailsProvider.patientDetails == null) {
+      homeScreen = const PatientDetailsPage();
+      logger.d('MyAppState: Initial route: PatientDetailsPage (User logged in, but patient details missing)');
+    } else {
+      homeScreen = const HomePage();
+      logger.d('MyAppState: Initial route: HomePage (User logged in and patient details exist)');
+    }
+
     return MaterialApp(
       title: 'CKD Care App', // This will be replaced by localized string later
       theme: ThemeData(
@@ -138,13 +205,12 @@ class MyAppState extends State<MyApp> {
       locale: _locale, // Apply the selected locale
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: _hasSeenOnboarding ? HomePage() : OnboardingScreen(),
-      // Temporarily removed FirebaseAnalyticsObserver for debugging ANR
-      // navigatorObservers: [
-      //   FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-      // ],
+      home: homeScreen, // Directly set the home screen
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
     );
-}
+  }
 
 MaterialColor _createMaterialColor(Color color) {
   List strengths = <double>[.05];

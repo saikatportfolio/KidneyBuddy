@@ -121,11 +121,11 @@ class AppLocalizationsHi extends AppLocalizations {
       'व्यक्तिगत सिफारिशों के साथ अपने आहार का प्रबंधन करें।';
 
   @override
-  String get bloodPressureMonitoringCard => 'रक्तचाप की निगरानी';
+  String get vitalMonitoringCard => 'महत्वपूर्ण निगरानी';
 
   @override
-  String get bloodPressureMonitoringDescription =>
-      'अपने रक्तचाप को ट्रैक और मॉनिटर करें।';
+  String get vitalMonitoringDescription =>
+      'अपने महत्वपूर्ण संकेतों को ट्रैक और मॉनिटर करें।';
 
   @override
   String get eGFRCalculatorCard => 'ईजीएफआर कैलकुलेटर';
@@ -173,4 +173,105 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get languageSetting => 'भाषा';
+
+  @override
+  String get vitalTrackingPageTitle => 'महत्वपूर्ण ट्रैकिंग';
+
+  @override
+  String get bpTab => 'रक्तचाप';
+
+  @override
+  String get creatinineTab => 'क्रिएटिनिन';
+
+  @override
+  String get potassiumTab => 'पोटेशियम';
+
+  @override
+  String get noDataAvailable => 'इस श्रेणी के लिए कोई डेटा उपलब्ध नहीं है।';
+
+  @override
+  String get addBpButton => 'रक्तचाप जोड़ें';
+
+  @override
+  String get addCreatinineButton => 'क्रिएटिनिन जोड़ें';
+
+  @override
+  String get addPotassiumButton => 'पोटेशियम जोड़ें';
+
+  @override
+  String get addBpPageTitle => 'रक्तचाप रीडिंग जोड़ें';
+
+  @override
+  String get systolicLabel => 'सिस्टोलिक';
+
+  @override
+  String get diastolicLabel => 'डायस्टोलिक';
+
+  @override
+  String get addCommentLabel => 'टिप्पणी जोड़ें';
+
+  @override
+  String get selectDateLabel => 'दिनांक चुनें';
+
+  @override
+  String get selectTimeLabel => 'समय चुनें';
+
+  @override
+  String get saveButton => 'सहेजें';
+
+  @override
+  String get loginTitle => 'लॉग इन करें';
+
+  @override
+  String get signupTitle => 'साइन अप करें';
+
+  @override
+  String get emailLabel => 'ईमेल';
+
+  @override
+  String get passwordLabel => 'पासवर्ड';
+
+  @override
+  String get confirmPasswordLabel => 'पासवर्ड की पुष्टि करें';
+
+  @override
+  String get signInButton => 'साइन इन करें';
+
+  @override
+  String get signUpButton => 'साइन अप करें';
+
+  @override
+  String get noAccountPrompt => 'खाता नहीं है? साइन अप करें';
+
+  @override
+  String get haveAccountPrompt => 'पहले से ही एक खाता है? साइन इन करें';
+
+  @override
+  String get loginSuccessMessage => 'सफलतापूर्वक लॉग इन किया गया!';
+
+  @override
+  String get signupSuccessMessage =>
+      'खाता सफलतापूर्वक बनाया गया! कृपया सत्यापित करने के लिए अपना ईमेल जांचें।';
+
+  @override
+  String authErrorMessage(Object error) {
+    return 'प्रमाणीकरण त्रुटि: $error';
+  }
+
+  @override
+  String get pdfGenerationErrorNoPatientDetails =>
+      'पीडीएफ रिपोर्ट के लिए रोगी विवरण उपलब्ध नहीं है। कृपया अपनी प्रोफ़ाइल अपडेट करें।';
+
+  @override
+  String get pdfGenerationErrorNoReadings =>
+      'पीडीएफ रिपोर्ट बनाने के लिए कोई रक्तचाप रीडिंग उपलब्ध नहीं है।';
+
+  @override
+  String pdfGenerationError(Object error) {
+    return 'पीडीएफ रिपोर्ट बनाने में त्रुटि: $error';
+  }
+
+  @override
+  String get userNotLoggedIn =>
+      'उपयोगकर्ता लॉग इन नहीं है। इस सामग्री को देखने के लिए कृपया साइन इन करें।';
 }

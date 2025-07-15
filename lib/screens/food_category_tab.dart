@@ -39,6 +39,15 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
   }
 
   @override
+  void didUpdateWidget(covariant FoodCategoryTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reload food items if the categories change
+    if (widget.categories != oldWidget.categories) {
+      _loadFoodItems();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return FutureBuilder<List<FoodItem>>(

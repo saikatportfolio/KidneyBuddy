@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class PatientDetails {
   String? id; // Changed to String for UUID
+  String? userId; // New field for Supabase user ID
   String name;
   String phoneNumber;
   double weight;
@@ -10,6 +11,7 @@ class PatientDetails {
 
   PatientDetails({
     this.id,
+    this.userId, // Initialize new field
     required this.name,
     required this.phoneNumber,
     required this.weight,
@@ -20,6 +22,7 @@ class PatientDetails {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'user_id': userId, // Add to map
       'name': name,
       'phone_number': phoneNumber,
       'weight': weight,
@@ -31,6 +34,7 @@ class PatientDetails {
   factory PatientDetails.fromMap(Map<String, dynamic> map) {
     return PatientDetails(
       id: map['id'] as String?, // Cast to String?
+      userId: map['user_id'] as String?, // Cast to String?
       name: map['name'],
       phoneNumber: map['phone_number'],
       weight: map['weight'],

@@ -3,6 +3,7 @@ import 'package:myapp/models/dietician.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myapp/screens/dietician_details_page.dart';
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class DieticianListPage extends StatefulWidget {
   const DieticianListPage({super.key});
@@ -89,7 +90,7 @@ class _DieticianListPageState extends State<DieticianListPage> {
                                 backgroundImage: NetworkImage(dietician.imageUrl),
                                 onBackgroundImageError: (exception, stackTrace) {
                                   // Fallback to a default icon if image fails to load
-                                  print('Error loading image: $exception');
+                                  logger.e('Error loading image: $exception');
                                 },
                                 child: dietician.imageUrl.isEmpty ? const Icon(Icons.person, size: 50) : null,
                               ),
@@ -107,22 +108,74 @@ class _DieticianListPageState extends State<DieticianListPage> {
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      'Experience: ${dietician.experience}',
-                                      style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Experience: ',
+                                        style: const TextStyle(
+                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: dietician.experience,
+                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      'Specialty: ${dietician.specialty}',
-                                      style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Specialty: ',
+                                        style: const TextStyle(
+                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: dietician.specialty,
+                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      'Education: ${dietician.education}',
-                                      style: const TextStyle(
-                                          fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.black),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Education: ',
+                                        style: const TextStyle(
+                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: dietician.education,
+                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Language Known: ',
+                                        style: const TextStyle(
+                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: dietician.languages,
+                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Consultation Charge: ',
+                                        style: const TextStyle(
+                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: dietician.fees,
+                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

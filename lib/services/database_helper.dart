@@ -2,8 +2,10 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
+import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:myapp/utils/logger_config.dart'; // Import logger
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -27,7 +29,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'ckd_care_app.db');
     return await openDatabase(
       path,
-      version: 2, // Increment database version
+      version: 4, // Increment database version to 4 for BP table and comment
       onCreate: _onCreate,
       onUpgrade: _onUpgrade, // Add onUpgrade callback
     );
@@ -37,6 +39,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE patient_details(
         id TEXT PRIMARY KEY,
+        user_id TEXT, -- New column for user ID
         name TEXT,
         phone_number TEXT,
         weight REAL,
@@ -52,6 +55,16 @@ class DatabaseHelper {
         feedback_text TEXT,
         category TEXT, -- Added category column
         timestamp TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE blood_pressure_readings(
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        systolic INTEGER,
+        diastolic INTEGER,
+        timestamp TEXT,
+        comment TEXT -- New column for comment
       )
     ''');
   }
@@ -73,6 +86,23 @@ class DatabaseHelper {
         )
       ''');
     }
+    if (oldVersion < 3) {
+      // Migrate from version 2 to 3: Add user_id column to patient_details
+      await db.execute('ALTER TABLE patient_details ADD COLUMN user_id TEXT;');
+    }
+    if (oldVersion < 4) {
+      // Migrate from version 3 to 4: Add blood_pressure_readings table and comment column
+      await db.execute('''
+        CREATE TABLE blood_pressure_readings(
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          systolic INTEGER,
+          diastolic INTEGER,
+          timestamp TEXT,
+          comment TEXT
+        )
+      ''');
+    }
   }
 
   // Patient Details Operations
@@ -80,6 +110,7 @@ class DatabaseHelper {
     if (kIsWeb) return null; // Do not use SQLite on web
     Database db = await database;
     details.id ??= Uuid().v4();
+    // Ensure user_id is included in the map for insertion
     await db.insert('patient_details', details.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return details.id!;
@@ -88,6 +119,7 @@ class DatabaseHelper {
   Future<PatientDetails?> getPatientDetails() async {
     if (kIsWeb) return null; // Do not use SQLite on web
     Database db = await database;
+    // Fetch all columns, including user_id
     List<Map<String, dynamic>> maps = await db.query('patient_details', limit: 1);
     if (maps.isNotEmpty) {
       return PatientDetails.fromMap(maps.first);
@@ -112,5 +144,36 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) {
       return FeedbackModel.fromMap(maps[i]);
     });
+  }
+
+  // Blood Pressure Operations
+  Future<String?> insertBloodPressure(BloodPressure bp) async {
+    if (kIsWeb) return null; // Do not use SQLite on web
+    Database db = await database;
+    bp.id ??= Uuid().v4();
+    await db.insert('blood_pressure_readings', bp.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    return bp.id!;
+  }
+
+  Future<List<BloodPressure>> getBloodPressureReadings(String userId) async {
+    if (kIsWeb) return []; // Do not fetch from SQLite on web
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query(
+      'blood_pressure_readings',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'timestamp DESC', // Order by newest first
+    );
+    return List.generate(maps.length, (i) {
+      return BloodPressure.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> clearBloodPressureReadings() async {
+    if (kIsWeb) return; // Do not clear SQLite on web
+    Database db = await database;
+    await db.delete('blood_pressure_readings');
+    logger.i('All blood pressure readings cleared from SQLite.');
   }
 }

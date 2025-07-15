@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import '../models/food_item.dart';
 import '../utils/ckd_diet_calculator.dart';
+import '../utils/logger_config.dart'; // Import the logger
 
 class FoodRecommendationService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -12,7 +13,7 @@ class FoodRecommendationService {
           .select(); // Select all columns
 
       if (response.isEmpty) {
-        print('No data or empty response from Supabase for foodlist.');
+        logger.i('No data or empty response from Supabase for foodlist.');
         return [];
       }
 
@@ -30,7 +31,7 @@ class FoodRecommendationService {
 
       return foods;
     } catch (e) {
-      print("Error fetching recommended foods from Supabase: $e");
+      logger.e("Error fetching recommended foods from Supabase: $e");
       return [];
     }
   }
@@ -39,9 +40,9 @@ class FoodRecommendationService {
   Future<void> addFoodItem(FoodItem foodItem) async {
     try {
       await _supabase.from('foodlist').upsert(foodItem.toMap());
-      print("Food item upserted to Supabase: ${foodItem.name}");
+      logger.i("Food item upserted to Supabase: ${foodItem.name}");
     } catch (e) {
-      print("Error upserting food item to Supabase: $e");
+      logger.e("Error upserting food item to Supabase: $e");
     }
   }
 
@@ -55,7 +56,7 @@ class FoodRecommendationService {
           .limit(1);
       return response.isNotEmpty;
     } catch (e) {
-      print("Error checking food item existence in Supabase: $e");
+      logger.e("Error checking food item existence in Supabase: $e");
       return false;
     }
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/models/dietician.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform, kIsWeb; // Import for platform and web detection
 import 'package:myapp/models/review.dart'; // Import Review model
 import 'package:myapp/services/supabase_service.dart'; // Import SupabaseService
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class DieticianDetailsPage extends StatefulWidget {
   final Dietician dietician;
@@ -21,21 +23,21 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   @override
   void initState() {
     super.initState();
-    print('DieticianDetailsPage: initState called for dietician ID: ${widget.dietician.id}');
+    logger.d('DieticianDetailsPage: initState called for dietician ID: ${widget.dietician.id}');
     _fetchReviews();
   }
 
   Future<void> _fetchReviews() async {
-    print('DieticianDetailsPage: _fetchReviews started for dietician ID: ${widget.dietician.id}');
+    logger.d('DieticianDetailsPage: _fetchReviews started for dietician ID: ${widget.dietician.id}');
     try {
       final fetchedReviews = await _supabaseService.getReviewsForDietician(widget.dietician.id);
       setState(() {
         _reviews = fetchedReviews;
         _isLoadingReviews = false;
       });
-      print('DieticianDetailsPage: Fetched ${fetchedReviews.length} reviews. Is loading: $_isLoadingReviews');
+      logger.d('DieticianDetailsPage: Fetched ${fetchedReviews.length} reviews. Is loading: $_isLoadingReviews');
     } catch (e) {
-      print('DieticianDetailsPage: Error fetching reviews: $e');
+      logger.e('DieticianDetailsPage: Error fetching reviews: $e');
       setState(() {
         _isLoadingReviews = false;
       });
@@ -43,13 +45,30 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   }
 
   Future<void> _launchWhatsApp(BuildContext context, String whatsappNumber) async {
-    final Uri whatsappUri = Uri.parse('whatsapp://send?phone=$whatsappNumber');
-    if (await canLaunchUrl(whatsappUri)) {
-      await launchUrl(whatsappUri);
+    // Clean the phone number: remove non-numeric characters
+    final String cleanedNumber = whatsappNumber.replaceAll(RegExp(r'[^\d]'), '');
+
+    Uri whatsappUri;
+    if (kIsWeb) {
+      // For web browsers (including mobile web browsers like iPhone Chrome, Android Chrome)
+      whatsappUri = Uri.parse('https://wa.me/$cleanedNumber');
+    } else if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+      // For native mobile apps (Android and iOS)
+      whatsappUri = Uri.parse('whatsapp://send?phone=$cleanedNumber');
     } else {
-      // Fallback for when WhatsApp is not installed
+      // Fallback for other desktop platforms if needed, though wa.me is generally preferred
+      whatsappUri = Uri.parse('https://wa.me/$cleanedNumber');
+    }
+
+    if (await canLaunchUrl(whatsappUri)) {
+      // Use externalApplication mode for web to ensure it opens in a new tab/window.
+      // For native apps, platformDefault is usually sufficient.
+      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch WhatsApp. Make sure it is installed.')),
+        const SnackBar(
+            content: Text(
+                'Could not launch WhatsApp. Please check if WhatsApp is installed, you are logged into WhatsApp Web, or if your browser is blocking pop-ups.')),
       );
     }
   }
@@ -79,7 +98,7 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                       radius: 60,
                       backgroundImage: NetworkImage(widget.dietician.imageUrl),
                       onBackgroundImageError: (exception, stackTrace) {
-                        print('Error loading image: $exception');
+                        logger.e('Error loading image: $exception');
                       },
                       child: widget.dietician.imageUrl.isEmpty
                           ? const Icon(Icons.person, size: 80)
@@ -95,22 +114,74 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Education: ${widget.dietician.education}',
-                      style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                    RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: 'Education: ',
+                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.dietician.education,
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Experience: ${widget.dietician.experience}',
-                      style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                    RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: 'Experience: ',
+                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.dietician.experience,
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Specialty: ${widget.dietician.specialty}',
-                      style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                    RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: 'Specialty: ',
+                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.dietician.specialty,
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: 'Language Known: ',
+                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.dietician.languages,
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: 'Consultation Charge: ',
+                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: widget.dietician.fees,
+                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

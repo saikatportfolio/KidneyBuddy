@@ -7,6 +7,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -48,7 +49,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         });
       } else {
         // Handle case where patient details are not available (e.g., show a message or disable feedback)
-        print('Patient details not available for feedback submission.');
+        logger.w('Patient details not available for feedback submission.');
       }
     });
   }

@@ -8,53 +8,19 @@ class FoodListPage extends StatefulWidget {
   State<FoodListPage> createState() => _FoodListPageState();
 }
 
-class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _FoodListPageState extends State<FoodListPage> {
+  int _selectedCategoryIndex = 0; // New state variable for selected category
 
   final List<Map<String, dynamic>> _categoryCards = [
-    {'name': 'All Foods', 'icon': Icons.fastfood},
-    {'name': 'Vegetables', 'icon': Icons.local_florist},
-    {'name': 'Fruits', 'icon': Icons.apple},
-    {'name': 'Grains', 'icon': Icons.grain},
-    {'name': 'Plant Protein', 'icon': Icons.eco},
-    {'name': 'Animal Protein', 'icon': Icons.egg},
-    {'name': 'Dairy', 'icon': Icons.local_drink},
-    {'name': 'Other', 'icon': Icons.category},
+    {'name': 'All Foods', 'icon': Icons.fastfood, 'categories': ['All']},
+    {'name': 'Vegetables', 'icon': Icons.local_florist, 'categories': ['Vegetable']},
+    {'name': 'Fruits', 'icon': Icons.apple, 'categories': ['Fruit']},
+    {'name': 'Grains', 'icon': Icons.grain, 'categories': ['Grains']},
+    {'name': 'Plant Protein', 'icon': Icons.eco, 'categories': ['Plant Protein']},
+    {'name': 'Animal Protein', 'icon': Icons.egg, 'categories': ['Animal Protein']},
+    {'name': 'Dairy', 'icon': Icons.local_drink, 'categories': ['Dairy']},
+    {'name': 'Other', 'icon': Icons.category, 'categories': ['Other']},
   ];
-
-  final List<Tab> _tabs = const [
-    Tab(text: 'All Foods'),
-    Tab(text: 'Vegetables'),
-    Tab(text: 'Fruits'),
-    Tab(text: 'Grains'),
-    Tab(text: 'Plant Protein'),
-    Tab(text: 'Animal Protein'),
-    Tab(text: 'Dairy'),
-    Tab(text: 'Other'),
-  ];
-
-  final List<Widget> _tabViews = const [
-    FoodCategoryTab(categories: ['All']),
-    FoodCategoryTab(categories: ['Vegetable']),
-    FoodCategoryTab(categories: ['Fruit']),
-    FoodCategoryTab(categories: ['Grains']),
-    FoodCategoryTab(categories: ['Plant Protein']),
-    FoodCategoryTab(categories: ['Animal Protein']),
-    FoodCategoryTab(categories: ['Dairy']),
-    FoodCategoryTab(categories: ['Other']), // Catch-all for categories not explicitly listed
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   void _showSafetyFlagMeaningDialog(BuildContext context) {
     showDialog(
@@ -134,11 +100,21 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
                 final category = _categoryCards[index];
                 return GestureDetector(
                   onTap: () {
-                    _tabController.animateTo(index); // Switch to the corresponding tab
+                    setState(() {
+                      _selectedCategoryIndex = index; // Update selected category index
+                    });
                   },
                   child: Card(
                     elevation: 3,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
+                        color: _selectedCategoryIndex == index
+                            ? Theme.of(context).primaryColor // Highlight selected card
+                            : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
                     margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                     child: Container(
                       width: 100, // Fixed width for each card
@@ -181,16 +157,10 @@ class _FoodListPageState extends State<FoodListPage> with SingleTickerProviderSt
               child: const Text('See Safety Flag Meanings'),
             ),
           ),
-          // TabBar and TabBarView for food lists
-          TabBar(
-            controller: _tabController,
-            isScrollable: true, // Allows more tabs than fit on screen
-            tabs: _tabs,
-          ),
+          // Display FoodCategoryTab based on selected category
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: _tabViews,
+            child: FoodCategoryTab(
+              categories: _categoryCards[_selectedCategoryIndex]['categories'],
             ),
           ),
         ],

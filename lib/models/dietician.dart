@@ -9,6 +9,8 @@ class Dietician {
   final String education;
   final String availableDay;
   final String availableHour;
+  final String fees; // New field
+  final String languages; // New field
 
   Dietician({
     required this.id,
@@ -20,6 +22,8 @@ class Dietician {
     required this.education,
     required this.availableDay,
     required this.availableHour,
+    required this.fees, // New required field
+    required this.languages, // New required field
   });
 
   Map<String, dynamic> toMap() {
@@ -33,6 +37,8 @@ class Dietician {
       'education': education,
       'available_day': availableDay,
       'available_hour': availableHour,
+      'fees': fees, // New field
+      'languages': languages, // New field
     };
   }
 
@@ -47,6 +53,8 @@ class Dietician {
       education: map['education'] as String,
       availableDay: map['available_day'] as String,
       availableHour: map['available_hour'] as String,
+      fees: map['fees'] as String, // New field
+      languages: map['languages'] as String, // New field
     );
   }
 }

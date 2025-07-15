@@ -121,11 +121,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Manage your diet with personalized recommendations.';
 
   @override
-  String get bloodPressureMonitoringCard => 'Blood Pressure Monitoring';
+  String get vitalMonitoringCard => 'Vital Monitoring';
 
   @override
-  String get bloodPressureMonitoringDescription =>
-      'Track and monitor your blood pressure.';
+  String get vitalMonitoringDescription =>
+      'Track and monitor your vital signs.';
 
   @override
   String get eGFRCalculatorCard => 'eGFR Calculator';
@@ -173,4 +173,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSetting => 'Language';
+
+  @override
+  String get vitalTrackingPageTitle => 'Vital Tracking';
+
+  @override
+  String get bpTab => 'Blood Pressure';
+
+  @override
+  String get creatinineTab => 'Creatinine';
+
+  @override
+  String get potassiumTab => 'Potassium';
+
+  @override
+  String get noDataAvailable => 'No data available for this category.';
+
+  @override
+  String get addBpButton => 'Add Blood Pressure';
+
+  @override
+  String get addCreatinineButton => 'Add Creatinine';
+
+  @override
+  String get addPotassiumButton => 'Add Potassium';
+
+  @override
+  String get addBpPageTitle => 'Add Blood Pressure Reading';
+
+  @override
+  String get systolicLabel => 'Systolic';
+
+  @override
+  String get diastolicLabel => 'Diastolic';
+
+  @override
+  String get addCommentLabel => 'Add Comment';
+
+  @override
+  String get selectDateLabel => 'Select Date';
+
+  @override
+  String get selectTimeLabel => 'Select Time';
+
+  @override
+  String get saveButton => 'Save';
+
+  @override
+  String get loginTitle => 'Login';
+
+  @override
+  String get signupTitle => 'Sign Up';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get signInButton => 'Sign In';
+
+  @override
+  String get signUpButton => 'Sign Up';
+
+  @override
+  String get noAccountPrompt => 'Don\'t have an account? Sign Up';
+
+  @override
+  String get haveAccountPrompt => 'Already have an account? Sign In';
+
+  @override
+  String get loginSuccessMessage => 'Logged in successfully!';
+
+  @override
+  String get signupSuccessMessage =>
+      'Account created successfully! Please check your email to verify.';
+
+  @override
+  String authErrorMessage(Object error) {
+    return 'Authentication Error: $error';
+  }
+
+  @override
+  String get pdfGenerationErrorNoPatientDetails =>
+      'Patient details not available for PDF report. Please update your profile.';
+
+  @override
+  String get pdfGenerationErrorNoReadings =>
+      'No blood pressure readings available to generate a PDF report.';
+
+  @override
+  String pdfGenerationError(Object error) {
+    return 'Error generating PDF report: $error';
+  }
+
+  @override
+  String get userNotLoggedIn =>
+      'User not logged in. Please sign in to view this content.';
 }
