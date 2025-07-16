@@ -44,10 +44,12 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
       final supabaseService = SupabaseService();
       final fileUrl = await supabaseService.uploadFile(_fileBytes!, _fileName!);
       await supabaseService.insertUserFile(fileUrl, _fileName!);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('File uploaded successfully!')),
       );
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error uploading file: $e')),
       );
@@ -64,12 +66,14 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
       appBar: AppBar(
         title: const Text('Upload Diet Chart'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (_fileName != null)
-              Text('Selected file: $_fileName'),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_fileName != null)
+                Text('Selected file: $_fileName'),
             ElevatedButton(
               onPressed: _pickFile,
               child: const Text('Pick a file'),
@@ -82,7 +86,8 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
                 onPressed: _fileBytes != null ? _uploadFile : null,
                 child: const Text('Upload file'),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
