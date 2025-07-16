@@ -91,28 +91,32 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Card(
-                              elevation: 4,
-                              shadowColor: Colors.grey.withOpacity(0.5),
-                              margin: const EdgeInsets.only(bottom: 16.0),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 8),
-                                    for (var item in mealItems.where((item) => item.mealId == meal.mealId))
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.itemName,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          for (var option in mealItemOptions.where((option) => option.itemId == item.itemId))
-                                            Row(
+                            for (var item in mealItems.where((item) => item.mealId == meal.mealId))
+                              Card(
+                                elevation: 4,
+                                shadowColor: Colors.grey.withOpacity(0.5),
+                                margin: const EdgeInsets.only(bottom: 16.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.itemName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      ListView.separated(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: mealItemOptions.where((option) => option.itemId == item.itemId).length,
+                                        itemBuilder: (context, optionIndex) {
+                                          final option = mealItemOptions.where((option) => option.itemId == item.itemId).toList()[optionIndex];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                            child: Row(
                                               children: [
                                                 Text(option.foodName),
                                                 const SizedBox(width: 4),
@@ -123,13 +127,25 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                 ),
                                               ],
                                             ),
-                                          const SizedBox(height: 8),
-                                        ],
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          if (mealItemOptions.where((option) => option.itemId == item.itemId).length > 1) {
+                                            return const Center(
+                                              child: Text(
+                                                'OR',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                            );
+                                          } else {
+                                            return const SizedBox.shrink();
+                                          }
+                                        },
                                       ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         );
                       },
