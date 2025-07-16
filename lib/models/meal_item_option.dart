@@ -3,12 +3,14 @@ class MealItemOption {
   String? itemId;
   String foodName;
   String? notes;
+  String? amount;
 
   MealItemOption({
     this.optionId,
     required this.itemId,
     required this.foodName,
     this.notes,
+    this.amount,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class MealItemOption {
       'item_id': itemId,
       'food_name': foodName,
       'notes': notes,
+      'amount': amount,
     };
   }
 
@@ -26,6 +29,7 @@ class MealItemOption {
       itemId: map['item_id'] as String?,
       foodName: map['food_name'],
       notes: map['notes'] as String?,
+      amount: map['amount'] as String?,
     );
   }
 }

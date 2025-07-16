@@ -299,20 +299,14 @@ class SupabaseService {
 
       final mealItemOptionsResponse = await _supabase
           .from('mealitemoptions')
-          .select()
+          .select('*, amount')
           .filter('item_id', 'in', mealItemsResponse.map((item) => item['item_id']).toList());
-
-      final amountsResponse = await _supabase
-          .from('amounts')
-          .select()
-          .filter('option_id', 'in', mealItemOptionsResponse.map((option) => option['option_id']).toList());
 
       return {
         'userMealPlan': userMealPlan,
         'meals': mealsResponse,
         'mealItems': mealItemsResponse,
         'mealItemOptions': mealItemOptionsResponse,
-        'amounts': amountsResponse,
       };
     } catch (e) {
       logger.e('Error fetching meal plan from Supabase: $e');

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/models/amount.dart';
 import 'package:myapp/models/meal.dart';
 import 'package:myapp/models/meal_item.dart';
 import 'package:myapp/models/meal_item_option.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/models/amount.dart';
 import 'package:myapp/models/meal.dart';
 import 'package:myapp/models/meal_item.dart';
 import 'package:myapp/models/meal_item_option.dart';
@@ -50,7 +48,6 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
           final meals = (data['meals'] as List).map((e) => Meal.fromMap(e)).toList();
           final mealItems = (data['mealItems'] as List).map((e) => MealItem.fromMap(e)).toList();
           final mealItemOptions = (data['mealItemOptions'] as List).map((e) => MealItemOption.fromMap(e)).toList();
-          final amounts = (data['amounts'] as List).map((e) => Amount.fromMap(e)).toList();
 
           return Container(
             decoration: const BoxDecoration(
@@ -121,9 +118,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                 Text(option.foodName),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  amounts
-                                                      .firstWhere((amount) => amount.optionId == option.optionId)
-                                                      .amountValue,
+                                                  option.amount ?? '',
                                                 ),
                                               ],
                                             ),
