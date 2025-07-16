@@ -99,8 +99,7 @@ class MyAppState extends State<MyApp> {
     try {
       // Load preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      // _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false); // Always show onboarding
-      _hasSeenOnboarding = false; // Force onboarding to show every time
+      _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false); // Always show onboarding
       String? langCode = prefs.getString('languageCode');
       _locale = langCode != null ? Locale(langCode) : null;
     } catch (e) {
@@ -187,16 +186,13 @@ class MyAppState extends State<MyApp> {
     } else if (currentUser == null) {
       homeScreen = const AuthScreen();
       logger.d('MyAppState: Initial route: AuthScreen (User not logged in)');
-    } else if (patientDetailsProvider.patientDetails == null) {
-      homeScreen = const PatientDetailsPage();
-      logger.d('MyAppState: Initial route: PatientDetailsPage (User logged in, but patient details missing)');
     } else {
       homeScreen = const HomePage();
-      logger.d('MyAppState: Initial route: HomePage (User logged in and patient details exist)');
+      logger.d('MyAppState: Initial route: HomePage (User logged in)');
     }
 
     return MaterialApp(
-      title: 'CKD Care App', // This will be replaced by localized string later
+      title: 'CKDBuddy', // This will be replaced by localized string later
       theme: ThemeData(
         primarySwatch: _createMaterialColor(const Color(0xFF16C2D5)),
         visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -117,7 +117,7 @@ class _AddBpPageState extends State<AddBpPage> {
         timestamp: combinedDateTime,
         comment: _commentController.text.isEmpty ? null : _commentController.text,
       );
-      logger.d('Blood pressure data: ${bloodPressure}');
+      logger.d('Blood pressure data: $bloodPressure');
 
       try {
         final currentUser = Supabase.instance.client.auth.currentUser;

@@ -3,6 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:myapp/services/supabase_service.dart'; // Assuming you have this service
+import 'package:myapp/models/patient_details.dart';
+import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/patient_details_page.dart'; // Import PatientDetailsPage
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
 
@@ -213,18 +215,29 @@ class _AuthScreenState extends State<AuthScreen> {
                       logger.d('AuthScreen: Google Sign-In button pressed. _isLoading set to true.');
                       try {
                         await SupabaseService().signInWithGoogle();
-                        logger.d('AuthScreen: SupabaseService().signInWithGoogle() completed.');
-                        // Navigation handled by main.dart listener or by the deep link
-                        // For mobile, it will navigate to PatientDetailsPage as per previous logic
-                        // For web, it will redirect and main.dart will handle.
-                        if (mounted) {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          logger.d('AuthScreen: Google Sign-In successful. _isLoading set to false. Navigation will be handled by main.dart listener.');
-                          _showSnackBar(LocalizationHelper.translateKey(context, 'loginSuccessMessage'));
-                        } else {
-                          logger.w('AuthScreen: mounted is false after Google Sign-In, cannot update UI.');
+                        final user = Supabase.instance.client.auth.currentUser;
+                        if (user != null && mounted) {
+                          // After successful sign-in, check for patient details
+                          final patientDetails = await SupabaseService().getPatientDetails();
+                          if (mounted) {
+                            if (patientDetails == null) {
+                              // If no details, navigate to PatientDetailsPage
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const PatientDetailsPage()),
+                              );
+                            } else {
+                              // If details exist, navigate to HomePage (which contains VitalTrackingPage)
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const HomePage()),
+                              );
+                            }
+                            _showSnackBar(LocalizationHelper.translateKey(context, 'loginSuccessMessage'));
+                          }
+                        } else if (mounted) {
+                          // Handle case where sign-in was not successful but didn't throw
+                          _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', 'Sign-in failed.'));
                         }
                       } on AuthException catch (e) {
                         logger.e('Google Auth Error: ${e.message}');
@@ -249,7 +262,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       height: 24.0,
                     ),
                     label: Text(
-                      LocalizationHelper.translateKey(context, 'signInWithGoogleButton'),
+                      LocalizationHelper.translateKey(context, 'signIn With Google'),
                       style: const TextStyle(fontSize: 18),
                     ),
                     style: OutlinedButton.styleFrom(

@@ -90,7 +90,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
       logger.d('VitalTrackingPage: On mobile, checking for BP data sync.');
       try {
         final List<BloodPressure> supabaseBpReadings = await _supabaseService.getBloodPressureReadings();
-        final List<BloodPressure> localBpReadings = await DatabaseHelper().getBloodPressureReadings(currentUser!.id); // currentUser is guaranteed non-null here
+        final List<BloodPressure> localBpReadings = await DatabaseHelper().getBloodPressureReadings(currentUser.id); // currentUser is guaranteed non-null here
 
         if (supabaseBpReadings.length > localBpReadings.length) {
           logger.i('VitalTrackingPage: Supabase has more BP readings than local SQLite. Syncing...');
