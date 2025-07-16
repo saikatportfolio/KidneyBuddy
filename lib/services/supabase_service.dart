@@ -5,8 +5,12 @@ import 'package:myapp/models/dietician.dart'; // Import Dietician model
 import 'package:myapp/models/review.dart'; // Import Review model
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:google_sign_in/google_sign_in.dart'; // Import google_sign_in
+import 'dart:typed_data';
+import 'package:mime/mime.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:myapp/models/user_file.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:uuid/uuid.dart';
 
 class SupabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -256,6 +260,103 @@ class SupabaseService {
     } catch (e) {
       logger.e('Error fetching all tips from Supabase: $e');
       return [];
+    }
+  }
+
+  // Meal Plan Operations
+  Future<Map<String, dynamic>> getMealPlan() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getMealPlan: No authenticated user found. Cannot fetch meal plan.');
+        return {};
+      }
+
+      final userMealPlanResponse = await _supabase
+          .from('usermealplans')
+          .select()
+          .eq('user_id', user.id)
+          .limit(1);
+
+      if (userMealPlanResponse.isEmpty) {
+        logger.i('No meal plan found for user ${user.id}.');
+        return {};
+      }
+
+      final userMealPlan = userMealPlanResponse.first;
+      final planId = userMealPlan['plan_id'];
+
+      final mealsResponse = await _supabase
+          .from('meals')
+          .select()
+          .eq('plan_id', planId);
+
+      final mealItemsResponse = await _supabase
+          .from('mealitems')
+          .select()
+          .filter('meal_id', 'in', mealsResponse.map((meal) => meal['meal_id']).toList())
+          .order('sequence', ascending: true);
+
+      final mealItemOptionsResponse = await _supabase
+          .from('mealitemoptions')
+          .select()
+          .filter('item_id', 'in', mealItemsResponse.map((item) => item['item_id']).toList());
+
+      final amountsResponse = await _supabase
+          .from('amounts')
+          .select()
+          .filter('option_id', 'in', mealItemOptionsResponse.map((option) => option['option_id']).toList());
+
+      return {
+        'userMealPlan': userMealPlan,
+        'meals': mealsResponse,
+        'mealItems': mealItemsResponse,
+        'mealItemOptions': mealItemOptionsResponse,
+        'amounts': amountsResponse,
+      };
+    } catch (e) {
+      logger.e('Error fetching meal plan from Supabase: $e');
+      return {};
+    }
+  }
+
+  // File Upload Operations
+  Future<String> uploadFile(Uint8List fileBytes, String fileName) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw AuthException('No authenticated user found. Cannot upload file.');
+      }
+      final newFileName = '${user.id}/${DateTime.now().millisecondsSinceEpoch}_$fileName';
+      final contentType = lookupMimeType(fileName);
+      await _supabase.storage.from('user-files').uploadBinary(
+            newFileName,
+            fileBytes,
+            fileOptions: FileOptions(contentType: contentType),
+          );
+      return _supabase.storage.from('user-files').getPublicUrl(newFileName);
+    } catch (e) {
+      logger.e('Error uploading file to Supabase: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> insertUserFile(String fileUrl, String fileName) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw AuthException('No authenticated user found. Cannot insert user file.');
+      }
+      final userFile = UserFile(
+        fileId: Uuid().v4(),
+        userId: user.id,
+        fileName: fileName,
+        fileUrl: fileUrl,
+      );
+      await _supabase.from('userfiles').insert(userFile.toMap());
+    } catch (e) {
+      logger.e('Error inserting user file to Supabase: $e');
+      rethrow;
     }
   }
 }

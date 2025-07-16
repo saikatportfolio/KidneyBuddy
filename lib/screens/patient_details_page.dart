@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
+import 'package:myapp/screens/vital_tracking_page.dart';
+import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart'; // Import uuid package
-import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:uuid/uuid.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class PatientDetailsPage extends StatefulWidget {
   final String? name;
   final String? email;
+  final String? source;
 
-  const PatientDetailsPage({Key? key, this.name, this.email}) : super(key: key);
+  const PatientDetailsPage({Key? key, this.name, this.email, this.source}) : super(key: key);
 
   @override
   _PatientDetailsPageState createState() => _PatientDetailsPageState();
@@ -87,7 +89,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         final dbHelper = DatabaseHelper();
         await dbHelper.insertPatientDetails(patientDetails);
       }
-      
+
       // Always sync to Supabase
       await SupabaseService().upsertPatientDetails(patientDetails);
 
@@ -96,15 +98,17 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       if (!mounted) return;
       Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
 
-      // Set onboarding seen status
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.setBool('hasSeenOnboarding', true); // Removed to always show onboarding
-
-      // Navigate to Vital Tracking Page
-      if (!mounted) return; // Check mounted again before navigation
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => VitalTrackingPage()),
-      );
+      // Navigate to correct page based on source
+      if (!mounted) return;
+      if (widget.source == "your_meals") {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const YourMealsScreen()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => VitalTrackingPage()),
+        );
+      }
     }
   }
 
@@ -170,7 +174,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
               DropdownButtonFormField<String>(
                 value: _ckdStage,
                 decoration: InputDecoration(labelText: 'CKD Stage'),
-                items: <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4']
+                items: <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

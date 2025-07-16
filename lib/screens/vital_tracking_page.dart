@@ -60,7 +60,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const AuthScreen()),
+            MaterialPageRoute(builder: (context) => const PatientDetailsPage(source: "vital_tracking",)),
           );
         });
       }
@@ -78,7 +78,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const PatientDetailsPage()),
+            MaterialPageRoute(builder: (context) => const PatientDetailsPage(source: "vital_tracking")),
           );
         });
       }
