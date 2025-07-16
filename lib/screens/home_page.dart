@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
-import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
-import 'package:myapp/screens/settings_page.dart'; // Import SettingsPage
-import 'package:myapp/screens/food_list_page.dart'; // Import the new food list page
-import 'package:provider/provider.dart'; // Import provider
-import 'package:myapp/models/patient_details.dart'; // Import PatientDetailsProvider
-import 'package:myapp/screens/egfr_calculator_screen.dart'; // Import eGFR Calculator Screen
-import 'package:myapp/services/supabase_service.dart'; // Import SupabaseService
-import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
-import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:myapp/l10n/app_localizations.dart';
+import 'package:myapp/screens/settings_page.dart';
+import 'package:myapp/screens/food_list_page.dart';
+import 'package:provider/provider.dart';
+import 'package:myapp/models/patient_details.dart';
+import 'package:myapp/screens/egfr_calculator_screen.dart';
+import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/screens/vital_tracking_page.dart';
+import 'package:myapp/screens/your_meals_screen.dart';
+import 'package:myapp/utils/logger_config.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d('HomePage: build called'); // Keep the print statement
+    logger.d('HomePage: build called');
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
     final patientName = patientDetailsProvider.patientDetails?.name ?? 'User';
@@ -209,13 +210,12 @@ class _HomePageState extends State<HomePage> {
                         Icons.feedback,
                         const FeedbackPage(),
                       ),
-                      // Remaining features (Not yet working)
                       _buildFeatureItem(
                         context,
-                        localizations.dietManagementCard,
+                        "Your meals",
                         localizations.dietManagementDescription,
                         Icons.food_bank,
-                        null,
+                        const YourMealsScreen(),
                       ),
                       _buildFeatureItem(
                         context,
@@ -278,5 +278,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+  
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -170,7 +170,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
               DropdownButtonFormField<String>(
                 value: _ckdStage,
                 decoration: InputDecoration(labelText: 'CKD Stage'),
-                items: <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5']
+                items: <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
