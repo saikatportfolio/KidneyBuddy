@@ -274,4 +274,7 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get userNotLoggedIn =>
       'ব্যবহারকারী লগ ইন করেননি। এই সামগ্রী দেখতে অনুগ্রহ করে সাইন ইন করুন।';
+
+  @override
+  String get signOutButton => 'সাইন আউট করুন';
 }

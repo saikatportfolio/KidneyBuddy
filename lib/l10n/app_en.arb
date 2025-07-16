@@ -79,5 +79,6 @@
   "pdfGenerationErrorNoPatientDetails": "Patient details not available for PDF report. Please update your profile.",
   "pdfGenerationErrorNoReadings": "No blood pressure readings available to generate a PDF report.",
   "pdfGenerationError": "Error generating PDF report: {error}",
-  "userNotLoggedIn": "User not logged in. Please sign in to view this content."
+  "userNotLoggedIn": "User not logged in. Please sign in to view this content.",
+  "signOutButton": "Sign Out"
 }

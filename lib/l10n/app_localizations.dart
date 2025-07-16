@@ -579,6 +579,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User not logged in. Please sign in to view this content.'**
   String get userNotLoggedIn;
+
+  /// No description provided for @signOutButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOutButton;
 }
 
 class _AppLocalizationsDelegate

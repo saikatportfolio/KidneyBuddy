@@ -274,4 +274,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get userNotLoggedIn =>
       'User not logged in. Please sign in to view this content.';
+
+  @override
+  String get signOutButton => 'Sign Out';
 }
