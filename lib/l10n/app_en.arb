@@ -75,5 +75,6 @@
   "signOutButton": "Sign Out",
   "signOutConfirmation": "Are you sure you want to sign out?",
   "yesButton": "Yes",
-  "noButton": "No"
+  "noButton": "No",
+  "exportPdfButton": "Export PDF"
 }

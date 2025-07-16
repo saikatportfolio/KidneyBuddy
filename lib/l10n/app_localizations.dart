@@ -555,6 +555,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get noButton;
+
+  /// No description provided for @exportPdfButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get exportPdfButton;
 }
 
 class _AppLocalizationsDelegate

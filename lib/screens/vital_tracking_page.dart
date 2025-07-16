@@ -125,8 +125,12 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
       appBar: AppBar(
         title: Text(localizations.vitalTrackingPageTitle),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
+          TextButton.icon(
+            icon: const Icon(Icons.picture_as_pdf, color: Colors.white), // Set icon color for visibility
+            label: Text(
+              localizations.exportPdfButton, // Assuming a localization key for "Export PDF"
+              style: const TextStyle(color: Colors.white), // Set text color for visibility
+            ),
             onPressed: () async {
               logger.i('Attempting to generate PDF report...');
               try {
