@@ -250,7 +250,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
         onPressed: () {
           final currentVitalType = _categoryCards[_selectedCategoryIndex]['vitalType'];
           if (currentVitalType == 'BP') {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AddBpPage()),
             );
