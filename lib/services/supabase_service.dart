@@ -288,8 +288,9 @@ class SupabaseService {
 
       final mealsResponse = await _supabase
           .from('meals')
-          .select()
-          .eq('plan_id', planId);
+          .select('*, sequence') // Select all columns including sequence
+          .eq('plan_id', planId)
+          .order('sequence', ascending: true); // Order by sequence
 
       final mealItemsResponse = await _supabase
           .from('mealitems')

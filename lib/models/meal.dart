@@ -5,6 +5,7 @@ class Meal {
   String timing;
   String? notes;
   String? dayOfWeek;
+  int? sequence; // Added sequence field
 
   Meal({
     this.mealId,
@@ -13,6 +14,7 @@ class Meal {
     required this.timing,
     this.notes,
     this.dayOfWeek,
+    this.sequence, // Added to constructor
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Meal {
       'timing': timing,
       'notes': notes,
       'day_of_week': dayOfWeek,
+      'sequence': sequence, // Added to map
     };
   }
 
@@ -34,6 +37,7 @@ class Meal {
       timing: map['timing'],
       notes: map['notes'] as String?,
       dayOfWeek: map['day_of_week'] as String?,
+      sequence: map['sequence'] as int?, // Added from map
     );
   }
 }

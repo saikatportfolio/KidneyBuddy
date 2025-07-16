@@ -31,6 +31,15 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Meals'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFE1F5FE), Color(0xFFB3E5FC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _mealPlanFuture,
@@ -65,12 +74,28 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userMealPlan.planName,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      userMealPlan.planName,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade800,
+                          ),
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  Text(userMealPlan.description ?? ''),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      userMealPlan.description ?? '',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Colors.blue.shade700,
+                          ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   Expanded(
                     child: ListView.builder(
@@ -80,29 +105,42 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${meal.mealType} (${meal.timing})',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                              margin: const EdgeInsets.only(bottom: 8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade100,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Text(
+                                '${meal.mealType} (${meal.timing})',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade900,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),
                             for (var item in mealItems.where((item) => item.mealId == meal.mealId))
                               Card(
-                                elevation: 4,
-                                shadowColor: Colors.grey.withOpacity(0.5),
+                                elevation: 6,
+                                shadowColor: Colors.blue.shade200.withOpacity(0.7),
                                 margin: const EdgeInsets.only(bottom: 16.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.all(20.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         item.itemName,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue.shade800,
+                                            ),
                                       ),
                                       const SizedBox(height: 8),
                                       ListView.separated(
@@ -115,10 +153,17 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                                             child: Row(
                                               children: [
-                                                Text(option.foodName),
+                                                Text(
+                                                  option.foodName,
+                                                  style: Theme.of(context).textTheme.bodyMedium,
+                                                ),
                                                 const SizedBox(width: 4),
                                                 Text(
                                                   option.amount ?? '',
+                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                        fontStyle: FontStyle.italic,
+                                                        color: Colors.grey.shade600,
+                                                      ),
                                                 ),
                                               ],
                                             ),
@@ -126,10 +171,13 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                         },
                                         separatorBuilder: (context, index) {
                                           if (mealItemOptions.where((option) => option.itemId == item.itemId).length > 1) {
-                                            return const Center(
+                                            return Center(
                                               child: Text(
                                                 'OR',
-                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.blue.shade400,
+                                                    ),
                                               ),
                                             );
                                           } else {
