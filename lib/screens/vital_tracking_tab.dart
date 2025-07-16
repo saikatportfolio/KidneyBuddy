@@ -98,13 +98,19 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                margin: const EdgeInsets.only(bottom: 8.0),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
                 child: Text(
                   DateFormat('MMM dd, yyyy').format(DateTime.parse(date)), // Format date for display
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
                   ),
                 ),
               ),
@@ -115,9 +121,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                 itemBuilder: (context, readingIndex) {
                   final reading = readingsForDate[readingIndex];
                   return Card(
-                    elevation: 3,
-                    margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    elevation: 6,
+                    shadowColor: Colors.blue.shade200.withOpacity(0.7),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
                     child: InkWell(
                       onTap: () {
                         // TODO: Implement navigation to detail page for this vital reading
@@ -126,7 +135,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                         );
                       },
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -138,10 +147,10 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                                   children: [
                                     Text(
                                       DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue.shade800,
+                                          ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
@@ -155,11 +164,10 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                                 ),
                                 Text(
                                   '${reading.systolic}/${reading.diastolic} mmHg',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                  ),
+                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700,
+                                      ),
                                 ),
                               ],
                             ),
@@ -168,11 +176,10 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                   'Comment: ${reading.comment}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.black87,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey.shade700,
+                                      ),
                                 ),
                               ),
                           ],

@@ -260,7 +260,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
             );
           }
         },
-        label: Text(LocalizationHelper.translateKey(context, 'add${_categoryCards[_selectedCategoryIndex]['vitalType']}Button')),
+        label: Text(LocalizationHelper.translateKey(context, 'Add ${_categoryCards[_selectedCategoryIndex]['vitalType']}')),
         icon: const Icon(Icons.add),
       ),
     );

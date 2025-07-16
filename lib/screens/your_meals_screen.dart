@@ -200,14 +200,15 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const UploadFileScreen()),
           );
         },
-        child: const Icon(Icons.upload_file),
+        label: const Text('Upload Diet'),
+        icon: const Icon(Icons.upload_file), // Keeping the icon for now, as extended usually has both. If user wants only text, I'll remove it.
       ),
     );
   }
