@@ -19,7 +19,7 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'png'],
+      allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
       withData: true,
     );
 
@@ -45,8 +45,23 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
       final fileUrl = await supabaseService.uploadFile(_fileBytes!, _fileName!);
       await supabaseService.insertUserFile(fileUrl, _fileName!);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File uploaded successfully!')),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Upload Successful!'),
+            content: const Text(
+                "Thank you for sharing your diet plan. We're reviewing it now and will notify you as soon as your updated plan is ready in the app."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
       );
     } catch (e) {
       if (!mounted) return;
