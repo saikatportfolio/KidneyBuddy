@@ -585,6 +585,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign Out'**
   String get signOutButton;
+
+  /// No description provided for @signOutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get signOutConfirmation;
+
+  /// No description provided for @yesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yesButton;
+
+  /// No description provided for @noButton.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get noButton;
 }
 
 class _AppLocalizationsDelegate

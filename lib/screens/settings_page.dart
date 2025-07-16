@@ -15,6 +15,41 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _isLoading = false;
 
+  Future<void> _showSignOutConfirmationDialog() async {
+    final localizations = AppLocalizations.of(context)!;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.signOutButton),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(localizations.signOutConfirmation),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(localizations.noButton),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(localizations.yesButton),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+                _signOut(); // Proceed with sign out
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _signOut() async {
     setState(() {
       _isLoading = true;
@@ -73,7 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ListTile(
                   title: Text(localizations.signOutButton),
                   leading: const Icon(Icons.logout),
-                  onTap: _signOut,
+                  onTap: _showSignOutConfirmationDialog,
                 ),
               ],
             ),

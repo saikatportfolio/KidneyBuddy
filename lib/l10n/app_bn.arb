@@ -80,5 +80,8 @@
   "pdfGenerationErrorNoReadings": "পিডিএফ প্রতিবেদন তৈরি করার জন্য কোনো রক্তচাপ রিডিং উপলব্ধ নেই।",
   "pdfGenerationError": "পিডিএফ প্রতিবেদন তৈরি করতে ত্রুটি: {error}",
   "userNotLoggedIn": "ব্যবহারকারী লগ ইন করেননি। এই সামগ্রী দেখতে অনুগ্রহ করে সাইন ইন করুন।",
-  "signOutButton": "সাইন আউট করুন"
+  "signOutButton": "সাইন আউট করুন",
+  "signOutConfirmation": "আপনি কি নিশ্চিত যে আপনি সাইন আউট করতে চান?",
+  "yesButton": "হ্যাঁ",
+  "noButton": "না"
 }

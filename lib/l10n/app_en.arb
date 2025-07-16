@@ -80,5 +80,8 @@
   "pdfGenerationErrorNoReadings": "No blood pressure readings available to generate a PDF report.",
   "pdfGenerationError": "Error generating PDF report: {error}",
   "userNotLoggedIn": "User not logged in. Please sign in to view this content.",
-  "signOutButton": "Sign Out"
+  "signOutButton": "Sign Out",
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "yesButton": "Yes",
+  "noButton": "No"
 }

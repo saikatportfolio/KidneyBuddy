@@ -277,4 +277,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get signOutButton => 'साइन आउट करें';
+
+  @override
+  String get signOutConfirmation => 'क्या आप वाकई साइन आउट करना चाहते हैं?';
+
+  @override
+  String get yesButton => 'हाँ';
+
+  @override
+  String get noButton => 'नहीं';
 }

@@ -277,4 +277,14 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get signOutButton => 'সাইন আউট করুন';
+
+  @override
+  String get signOutConfirmation =>
+      'আপনি কি নিশ্চিত যে আপনি সাইন আউট করতে চান?';
+
+  @override
+  String get yesButton => 'হ্যাঁ';
+
+  @override
+  String get noButton => 'না';
 }

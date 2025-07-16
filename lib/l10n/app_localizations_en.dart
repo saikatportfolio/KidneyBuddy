@@ -277,4 +277,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signOutButton => 'Sign Out';
+
+  @override
+  String get signOutConfirmation => 'Are you sure you want to sign out?';
+
+  @override
+  String get yesButton => 'Yes';
+
+  @override
+  String get noButton => 'No';
 }
