@@ -223,40 +223,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get loginTitle => 'लॉग इन करें';
 
   @override
-  String get signupTitle => 'साइन अप करें';
-
-  @override
-  String get emailLabel => 'ईमेल';
-
-  @override
-  String get passwordLabel => 'पासवर्ड';
-
-  @override
-  String get confirmPasswordLabel => 'पासवर्ड की पुष्टि करें';
-
-  @override
-  String get signInButton => 'साइन इन करें';
-
-  @override
-  String get signUpButton => 'साइन अप करें';
-
-  @override
-  String get noAccountPrompt => 'खाता नहीं है? साइन अप करें';
-
-  @override
-  String get haveAccountPrompt => 'पहले से ही एक खाता है? साइन इन करें';
-
-  @override
   String get loginSuccessMessage => 'सफलतापूर्वक लॉग इन किया गया!';
-
-  @override
-  String get signupSuccessMessage =>
-      'खाता सफलतापूर्वक बनाया गया! कृपया सत्यापित करने के लिए अपना ईमेल जांचें।';
 
   @override
   String authErrorMessage(Object error) {
     return 'प्रमाणीकरण त्रुटि: $error';
   }
+
+  @override
+  String get signInWithGoogleButton => 'Google से साइन इन करें';
 
   @override
   String get pdfGenerationErrorNoPatientDetails =>

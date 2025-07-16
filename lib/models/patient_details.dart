@@ -4,6 +4,7 @@ class PatientDetails {
   String? id; // Changed to String for UUID
   String? userId; // New field for Supabase user ID
   String name;
+  String? email;
   String phoneNumber;
   double weight;
   double height;
@@ -13,6 +14,7 @@ class PatientDetails {
     this.id,
     this.userId, // Initialize new field
     required this.name,
+    this.email,
     required this.phoneNumber,
     required this.weight,
     required this.height,
@@ -24,6 +26,7 @@ class PatientDetails {
       'id': id,
       'user_id': userId, // Add to map
       'name': name,
+      'email': email,
       'phone_number': phoneNumber,
       'weight': weight,
       'height': height,
@@ -36,6 +39,7 @@ class PatientDetails {
       id: map['id'] as String?, // Cast to String?
       userId: map['user_id'] as String?, // Cast to String?
       name: map['name'],
+      email: map['email'] as String?,
       phoneNumber: map['phone_number'],
       weight: map['weight'],
       height: map['height'],

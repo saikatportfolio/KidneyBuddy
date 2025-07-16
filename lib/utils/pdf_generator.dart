@@ -43,11 +43,14 @@ class PdfGenerator {
                           fontSize: 18, fontWeight: pw.FontWeight.bold)),
                   pw.SizedBox(height: 10),
                   pw.Text('Name: ${patientDetails.name}',
-                      style: const pw.TextStyle(fontSize: 14)),
+                      style: pw.TextStyle(fontSize: 14)),
+                  if (patientDetails.email != null)
+                    pw.Text('Email: ${patientDetails.email}',
+                        style: pw.TextStyle(fontSize: 14)),
                   pw.Text('Phone Number: ${patientDetails.phoneNumber}',
-                      style: const pw.TextStyle(fontSize: 14)),
+                      style: pw.TextStyle(fontSize: 14)),
                   pw.Text('CKD Stage: ${patientDetails.ckdStage}',
-                      style: const pw.TextStyle(fontSize: 14)),
+                      style: pw.TextStyle(fontSize: 14)),
                   pw.SizedBox(height: 20),
                 ],
               ),
@@ -60,7 +63,7 @@ class PdfGenerator {
 
             if (bpReadings.isEmpty)
               pw.Text('No blood pressure readings available.',
-                  style: const pw.TextStyle(fontSize: 12, fontStyle: pw.FontStyle.italic))
+                  style: pw.TextStyle(fontSize: 12, fontStyle: pw.FontStyle.italic))
             else
               _buildBpReadingsTable(bpReadings),
           ];

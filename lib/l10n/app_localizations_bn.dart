@@ -223,40 +223,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get loginTitle => 'লগইন';
 
   @override
-  String get signupTitle => 'সাইন আপ';
-
-  @override
-  String get emailLabel => 'ইমেল';
-
-  @override
-  String get passwordLabel => 'পাসওয়ার্ড';
-
-  @override
-  String get confirmPasswordLabel => 'পাসওয়ার্ড নিশ্চিত করুন';
-
-  @override
-  String get signInButton => 'সাইন ইন করুন';
-
-  @override
-  String get signUpButton => 'সাইন আপ করুন';
-
-  @override
-  String get noAccountPrompt => 'কোন অ্যাকাউন্ট নেই? সাইন আপ করুন';
-
-  @override
-  String get haveAccountPrompt => 'ইতিমধ্যে একটি অ্যাকাউন্ট আছে? সাইন ইন করুন';
-
-  @override
   String get loginSuccessMessage => 'সফলভাবে লগইন করা হয়েছে!';
-
-  @override
-  String get signupSuccessMessage =>
-      'অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! যাচাই করার জন্য আপনার ইমেল চেক করুন।';
 
   @override
   String authErrorMessage(Object error) {
     return 'প্রমাণীকরণ ত্রুটি: $error';
   }
+
+  @override
+  String get signInWithGoogleButton => 'Google দিয়ে সাইন ইন করুন';
 
   @override
   String get pdfGenerationErrorNoPatientDetails =>

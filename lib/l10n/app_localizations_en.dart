@@ -223,40 +223,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Login';
 
   @override
-  String get signupTitle => 'Sign Up';
-
-  @override
-  String get emailLabel => 'Email';
-
-  @override
-  String get passwordLabel => 'Password';
-
-  @override
-  String get confirmPasswordLabel => 'Confirm Password';
-
-  @override
-  String get signInButton => 'Sign In';
-
-  @override
-  String get signUpButton => 'Sign Up';
-
-  @override
-  String get noAccountPrompt => 'Don\'t have an account? Sign Up';
-
-  @override
-  String get haveAccountPrompt => 'Already have an account? Sign In';
-
-  @override
   String get loginSuccessMessage => 'Logged in successfully!';
-
-  @override
-  String get signupSuccessMessage =>
-      'Account created successfully! Please check your email to verify.';
 
   @override
   String authErrorMessage(Object error) {
     return 'Authentication Error: $error';
   }
+
+  @override
+  String get signInWithGoogleButton => 'Sign in with Google';
 
   @override
   String get pdfGenerationErrorNoPatientDetails =>

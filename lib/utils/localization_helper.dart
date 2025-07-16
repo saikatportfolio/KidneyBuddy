@@ -39,26 +39,8 @@ class LocalizationHelper {
         return localizations.saveButton;
       case 'loginTitle':
         return localizations.loginTitle;
-      case 'signupTitle':
-        return localizations.signupTitle;
-      case 'emailLabel':
-        return localizations.emailLabel;
-      case 'passwordLabel':
-        return localizations.passwordLabel;
-      case 'confirmPasswordLabel':
-        return localizations.confirmPasswordLabel;
-      case 'signInButton':
-        return localizations.signInButton;
-      case 'signUpButton':
-        return localizations.signUpButton;
-      case 'noAccountPrompt':
-        return localizations.noAccountPrompt;
-      case 'haveAccountPrompt':
-        return localizations.haveAccountPrompt;
       case 'loginSuccessMessage':
         return localizations.loginSuccessMessage;
-      case 'signupSuccessMessage':
-        return localizations.signupSuccessMessage;
       case 'authErrorMessage':
         return localizations.authErrorMessage(''); // Pass empty string for now, or adjust signature
       default:

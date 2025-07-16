@@ -490,71 +490,23 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get loginTitle;
 
-  /// No description provided for @signupTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign Up'**
-  String get signupTitle;
-
-  /// No description provided for @emailLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get emailLabel;
-
-  /// No description provided for @passwordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get passwordLabel;
-
-  /// No description provided for @confirmPasswordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm Password'**
-  String get confirmPasswordLabel;
-
-  /// No description provided for @signInButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign In'**
-  String get signInButton;
-
-  /// No description provided for @signUpButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign Up'**
-  String get signUpButton;
-
-  /// No description provided for @noAccountPrompt.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t have an account? Sign Up'**
-  String get noAccountPrompt;
-
-  /// No description provided for @haveAccountPrompt.
-  ///
-  /// In en, this message translates to:
-  /// **'Already have an account? Sign In'**
-  String get haveAccountPrompt;
-
   /// No description provided for @loginSuccessMessage.
   ///
   /// In en, this message translates to:
   /// **'Logged in successfully!'**
   String get loginSuccessMessage;
 
-  /// No description provided for @signupSuccessMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Account created successfully! Please check your email to verify.'**
-  String get signupSuccessMessage;
-
   /// No description provided for @authErrorMessage.
   ///
   /// In en, this message translates to:
   /// **'Authentication Error: {error}'**
   String authErrorMessage(Object error);
+
+  /// No description provided for @signInWithGoogleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get signInWithGoogleButton;
 
   /// No description provided for @pdfGenerationErrorNoPatientDetails.
   ///

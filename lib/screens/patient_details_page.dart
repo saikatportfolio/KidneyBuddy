@@ -8,7 +8,10 @@ import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 
 class PatientDetailsPage extends StatefulWidget {
-  const PatientDetailsPage({super.key});
+  final String? name;
+  final String? email;
+
+  const PatientDetailsPage({Key? key, this.name, this.email}) : super(key: key);
 
   @override
   _PatientDetailsPageState createState() => _PatientDetailsPageState();
@@ -21,10 +24,13 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   String? _ckdStage;
+  String? _email;
 
   @override
   void initState() {
     super.initState();
+    _nameController.text = widget.name ?? '';
+    _email = widget.email;
     _loadPatientDetails();
   }
 
@@ -72,6 +78,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         weight: double.parse(_weightController.text),
         height: double.parse(_heightController.text),
         ckdStage: _ckdStage!,
+        email: _email,
       );
 
       // Conditional Save Logic

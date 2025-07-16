@@ -29,7 +29,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'ckd_care_app.db');
     return await openDatabase(
       path,
-      version: 4, // Increment database version to 4 for BP table and comment
+      version: 5, // Increment database version to 5 for email column
       onCreate: _onCreate,
       onUpgrade: _onUpgrade, // Add onUpgrade callback
     );
@@ -41,6 +41,7 @@ class DatabaseHelper {
         id TEXT PRIMARY KEY,
         user_id TEXT, -- New column for user ID
         name TEXT,
+        email TEXT,
         phone_number TEXT,
         weight REAL,
         height REAL,
@@ -102,6 +103,10 @@ class DatabaseHelper {
           comment TEXT
         )
       ''');
+    }
+    if (oldVersion < 5) {
+      // Migrate from version 4 to 5: Add email column to patient_details
+      await db.execute('ALTER TABLE patient_details ADD COLUMN email TEXT;');
     }
   }
 
