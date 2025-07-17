@@ -97,7 +97,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   // Nutritional Restrictions Grid List
                   FutureBuilder<List<NutritionRestriction>>(
                     future: _nutritionRestrictionsFuture,
@@ -235,6 +235,8 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                           return Padding(
                                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                                             child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.baseline, // Align text baselines
+                                              textBaseline: TextBaseline.alphabetic,          // Required for baseline alignment
                                               children: [
                                                 Text(
                                                   option.foodName,
