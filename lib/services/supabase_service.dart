@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:mime/mime.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/models/user_file.dart';
+import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRestriction model
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
 import 'package:uuid/uuid.dart';
 
@@ -352,6 +353,37 @@ class SupabaseService {
     } catch (e) {
       logger.e('Error inserting user file to Supabase: $e');
       rethrow;
+    }
+  }
+
+  // Nutrition Restriction Operations
+  Future<List<NutritionRestriction>> getNutritionRestrictions() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getNutritionRestrictions: No authenticated user found. Cannot fetch nutrition restrictions.');
+        return [];
+      }
+
+      final response = await _supabase
+          .from('nutrition_restriction')
+          .select()
+          .eq('userId', user.id)
+          .order('sequence', ascending: true);
+
+      if (response.isEmpty) {
+        logger.i('No nutrition restrictions found for user ${user.id}.');
+        return [];
+      }
+
+      final List<NutritionRestriction> restrictions = (response as List)
+          .map((map) => NutritionRestriction.fromMap(map))
+          .toList();
+      logger.d('Fetched ${restrictions.length} nutrition restrictions for user ${user.id}.');
+      return restrictions;
+    } catch (e) {
+      logger.e('Error fetching nutrition restrictions from Supabase: $e');
+      return [];
     }
   }
 }

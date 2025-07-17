@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/models/meal.dart';
 import 'package:myapp/models/meal_item.dart';
 import 'package:myapp/models/meal_item_option.dart';
-import 'package:flutter/material.dart';
-import 'package:myapp/models/meal.dart';
-import 'package:myapp/models/meal_item.dart';
-import 'package:myapp/models/meal_item_option.dart';
 import 'package:myapp/models/user_meal_plan.dart';
+import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRestriction
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/upload_file_screen.dart';
 
@@ -19,11 +16,14 @@ class YourMealsScreen extends StatefulWidget {
 
 class _YourMealsScreenState extends State<YourMealsScreen> {
   late Future<Map<String, dynamic>> _mealPlanFuture;
+  late Future<List<NutritionRestriction>> _nutritionRestrictionsFuture;
 
   @override
   void initState() {
     super.initState();
     _mealPlanFuture = SupabaseService().getMealPlan();
+    // Fetch from Supabase
+    _nutritionRestrictionsFuture = SupabaseService().getNutritionRestrictions();
   }
 
   @override
@@ -82,6 +82,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.blue.shade800,
+                            fontSize: 24.0, // Reduced font size
                           ),
                     ),
                   ),
@@ -92,11 +93,93 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                       userMealPlan.description ?? '',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.blue.shade700,
+                            color: Colors.blue.shade800,
                           ),
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Nutritional Restrictions Grid List
+                  FutureBuilder<List<NutritionRestriction>>(
+                    future: _nutritionRestrictionsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const SizedBox.shrink(); // Or a message like 'No restrictions found'
+                      }
+
+                      final restrictions = snapshot.data!;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding( // Removed const keyword
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              'Nutritional Restrictions',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade800, // Changed color to match plan name
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 120, // Fixed height for horizontal scroll
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: restrictions.length,
+                              itemBuilder: (context, index) {
+                                final restriction = restrictions[index];
+                                return Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                  child: Container(
+                                    width: 120, // Fixed width for each grid item
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [Colors.white, Colors.white],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          restriction.nutritionKey,
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blue.shade800,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          restriction.nutritionValue,
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                color: Colors.blue.shade700,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 16), // Space between restrictions and meal plan list
+                        ],
+                      );
+                    },
+                  ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: meals.length,
