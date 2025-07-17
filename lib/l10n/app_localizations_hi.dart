@@ -264,4 +264,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get exportPdfButton => 'Export PDF';
+
+  @override
+  String get filter => 'Filter';
 }

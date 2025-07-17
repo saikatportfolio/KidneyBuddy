@@ -6,7 +6,7 @@ import 'package:myapp/screens/add_bp_page.dart'; // Import AddBpPage
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import 'package:provider/provider.dart'; // Import Provider
 import 'package:myapp/models/patient_details.dart'; // Import PatientDetails
-import 'package:myapp/screens/auth_screen.dart'; // Import AuthScreen
+// Import AuthScreen
 import 'package:myapp/screens/patient_details_page.dart'; // Import PatientDetailsPage
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
 import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
@@ -124,146 +124,92 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.vitalTrackingPageTitle),
-        actions: [
-          TextButton.icon(
-            icon: const Icon(Icons.picture_as_pdf, color: Colors.white), // Set icon color for visibility
-            label: Text(
-              localizations.exportPdfButton, // Assuming a localization key for "Export PDF"
-              style: const TextStyle(color: Colors.white), // Set text color for visibility
-            ),
-            onPressed: () async {
-              logger.i('Attempting to generate PDF report...');
-              logger.i('Attempting to generate PDF report for : $_selectedCategoryIndex');
-              if(_selectedCategoryIndex == 1){
-                logger.i('No Crearine readings available for PDF generation.');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Not yet Implemented')),
-                  );
-                  return;
-              }
-               if(_selectedCategoryIndex == 2){
-                logger.w('No Potasium readings available for PDF generation.');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Not yet Implemented')),
-                  );
-                  return;
-              }
-              try {
-                final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
-                final patientDetails = patientDetailsProvider.patientDetails;
-
-                if (patientDetails == null) {
-                  logger.w('Patient details not available for PDF generation.');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(localizations.pdfGenerationErrorNoPatientDetails)),
-                  );
-                  return;
-                }
-
-                // Fetch BP readings from SupabaseService for PDF generation
-                final List<BloodPressure> bpReadings = await _supabaseService.getBloodPressureReadings();
-                
-                // The userId check is now implicitly handled by SupabaseService().getBloodPressureReadings()
-                // which returns an empty list if no user is authenticated.
-                // However, if patientDetails is null, it implies no user or no patient details,
-                // so the earlier check for patientDetails should cover the user authentication.
-                
-                if (bpReadings.isEmpty) {
-                  logger.w('No blood pressure readings available for PDF generation.');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(localizations.pdfGenerationErrorNoReadings)),
-                  );
-                  return;
-                }
-
-                final pdfBytes = await PdfGenerator.generateBpReport(patientDetails, bpReadings);
-                await Printing.sharePdf(bytes: pdfBytes, filename: 'blood_pressure_report.pdf');
-                logger.i('PDF report shared successfully.');
-              } catch (e, stack) {
-                logger.e('Error generating or sharing PDF: $e', error: e, stackTrace: stack);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
-                );
-              }
-            },
-          ),
-        ],
+        actions: [],
       ),
-      body: Column(
-        children: [
-          // Category Cards at the top, similar to FoodListPage
-          SizedBox(
-            height: 120, // Adjust height as needed for the category cards
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: _categoryCards.length,
-              itemBuilder: (context, index) {
-                final category = _categoryCards[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedCategoryIndex = index;
-                      _tabController.animateTo(index); // Switch tab on card tap
-                    });
+      body: Consumer<PatientDetailsProvider>(
+        builder: (context, patientDetailsProvider, child) {
+          final patientDetails = patientDetailsProvider.patientDetails;
+          return Column(
+            children: [
+              // Category Cards at the top, similar to FoodListPage
+              SizedBox(
+                height: 120, // Adjust height as needed for the category cards
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  itemCount: _categoryCards.length,
+                  itemBuilder: (context, index) {
+                    final category = _categoryCards[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedCategoryIndex = index;
+                          _tabController.animateTo(index); // Switch tab on card tap
+                        });
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: _selectedCategoryIndex == index
+                                ? Theme.of(context).primaryColor // Highlight selected card
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                        child: Container(
+                          width: 100, // Fixed width for each card
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                category['icon'],
+                                size: 40,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                LocalizationHelper.translateKey(context, category['nameKey']), // Use LocalizationHelper
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(
-                        color: _selectedCategoryIndex == index
-                            ? Theme.of(context).primaryColor // Highlight selected card
-                            : Colors.transparent,
-                        width: 2,
-                      ),
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-                    child: Container(
-                      width: 100, // Fixed width for each card
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            category['icon'],
-                            size: 40,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            LocalizationHelper.translateKey(context, category['nameKey']), // Use LocalizationHelper
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          // TabBarView to display content for each tab
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: _categoryCards.map((category) {
-                final String? userId = Supabase.instance.client.auth.currentUser?.id;
-                if (userId == null) {
-                  // Handle case where user is not logged in, perhaps show a message or redirect
-                  return Center(child: Text(localizations.userNotLoggedIn)); // Assuming you have this localization key
-                }
-                return VitalTrackingTab(vitalType: category['vitalType'], userId: userId);
-              }).toList(),
-            ),
-          ),
-        ],
+                ),
+              ),
+              // TabBarView to display content for each tab
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: _categoryCards.map((category) {
+                    final String? userId = Supabase.instance.client.auth.currentUser?.id;
+                    if (userId == null) {
+                      // Handle case where user is not logged in, perhaps show a message or redirect
+                      return Center(child: Text(localizations.userNotLoggedIn)); // Assuming you have this localization key
+                    }
+                    return VitalTrackingTab(
+                      vitalType: category['vitalType'],
+                      userId: userId,
+                      patientDetails: patientDetails, // Pass patientDetails
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

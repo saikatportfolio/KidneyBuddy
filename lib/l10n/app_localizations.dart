@@ -561,6 +561,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export PDF'**
   String get exportPdfButton;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
 }
 
 class _AppLocalizationsDelegate
