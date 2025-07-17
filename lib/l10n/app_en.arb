@@ -77,5 +77,10 @@
   "yesButton": "Yes",
   "noButton": "No",
   "exportPdfButton": "Export PDF",
-  "filter": "Filter"
+  "filter": "Filter",
+  "filterLastWeek": "Last 1 Week",
+  "filterLastMonth": "Last 1 Month",
+  "filterLast3Months": "Last 3 Months",
+  "filterLast6Months": "Last 6 Months",
+  "filterAllTime": "All Time"
 }

@@ -197,7 +197,7 @@ class SupabaseService {
     }
   }
 
-  Future<List<BloodPressure>> getBloodPressureReadings() async {
+  Future<List<BloodPressure>> getBloodPressureReadings({DateTime? startDate}) async {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
@@ -205,19 +205,24 @@ class SupabaseService {
         return [];
       }
 
-      final response = await _supabase
+      var query = _supabase
           .from('blood_pressure_readings')
           .select()
-          .eq('user_id', user.id) // Filter by user_id
-          .order('timestamp', ascending: false); // Order by newest first
+          .eq('user_id', user.id);
+
+      if (startDate != null) {
+        query = query.gte('timestamp', startDate.toIso8601String());
+      }
+
+      final response = await query.order('timestamp', ascending: false); // Order by newest first
 
       if (response.isEmpty) {
-        logger.i('No blood pressure readings found for user ${user.id}.');
+        logger.i('No blood pressure readings found for user ${user.id} with filter starting from $startDate.');
         return [];
       }
 
       final List<BloodPressure> readings = (response as List).map((map) => BloodPressure.fromMap(map)).toList();
-      logger.d('Fetched ${readings.length} blood pressure readings for user ${user.id}.');
+      logger.d('Fetched ${readings.length} blood pressure readings for user ${user.id} with filter starting from $startDate.');
       return readings;
     } catch (e) {
       logger.e('Error fetching blood pressure readings from Supabase: $e');

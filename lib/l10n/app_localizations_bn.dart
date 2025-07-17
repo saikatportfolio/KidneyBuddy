@@ -268,4 +268,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get filter => 'Filter';
+
+  @override
+  String get filterLastWeek => 'Last 1 Week';
+
+  @override
+  String get filterLastMonth => 'Last 1 Month';
+
+  @override
+  String get filterLast3Months => 'Last 3 Months';
+
+  @override
+  String get filterLast6Months => 'Last 6 Months';
+
+  @override
+  String get filterAllTime => 'All Time';
 }

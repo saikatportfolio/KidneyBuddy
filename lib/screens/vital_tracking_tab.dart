@@ -28,6 +28,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   bool _isLoading = true;
   final SupabaseService _supabaseService = SupabaseService(); // Create an instance
+  String _selectedFilterDuration = 'allTime'; // Default filter
 
   @override
   void initState() {
@@ -43,13 +44,31 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
     }
   }
 
+  DateTime? _calculateStartDate(String filterDuration) {
+    final now = DateTime.now();
+    switch (filterDuration) {
+      case 'filterLastWeek':
+        return now.subtract(const Duration(days: 7));
+      case 'filterLastMonth':
+        return now.subtract(const Duration(days: 30)); // Approximation
+      case 'filterLast3Months':
+        return now.subtract(const Duration(days: 30 * 3)); // Approximation
+      case 'filterLast6Months':
+        return now.subtract(const Duration(days: 30 * 6)); // Approximation
+      case 'allTime':
+      default:
+        return null; // No date filter
+    }
+  }
+
   Future<void> _fetchData() async {
     setState(() {
       _isLoading = true;
     });
     try {
       if (widget.vitalType == 'BP') {
-        List<BloodPressure> fetchedReadings = await _supabaseService.getBloodPressureReadings();
+        final startDate = _calculateStartDate(_selectedFilterDuration);
+        List<BloodPressure> fetchedReadings = await _supabaseService.getBloodPressureReadings(startDate: startDate);
         setState(() {
           _bloodPressureReadings = fetchedReadings;
         });
@@ -63,6 +82,71 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         _isLoading = false;
       });
     }
+  }
+
+  void _showFilterOptions(AppLocalizations localizations) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: Text(localizations.filterLastWeek),
+                onTap: () {
+                  setState(() {
+                    _selectedFilterDuration = 'filterLastWeek';
+                  });
+                  _fetchData();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(localizations.filterLastMonth),
+                onTap: () {
+                  setState(() {
+                    _selectedFilterDuration = 'filterLastMonth';
+                  });
+                  _fetchData();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(localizations.filterLast3Months),
+                onTap: () {
+                  setState(() {
+                    _selectedFilterDuration = 'filterLast3Months';
+                  });
+                  _fetchData();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(localizations.filterLast6Months),
+                onTap: () {
+                  setState(() {
+                    _selectedFilterDuration = 'filterLast6Months';
+                  });
+                  _fetchData();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text(localizations.filterAllTime),
+                onTap: () {
+                  setState(() {
+                    _selectedFilterDuration = 'allTime';
+                  });
+                  _fetchData();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // Helper to group BP readings by date
@@ -137,11 +221,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
               ),
               const SizedBox(width: 8), // Spacing between buttons
               IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(localizations.notYetImplemented(localizations.filter))),
-                  );
-                },
+                onPressed: () => _showFilterOptions(localizations),
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,
               ),

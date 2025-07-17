@@ -567,6 +567,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filter'**
   String get filter;
+
+  /// No description provided for @filterLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 1 Week'**
+  String get filterLastWeek;
+
+  /// No description provided for @filterLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 1 Month'**
+  String get filterLastMonth;
+
+  /// No description provided for @filterLast3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 3 Months'**
+  String get filterLast3Months;
+
+  /// No description provided for @filterLast6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 6 Months'**
+  String get filterLast6Months;
+
+  /// No description provided for @filterAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get filterAllTime;
 }
 
 class _AppLocalizationsDelegate
