@@ -6,6 +6,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/patient_details_page.dart';
 import 'package:myapp/utils/logger_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -36,12 +37,10 @@ class _AuthScreenState extends State<AuthScreen> {
         final patientDetails = await SupabaseService().getPatientDetails();
         if (mounted) {
           if (patientDetails == null) {
-            final name = user.userMetadata?['full_name'] as String?;
-            final email = user.email;
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => PatientDetailsPage(name: name, email: email),
+                builder: (context) => const PatientDetailsPage(), // No longer passing name/email directly
               ),
             );
           } else {
@@ -91,7 +90,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 height: 250,
                 errorBuilder: (context, error, stackTrace) {
                   // This shows a placeholder if the image is not found
-                  return const Icon(Icons.lock_person, size: 150, color: Colors.grey);
+                  return const Icon(Icons.lock_person, size: 150, color: Colors.green);
                 },
               ),
               const SizedBox(height: 24),

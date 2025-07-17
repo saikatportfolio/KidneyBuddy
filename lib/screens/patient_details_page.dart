@@ -4,16 +4,16 @@ import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/utils/logger_config.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientDetailsPage extends StatefulWidget {
-  final String? name;
-  final String? email;
   final String? source;
 
-  const PatientDetailsPage({Key? key, this.name, this.email, this.source}) : super(key: key);
+  const PatientDetailsPage({Key? key, this.source}) : super(key: key);
 
   @override
   _PatientDetailsPageState createState() => _PatientDetailsPageState();
@@ -31,8 +31,26 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.name ?? '';
-    _email = widget.email;
+    _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
+  }
+
+  void _loadInitialData() async {
+    // Load from SharedPreferences first (for Google Sign-in pre-fill)
+    final prefs = await SharedPreferences.getInstance();
+    final String? googleUserName = prefs.getString('google_user_name');
+    final String? googleUserEmail = prefs.getString('google_user_email');
+
+    logger.d('Patient detailas: Retrieved Google Email1: $googleUserEmail');
+    logger.d('Patient detailas: Retrieved Google Name: $googleUserName');
+
+    if (googleUserName != null) {
+      _nameController.text = googleUserName;
+    }
+    if (googleUserEmail != null) {
+      _email = googleUserEmail;
+    }
+
+    // Then load existing patient details (this will overwrite if there are existing details)
     _loadPatientDetails();
   }
 

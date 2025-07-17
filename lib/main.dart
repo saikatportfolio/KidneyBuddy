@@ -23,9 +23,7 @@ import 'package:myapp/utils/logger_config.dart'; // Import the logger
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   logger.d('main: WidgetsFlutterBinding initialized');
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   logger.d('main: Firebase initialized');
 
   // Initialize Supabase here, before any service tries to use it
@@ -33,10 +31,10 @@ void main() async {
   logger.d('main: Supabase initialized');
 
   // Initialize Crashlytics
-  if(!kIsWeb){
-await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  if (!kIsWeb) {
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   }
-   // Explicitly enable Crashlytics collection
+  // Explicitly enable Crashlytics collection
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -47,25 +45,34 @@ await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   PatientDetails? patientDetails;
   if (kIsWeb) {
     patientDetails = await SupabaseService().getPatientDetails();
-    logger.d('main: Loaded patient details from Supabase (Web): $patientDetails');
+    logger.d(
+      'main: Loaded patient details from Supabase (Web): $patientDetails',
+    );
   } else {
     patientDetails = await DatabaseHelper().getPatientDetails();
-    logger.d('main: Loaded patient details from SQLite (Mobile): $patientDetails');
+    logger.d(
+      'main: Loaded patient details from SQLite (Mobile): $patientDetails',
+    );
   }
 
-  runZonedGuarded(() {
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => PatientDetailsProvider(patientDetails)), // Initialize with loaded data
-          ChangeNotifierProvider(create: (_) => FeedbackProvider()),
-        ],
-        child: MyApp(),
-      ),
-    );
-  }, (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack);
-  });
+  runZonedGuarded(
+    () {
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => PatientDetailsProvider(patientDetails),
+            ), // Initialize with loaded data
+            ChangeNotifierProvider(create: (_) => FeedbackProvider()),
+          ],
+          child: MyApp(),
+        ),
+      );
+    },
+    (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack);
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -99,7 +106,9 @@ class MyAppState extends State<MyApp> {
     try {
       // Load preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      _hasSeenOnboarding = (prefs.getBool('hasSeenOnboarding') ?? false); // Always show onboarding
+      _hasSeenOnboarding =
+          (prefs.getBool('hasSeenOnboarding') ??
+          false); // Always show onboarding
       String? langCode = prefs.getString('languageCode');
       _locale = langCode != null ? Locale(langCode) : null;
     } catch (e) {
@@ -110,28 +119,62 @@ class MyAppState extends State<MyApp> {
         setState(() {
           _isLoading = false;
         });
-        logger.d('MyAppState: _initializeAppData completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale');
+        logger.d(
+          'MyAppState: _initializeAppData completed. hasSeenOnboarding: $_hasSeenOnboarding, locale: $_locale',
+        );
       }
     }
   }
 
   void _setupAuthStateListener() {
-    _authStateSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+    _authStateSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) async {
       logger.d('MyAppState: Auth state changed: ${data.event}');
       if (mounted) {
-        final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
-        if (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession) {
-          logger.d('MyAppState: User signed in or initial session. Attempting to load patient details.');
+        final patientDetailsProvider = Provider.of<PatientDetailsProvider>(
+          context,
+          listen: false,
+        );
+        if (data.event == AuthChangeEvent.signedIn ||
+            data.event == AuthChangeEvent.initialSession) {
+          logger.d(
+            'MyAppState: User signed in or initial session. Attempting to load patient details.',
+          );
+          final currentUser = Supabase.instance.client.auth.currentUser;
+          if (currentUser == null) {
+            return;
+          }
+          if (mounted) {
+            final name = currentUser.userMetadata?['full_name'] as String?;
+            final email = currentUser.email;
+
+            logger.d('MyAppState: Retrieved Google Name1: $name');
+            logger.d('MyAppState: Retrieved Google Email1: $email');
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (name != null) {
+              await prefs.setString('google_user_name', name);
+            }
+            if (email != null) {
+              await prefs.setString('google_user_email', email);
+            }
+          }
           PatientDetails? fetchedDetails;
           if (kIsWeb) {
             fetchedDetails = await SupabaseService().getPatientDetails();
-            logger.d('MyAppState: Fetched patient details from Supabase (Web): $fetchedDetails');
+            logger.d(
+              'MyAppState: Fetched patient details from Supabase (Web): $fetchedDetails',
+            );
           } else {
             fetchedDetails = await DatabaseHelper().getPatientDetails();
-            logger.d('MyAppState: Fetched patient details from SQLite (Mobile): $fetchedDetails');
+            logger.d(
+              'MyAppState: Fetched patient details from SQLite (Mobile): $fetchedDetails',
+            );
           }
           patientDetailsProvider.setPatientDetails(fetchedDetails);
-          logger.d('MyAppState: PatientDetailsProvider updated with: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}');
+          logger.d(
+            'MyAppState: PatientDetailsProvider updated with: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}',
+          );
         } else if (data.event == AuthChangeEvent.signedOut) {
           logger.d('MyAppState: User signed out. Clearing patient details.');
           patientDetailsProvider.setPatientDetails(null);
@@ -162,11 +205,7 @@ class MyAppState extends State<MyApp> {
     if (_isLoading) {
       logger.d('MyAppState: Building loading screen');
       return MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
       );
     }
 
@@ -175,8 +214,12 @@ class MyAppState extends State<MyApp> {
     final currentUser = supabase.auth.currentUser;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
 
-    logger.d('MyAppState: currentUser: ${currentUser?.id != null ? 'Logged In' : 'Logged Out'}');
-    logger.d('MyAppState: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}');
+    logger.d(
+      'MyAppState: currentUser: ${currentUser?.id != null ? 'Logged In' : 'Logged Out'}',
+    );
+    logger.d(
+      'MyAppState: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails != null ? 'Available' : 'Missing'}',
+    );
     logger.d('MyAppState: _hasSeenOnboarding: $_hasSeenOnboarding');
 
     Widget homeScreen;
@@ -208,23 +251,23 @@ class MyAppState extends State<MyApp> {
     );
   }
 
-MaterialColor _createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-  Map<int, Color> swatch = {};
-  final int r = color.red, g = color.green, b = color.blue;
+  MaterialColor _createMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    Map<int, Color> swatch = {};
+    final int r = color.red, g = color.green, b = color.blue;
 
-  for (int i = 1; i < 10; i++) {
-    strengths.add(0.1 * i);
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+    for (var strength in strengths) {
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+        1,
+      );
+    }
+    return MaterialColor(color.value, swatch);
   }
-  for (var strength in strengths) {
-    final double ds = 0.5 - strength;
-    swatch[(strength * 1000).round()] = Color.fromRGBO(
-      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
-      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
-      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
-      1,
-    );
-  }
-  return MaterialColor(color.value, swatch);
-}
 }

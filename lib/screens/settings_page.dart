@@ -4,6 +4,7 @@ import 'package:myapp/screens/language_selection_screen.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/auth_screen.dart';
 import 'package:myapp/utils/logger_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -56,6 +57,13 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     try {
       await SupabaseService().signOut();
+      
+      // Clear SharedPreferences data related to Google Sign-in
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('google_user_name');
+      await prefs.remove('google_user_email');
+      logger.d('SettingsPage: Cleared Google user data from SharedPreferences on sign out.');
+
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const AuthScreen()),
