@@ -133,6 +133,21 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
             ),
             onPressed: () async {
               logger.i('Attempting to generate PDF report...');
+              logger.i('Attempting to generate PDF report for : $_selectedCategoryIndex');
+              if(_selectedCategoryIndex == 1){
+                logger.i('No Crearine readings available for PDF generation.');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Not yet Implemented')),
+                  );
+                  return;
+              }
+               if(_selectedCategoryIndex == 2){
+                logger.w('No Potasium readings available for PDF generation.');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Not yet Implemented')),
+                  );
+                  return;
+              }
               try {
                 final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
                 final patientDetails = patientDetailsProvider.patientDetails;
