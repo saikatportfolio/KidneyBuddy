@@ -31,15 +31,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Meals'),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFE1F5FE), Color(0xFFB3E5FC)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: Theme.of(context).primaryColor, // Set background color to primary theme color
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _mealPlanFuture,
@@ -97,7 +89,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  // Removed SizedBox(height: 8) here
                   // Nutritional Restrictions Grid List
                   FutureBuilder<List<NutritionRestriction>>(
                     future: _nutritionRestrictionsFuture,
@@ -117,7 +109,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           Padding( // Removed const keyword
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Text(
-                              'Nutritional Restrictions',
+                              'Nutritional Requirement',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -126,7 +118,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: 120, // Fixed height for horizontal scroll
+                            height: 100, // Reduced height for horizontal scroll
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: restrictions.length,
@@ -139,7 +131,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                   ),
                                   margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   child: Container(
-                                    width: 120, // Fixed width for each grid item
+                                    width: 100, // Reduced width for each grid item
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
@@ -240,7 +232,9 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                               children: [
                                                 Text(
                                                   option.foodName,
-                                                  style: Theme.of(context).textTheme.bodyMedium,
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        fontSize: 16.0, // Increased font size
+                                                      ),
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
@@ -248,6 +242,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                                         fontStyle: FontStyle.italic,
                                                         color: Colors.grey.shade600,
+                                                        fontSize: 14.0, // Increased font size
                                                       ),
                                                 ),
                                               ],

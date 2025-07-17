@@ -52,7 +52,7 @@ class _AuthScreenState extends State<AuthScreen> {
           _showSnackBar(LocalizationHelper.translateKey(context, 'loginSuccessMessage'));
         }
       } else if (mounted) {
-        _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', 'Sign-in failed.'));
+       // _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', 'Sign-in failed.'));
       }
     } on AuthException catch (e) {
       logger.e('Google Auth Error: ${e.message}');

@@ -14,6 +14,7 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
   final TextEditingController _ageController = TextEditingController();
   String? _selectedGender; // Nullable to indicate no selection initially
   String? _egfrResult; // To store the calculated eGFR result
+  String? _ckdStageInterpretation; // To store the CKD stage and interpretation
 
   @override
   void dispose() {
@@ -37,6 +38,22 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
         femaleFactor;
 
     return egfr; // in mL/min/1.73 m²
+  }
+
+  String _getCKDStageAndInterpretation(double egfr) {
+    if (egfr >= 90) {
+      return 'CKD Stage: G1';
+    } else if (egfr >= 60) {
+      return 'CKD Stage: G2';
+    } else if (egfr >= 45) {
+      return 'CKD Stage: G3a';
+    } else if (egfr >= 30) {
+      return 'CKD Stage: G3b';
+    } else if (egfr >= 15) {
+      return 'CKD Stage: G4';
+    } else {
+      return 'CKD Stage: G5';
+    }
   }
 
   void _performCalculation() {
@@ -71,6 +88,7 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
 
       setState(() {
         _egfrResult = 'eGFR: ${egfr.toStringAsFixed(2)} mL/min/1.73 m²';
+        _ckdStageInterpretation = _getCKDStageAndInterpretation(egfr); // Set the interpretation
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -161,6 +179,19 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.blueAccent,
+                ),
+              ),
+            if (_ckdStageInterpretation != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0), // Add some spacing
+                child: Text(
+                  _ckdStageInterpretation!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blueAccent, // A distinct color for emphasis
+                  ),
                 ),
               ),
           ],
