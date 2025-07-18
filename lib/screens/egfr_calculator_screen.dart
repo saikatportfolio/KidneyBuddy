@@ -172,25 +172,59 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
 
             // eGFR Result Display
             if (_egfrResult != null)
-              Text(
-                _egfrResult!,
+              RichText(
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
+                softWrap: true, // Allow text to wrap
+                maxLines: 2, // Allow up to 2 lines
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'eGFR: ',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue, // Blue color for "eGFR:"
+                      ),
+                    ),
+                    TextSpan(
+                      text: _egfrResult!.replaceAll('eGFR: ', ''), // Remove "eGFR: " to get only the value
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // Black color for the value
+                      ),
+                    ),
+                  ],
                 ),
               ),
             if (_ckdStageInterpretation != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0), // Add some spacing
-                child: Text(
-                  _ckdStageInterpretation!,
+                child: RichText(
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blueAccent, // A distinct color for emphasis
+                  softWrap: true, // Allow text to wrap
+                  maxLines: 2, // Allow up to 2 lines
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'CKD Stage: ',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue, // Blue color for "CKD Stage:"
+                        ),
+                      ),
+                      TextSpan(
+                        text: _ckdStageInterpretation!.replaceAll('CKD Stage: ', ''), // Remove "CKD Stage: " to get only the value
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black, // Black color for the value
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

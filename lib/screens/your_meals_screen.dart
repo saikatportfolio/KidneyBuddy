@@ -8,7 +8,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/upload_file_screen.dart';
 
 class YourMealsScreen extends StatefulWidget {
-  const YourMealsScreen({Key? key}) : super(key: key);
+  const YourMealsScreen({super.key});
 
   @override
   State<YourMealsScreen> createState() => _YourMealsScreenState();
@@ -109,7 +109,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           Padding( // Removed const keyword
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Text(
-                              'Nutritional Requirement',
+                              'Your Daily Nutritional Limit',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

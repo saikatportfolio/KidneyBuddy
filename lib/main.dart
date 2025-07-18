@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/screens/onboarding_screen.dart'; // Import OnboardingScreen
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/auth_screen.dart'; // Import AuthScreen
-import 'package:myapp/screens/patient_details_page.dart'; // Import PatientDetailsPage
+// Import PatientDetailsPage
 import 'package:firebase_core/firebase_core.dart'; // Keep Firebase Core for Crashlytics/Analytics
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
 import 'package:firebase_analytics/firebase_analytics.dart'; // Import Firebase Analytics

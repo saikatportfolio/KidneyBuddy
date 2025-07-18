@@ -6,7 +6,6 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/patient_details_page.dart';
 import 'package:myapp/utils/logger_config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
