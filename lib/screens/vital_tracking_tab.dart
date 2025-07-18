@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
@@ -199,6 +200,89 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
     }
   }
 
+  void _showTrendChart(AppLocalizations localizations) {
+    if (_bloodPressureReadings.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.noDataAvailable)),
+      );
+      return;
+    }
+
+    // Sort readings by timestamp ascending for the chart
+    final sortedReadings = List<BloodPressure>.from(_bloodPressureReadings)
+      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+    final systolicSpots = <FlSpot>[];
+    final diastolicSpots = <FlSpot>[];
+
+    for (int i = 0; i < sortedReadings.length; i++) {
+      systolicSpots.add(FlSpot(i.toDouble(), sortedReadings[i].systolic.toDouble()));
+      diastolicSpots.add(FlSpot(i.toDouble(), sortedReadings[i].diastolic.toDouble()));
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations.bpTrend),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 300,
+          child: LineChart(
+            LineChartData(
+              gridData: FlGridData(show: true),
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
+                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              borderData: FlBorderData(show: true),
+              lineBarsData: [
+                LineChartBarData(
+                  spots: systolicSpots,
+                  isCurved: true,
+                  color: Colors.blue,
+                  barWidth: 4,
+                  isStrokeCapRound: true,
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(show: false),
+                ),
+                LineChartBarData(
+                  spots: diastolicSpots,
+                  isCurved: true,
+                  color: Colors.red,
+                  barWidth: 4,
+                  isStrokeCapRound: true,
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(show: false),
+                ),
+              ],
+              lineTouchData: LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
+                  getTooltipItems: (touchedSpots) {
+                    return touchedSpots.map((spot) {
+                      final reading = sortedReadings[spot.spotIndex];
+                      return LineTooltipItem(
+                        '${spot.y.toInt()} mmHg\n${DateFormat('MMM dd, hh:mm a').format(reading.timestamp)}',
+                        const TextStyle(color: Colors.white),
+                      );
+                    }).toList();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(localizations.close),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -218,6 +302,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                 onPressed: () => _generatePdfReport(localizations),
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
+              ),
+              const SizedBox(width: 8),
+              TextButton.icon(
+                onPressed: () => _showTrendChart(localizations),
+                icon: const Icon(Icons.trending_up),
+                label: Text(localizations.trend),
               ),
               const SizedBox(width: 8), // Spacing between buttons
               IconButton(

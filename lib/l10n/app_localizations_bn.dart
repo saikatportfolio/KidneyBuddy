@@ -283,4 +283,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get filterAllTime => 'All Time';
+
+  @override
+  String get trend => 'Trend';
+
+  @override
+  String get bpTrend => 'BP Trend';
+
+  @override
+  String get close => 'Close';
 }

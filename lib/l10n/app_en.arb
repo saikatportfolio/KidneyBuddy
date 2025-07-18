@@ -82,5 +82,8 @@
   "filterLastMonth": "Last 1 Month",
   "filterLast3Months": "Last 3 Months",
   "filterLast6Months": "Last 6 Months",
-  "filterAllTime": "All Time"
+  "filterAllTime": "All Time",
+  "trend": "Trend",
+  "bpTrend": "BP Trend",
+  "close": "Close"
 }

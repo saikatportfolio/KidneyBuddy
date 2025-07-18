@@ -597,6 +597,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All Time'**
   String get filterAllTime;
+
+  /// No description provided for @trend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend'**
+  String get trend;
+
+  /// No description provided for @bpTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'BP Trend'**
+  String get bpTrend;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate
