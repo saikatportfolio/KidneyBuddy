@@ -231,12 +231,50 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
             LineChartData(
               gridData: FlGridData(show: true),
               titlesData: FlTitlesData(
-                leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
-                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 48, // Increased reserved size
+                    interval: 50, // Set interval to 50 for better spacing
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        value.toInt().toString(),
+                        style: const TextStyle(
+                          fontSize: 9, // Reduced font size
+                          color: Colors.black,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 32,
+                    interval: 1,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      final index = value.toInt();
+                      if (index >= 0 && index < sortedReadings.length) {
+                        if (index % 3 == 0) {
+                          return Text(
+                            DateFormat('dd MMM').format(sortedReadings[index].timestamp),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.black,
+                            ),
+                          );
+                        }
+                      }
+                      return const Text('');
+                    },
+                  ),
+                ),
                 topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),
               borderData: FlBorderData(show: true),
+              minY: 0,
+              maxY: 450, // Increased maxY to accommodate higher systolic readings
               lineBarsData: [
                 LineChartBarData(
                   spots: systolicSpots,
