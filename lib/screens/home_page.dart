@@ -11,6 +11,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/vital_tracking_page.dart';
 import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/utils/logger_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,11 +25,13 @@ class _HomePageState extends State<HomePage> {
   String _tipOfTheDay = 'Loading tip...';
   List<String> _allTips = [];
   bool _isLoadingContent = true;
+  String? _googleName;
 
   @override
   void initState() {
     super.initState();
     _loadDynamicContent();
+    _loadGoogleName();
   }
 
   Future<void> _loadDynamicContent() async {
@@ -62,12 +65,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _loadGoogleName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _googleName = prefs.getString('google_user_name');
+      logger.i('Home page _googleName $_googleName');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     logger.d('HomePage: build called');
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
-    final patientName = patientDetailsProvider.patientDetails?.name ?? 'User';
+    final patientName = _googleName ?? patientDetailsProvider.patientDetails?.name ?? 'User';
     final ckdStage = patientDetailsProvider.patientDetails?.ckdStage ?? 'Not Set';
 
     return Scaffold(
