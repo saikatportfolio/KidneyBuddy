@@ -438,12 +438,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
                               child: InkWell(
-                                onTap: () {
-                                  // TODO: Implement navigation to detail page for this vital reading
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Tapped on BP reading: ${reading.systolic}/${reading.diastolic} at ${DateFormat('hh:mm a').format(reading.timestamp)}')),
-                                  );
-                                },
+                                // onTap: () {
+                                //   // TODO: Implement navigation to detail page for this vital reading
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(content: Text('Tapped on BP reading: ${reading.systolic}/${reading.diastolic} at ${DateFormat('hh:mm a').format(reading.timestamp)}')),
+                                //   );
+                                // },
                                 child: Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child: Column(

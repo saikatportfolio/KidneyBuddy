@@ -63,6 +63,10 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
           );
         },
       );
+      setState(() {
+        _fileBytes = null;
+        _fileName = null;
+      });
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,8 +91,10 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (_fileName != null)
+              if (_fileName != null) ...[
                 Text('Selected file: $_fileName'),
+                const SizedBox(height: 16),
+              ],
             ElevatedButton(
               onPressed: _pickFile,
               child: const Text('Pick a file'),
