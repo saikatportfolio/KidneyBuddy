@@ -10,6 +10,7 @@ import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
 import 'package:uuid/uuid.dart'; // Import uuid package
+import 'package:numberpicker/numberpicker.dart'; // Import numberpicker
 
 class AddBpPage extends StatefulWidget {
   const AddBpPage({super.key});
@@ -19,17 +20,16 @@ class AddBpPage extends StatefulWidget {
 }
 
 class _AddBpPageState extends State<AddBpPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _systolicController = TextEditingController();
-  final TextEditingController _diastolicController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
+  int _currentSystolicValue = 120;
+  int _currentDiastolicValue = 80;
+
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
-  @override
   @override
   void initState() {
     super.initState();
@@ -45,8 +45,6 @@ class _AddBpPageState extends State<AddBpPage> {
 
   @override
   void dispose() {
-    _systolicController.dispose();
-    _diastolicController.dispose();
     _commentController.dispose();
     _dateController.dispose();
     _timeController.dispose();
@@ -93,35 +91,34 @@ class _AddBpPageState extends State<AddBpPage> {
   void _saveBloodPressure() async {
     logger.d('_saveBloodPressure call ');
 
-    if (_formKey.currentState!.validate()) {
-      if (_selectedDate == null || _selectedTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocalizationHelper.translateKey(context, 'selectDateAndTimeError'))),
-        );
-        return;
-      }
-
-      final combinedDateTime = DateTime(
-        _selectedDate!.year,
-        _selectedDate!.month,
-        _selectedDate!.day,
-        _selectedTime!.hour,
-        _selectedTime!.minute,
+    if (_selectedDate == null || _selectedTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocalizationHelper.translateKey(context, 'selectDateAndTimeError'))),
       );
+      return;
+    }
 
-      final String newId = Uuid().v4(); // Generate a new UUID
-      final bloodPressure = BloodPressure(
-        id: newId, // Assign the generated ID
-        systolic: int.parse(_systolicController.text),
-        diastolic: int.parse(_diastolicController.text),
-        timestamp: combinedDateTime,
-        comment: _commentController.text.isEmpty ? null : _commentController.text,
-      );
-      logger.d('Blood pressure data: $bloodPressure');
+    final combinedDateTime = DateTime(
+      _selectedDate!.year,
+      _selectedDate!.month,
+      _selectedDate!.day,
+      _selectedTime!.hour,
+      _selectedTime!.minute,
+    );
 
-      try {
-        final currentUser = Supabase.instance.client.auth.currentUser;
-        logger.d('AddBpPage: Current user before saving BP: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
+    final String newId = Uuid().v4(); // Generate a new UUID
+    final bloodPressure = BloodPressure(
+      id: newId, // Assign the generated ID
+      systolic: _currentSystolicValue,
+      diastolic: _currentDiastolicValue,
+      timestamp: combinedDateTime,
+      comment: _commentController.text.isEmpty ? null : _commentController.text,
+    );
+    logger.d('Blood pressure data: $bloodPressure');
+
+    try {
+      final currentUser = Supabase.instance.client.auth.currentUser;
+      logger.d('AddBpPage: Current user before saving BP: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
 
         // Save to SQLite for mobile
         if (!kIsWeb) {
@@ -138,13 +135,13 @@ class _AddBpPageState extends State<AddBpPage> {
         );
 
         // Clear fields after successful save
-        _systolicController.clear();
-        _diastolicController.clear();
         _commentController.clear();
         setState(() {
           _selectedDate = DateTime.now();
           _selectedTime = TimeOfDay.now();
           _updateDateAndTimeControllers();
+          _currentSystolicValue = 120; // Reset to default
+          _currentDiastolicValue = 80; // Reset to default
         });
 
         // Redirect to VitalTrackingPage
@@ -158,7 +155,6 @@ class _AddBpPageState extends State<AddBpPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(LocalizationHelper.translateKey(context, 'bpSaveError').replaceFirst('{error}', e.toString()))),
         );
-      }
     }
   }
 
@@ -172,131 +168,128 @@ class _AddBpPageState extends State<AddBpPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                LocalizationHelper.translateKey(context, 'Systolic'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _systolicController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: LocalizationHelper.translateKey(context, 'Systolic'),
-                  hintText: 'e.g., 120',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.arrow_upward),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNumberPickerColumn(
+                  label: LocalizationHelper.translateKey(context, 'SYS'),
+                  value: _currentSystolicValue,
+                  minValue: 70,
+                  maxValue: 180,
+                  onChanged: (value) => setState(() => _currentSystolicValue = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter systolic value';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
+                _buildNumberPickerColumn(
+                  label: LocalizationHelper.translateKey(context, 'DIA'),
+                  value: _currentDiastolicValue,
+                  minValue: 40,
+                  maxValue: 120,
+                  onChanged: (value) => setState(() => _currentDiastolicValue = value),
+                ),
+                ],
               ),
               const SizedBox(height: 16),
-              Text(
-                LocalizationHelper.translateKey(context, 'Diastolic'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Text(
+              LocalizationHelper.translateKey(context, 'Add Your Comment'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _commentController,
+              keyboardType: TextInputType.multiline,
+              maxLines: 5,
+              minLines: 3,
+              decoration: InputDecoration(
+                labelText: LocalizationHelper.translateKey(context, 'Add Your Comment'),
+                hintText: 'Add any relevant comments...',
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.comment),
               ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _diastolicController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: LocalizationHelper.translateKey(context, 'Diastolic'),
-                  hintText: 'e.g., 80',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.arrow_downward),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter diastolic value';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              LocalizationHelper.translateKey(context, 'Select Date'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _dateController,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: LocalizationHelper.translateKey(context, 'Select date'),
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.calendar_today),
               ),
-              const SizedBox(height: 16),
-              Text(
-                LocalizationHelper.translateKey(context, 'Add Your Comment'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              onTap: () => _selectDate(context),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              LocalizationHelper.translateKey(context, 'Select Time'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _timeController,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: LocalizationHelper.translateKey(context, 'Select Time'),
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.access_time),
               ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _commentController,
-                keyboardType: TextInputType.multiline,
-                maxLines: 5,
-                minLines: 3,
-                decoration: InputDecoration(
-                  labelText: LocalizationHelper.translateKey(context, 'Add Your Comment'),
-                  hintText: 'Add any relevant comments...',
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.comment),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                LocalizationHelper.translateKey(context, 'Select Date'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _dateController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: LocalizationHelper.translateKey(context, 'Select date'),
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.calendar_today),
-                ),
-                onTap: () => _selectDate(context),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                LocalizationHelper.translateKey(context, 'Select Time'),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _timeController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: LocalizationHelper.translateKey(context, 'Select Time'),
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.access_time),
-                ),
-                onTap: () => _selectTime(context),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saveBloodPressure,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    LocalizationHelper.translateKey(context, 'Save'),
-                    style: const TextStyle(fontSize: 18),
+              onTap: () => _selectTime(context),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saveBloodPressure,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                child: Text(
+                  LocalizationHelper.translateKey(context, 'Save'),
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNumberPickerColumn({
+    required String label,
+    required int value,
+    required int minValue,
+    required int maxValue,
+    required ValueChanged<int> onChanged,
+  }) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        NumberPicker(
+          value: value,
+          minValue: minValue,
+          maxValue: maxValue,
+          onChanged: onChanged,
+          textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
+          selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(color: Colors.grey[300]!),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

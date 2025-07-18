@@ -58,6 +58,7 @@ dependencies:
   file_picker: ^10.2.0
   mime: ^2.0.0
   fl_chart: ^1.0.0
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:
