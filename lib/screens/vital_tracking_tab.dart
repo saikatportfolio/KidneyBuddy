@@ -227,88 +227,105 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         content: SizedBox(
           width: double.maxFinite,
           height: 300,
-          child: LineChart(
-            LineChartData(
-              gridData: FlGridData(show: true),
-              titlesData: FlTitlesData(
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 48, // Increased reserved size
-                    interval: 50, // Set interval to 50 for better spacing
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(),
-                        style: const TextStyle(
-                          fontSize: 9, // Reduced font size
-                          color: Colors.black,
+          child: Column(
+            children: [
+              Expanded(
+                child: LineChart(
+                  LineChartData(
+                    gridData: FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 48, // Increased reserved size
+                          interval: 50, // Set interval to 50 for better spacing
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              value.toInt().toString(),
+                              style: const TextStyle(
+                                fontSize: 9, // Reduced font size
+                                color: Colors.black,
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 32,
+                          interval: 1,
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            final index = value.toInt();
+                            if (index >= 0 && index < sortedReadings.length) {
+                              if (index % 3 == 0) {
+                                return Text(
+                                  DateFormat('dd MMM').format(sortedReadings[index].timestamp),
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
+                                );
+                              }
+                            }
+                            return const Text('');
+                          },
+                        ),
+                      ),
+                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    borderData: FlBorderData(show: true),
+                    minY: 0,
+                    maxY: 450, // Increased maxY to accommodate higher systolic readings
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: systolicSpots,
+                        isCurved: true,
+                        color: Colors.blue,
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                      LineChartBarData(
+                        spots: diastolicSpots,
+                        isCurved: true,
+                        color: Colors.red,
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                    lineTouchData: LineTouchData(
+                      touchTooltipData: LineTouchTooltipData(
+                        getTooltipItems: (touchedSpots) {
+                          return touchedSpots.map((spot) {
+                            final reading = sortedReadings[spot.spotIndex];
+                            return LineTooltipItem(
+                              '${spot.y.toInt()} mmHg\n${DateFormat('MMM dd, hh:mm a').format(reading.timestamp)}',
+                              const TextStyle(color: Colors.white),
+                            );
+                          }).toList();
+                        },
+                      ),
+                    ),
                   ),
                 ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 32,
-                    interval: 1,
-                    getTitlesWidget: (double value, TitleMeta meta) {
-                      final index = value.toInt();
-                      if (index >= 0 && index < sortedReadings.length) {
-                        if (index % 3 == 0) {
-                          return Text(
-                            DateFormat('dd MMM').format(sortedReadings[index].timestamp),
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.black,
-                            ),
-                          );
-                        }
-                      }
-                      return const Text('');
-                    },
-                  ),
-                ),
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),
-              borderData: FlBorderData(show: true),
-              minY: 0,
-              maxY: 450, // Increased maxY to accommodate higher systolic readings
-              lineBarsData: [
-                LineChartBarData(
-                  spots: systolicSpots,
-                  isCurved: true,
-                  color: Colors.blue,
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(show: false),
-                  belowBarData: BarAreaData(show: false),
-                ),
-                LineChartBarData(
-                  spots: diastolicSpots,
-                  isCurved: true,
-                  color: Colors.red,
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: FlDotData(show: false),
-                  belowBarData: BarAreaData(show: false),
-                ),
-              ],
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  getTooltipItems: (touchedSpots) {
-                    return touchedSpots.map((spot) {
-                      final reading = sortedReadings[spot.spotIndex];
-                      return LineTooltipItem(
-                        '${spot.y.toInt()} mmHg\n${DateFormat('MMM dd, hh:mm a').format(reading.timestamp)}',
-                        const TextStyle(color: Colors.white),
-                      );
-                    }).toList();
-                  },
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLegendItem(Colors.blue, localizations.systolic),
+                    const SizedBox(width: 20),
+                    _buildLegendItem(Colors.red, localizations.diastolic),
+                  ],
                 ),
               ),
-            ),
+            ],
           ),
         ),
         actions: [
@@ -318,6 +335,20 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          color: color,
+        ),
+        const SizedBox(width: 8),
+        Text(label),
+      ],
     );
   }
 

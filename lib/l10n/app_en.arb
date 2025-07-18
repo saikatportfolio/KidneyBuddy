@@ -60,6 +60,8 @@
   "addBpPageTitle": "Add Blood Pressure Reading",
   "systolicLabel": "Systolic",
   "diastolicLabel": "Diastolic",
+  "systolic": "Systolic",
+  "diastolic": "Diastolic",
   "addCommentLabel": "Add Comment",
   "selectDateLabel": "Select Date",
   "selectTimeLabel": "Select Time",

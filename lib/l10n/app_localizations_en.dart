@@ -208,6 +208,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diastolicLabel => 'Diastolic';
 
   @override
+  String get systolic => 'Systolic';
+
+  @override
+  String get diastolic => 'Diastolic';
+
+  @override
   String get addCommentLabel => 'Add Comment';
 
   @override

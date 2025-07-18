@@ -208,6 +208,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get diastolicLabel => 'ডায়াস্টোলিক';
 
   @override
+  String get systolic => 'Systolic';
+
+  @override
+  String get diastolic => 'Diastolic';
+
+  @override
   String get addCommentLabel => 'মন্তব্য যোগ করুন';
 
   @override

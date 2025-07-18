@@ -460,6 +460,18 @@ abstract class AppLocalizations {
   /// **'Diastolic'**
   String get diastolicLabel;
 
+  /// No description provided for @systolic.
+  ///
+  /// In en, this message translates to:
+  /// **'Systolic'**
+  String get systolic;
+
+  /// No description provided for @diastolic.
+  ///
+  /// In en, this message translates to:
+  /// **'Diastolic'**
+  String get diastolic;
+
   /// No description provided for @addCommentLabel.
   ///
   /// In en, this message translates to:
