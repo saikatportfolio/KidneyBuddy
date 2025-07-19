@@ -12,6 +12,7 @@ import 'package:myapp/models/user_file.dart';
 import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRestriction model
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
 import 'package:uuid/uuid.dart';
+import 'package:myapp/config/app_config.dart'; // Import the new config file
 
 class SupabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -37,14 +38,14 @@ class SupabaseService {
     if (kIsWeb) {
       await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: 'https://ukhmymbgfzbpulwsfmrd.supabase.co/auth/v1/callback', // Use actual Supabase URL
+        redirectTo: AppConfig.googleAuthRedirectUrl, // Use global URL
       );
       // For web, the navigation happens via redirect, so no direct AuthResponse is returned here.
       // The auth state listener in main.dart will handle the session.
     } else {
       // Mobile implementation using google_sign_in
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        serverClientId: '998282656789-og31pr3bvcdi7b49p1emo5bsuc9s5t5m.apps.googleusercontent.com', // IMPORTANT: Replace with your Web client ID
+        serverClientId: AppConfig.googleSignInWebClientId, // Use global client ID
       );
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -74,8 +75,8 @@ class SupabaseService {
   // Initialize Supabase (call this in main.dart)
   static Future<void> initialize() async {
     await Supabase.initialize(
-      url: 'https://ukhmymbgfzbpulwsfmrd.supabase.co', // Replace with your Supabase URL
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVraG15bWJnZnpicHVsd3NmbXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMxNTIsImV4cCI6MjA2NzM2OTE1Mn0.WcimbbltoqdRewLh7Wnh3DP7f-BMgRuQ8115oZoGpjo', // Replace with your Supabase Anon Key
+      url: AppConfig.supabaseUrl, // Use global URL
+      anonKey: AppConfig.supabaseAnonKey, // Use global Anon Key
     );
   }
 
