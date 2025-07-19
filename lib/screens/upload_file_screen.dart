@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:myapp/services/supabase_service.dart';
 
 class UploadFileScreen extends StatefulWidget {
-  const UploadFileScreen({Key? key}) : super(key: key);
+  const UploadFileScreen({super.key});
 
   @override
   State<UploadFileScreen> createState() => _UploadFileScreenState();

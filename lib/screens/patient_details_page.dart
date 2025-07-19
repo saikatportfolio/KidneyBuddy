@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PatientDetailsPage extends StatefulWidget {
   final String? source;
 
-  const PatientDetailsPage({Key? key, this.source}) : super(key: key);
+  const PatientDetailsPage({super.key, this.source});
 
   @override
   _PatientDetailsPageState createState() => _PatientDetailsPageState();

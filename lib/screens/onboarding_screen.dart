@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:myapp/screens/auth_screen.dart';
-import 'package:myapp/screens/home_page.dart'; // Import HomePage
+// Import HomePage
 import 'package:myapp/l10n/app_localizations.dart'; // Import generated localizations
 import 'package:myapp/screens/language_selection_screen.dart'; // Import LanguageSelectionScreen
 import 'package:myapp/utils/logger_config.dart'; // Import the logger

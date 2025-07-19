@@ -9,10 +9,10 @@ import 'package:myapp/models/patient_details.dart'; // Import PatientDetails
 // Import AuthScreen
 import 'package:myapp/screens/patient_details_page.dart'; // Import PatientDetailsPage
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
-import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
+// Import PdfGenerator
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
-import 'package:printing/printing.dart'; // Import printing for PDF sharing
+// Import printing for PDF sharing
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/services/supabase_service.dart'; // Ensure SupabaseService is imported
 

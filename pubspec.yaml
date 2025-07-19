@@ -59,6 +59,7 @@ dependencies:
   mime: ^2.0.0
   fl_chart: ^1.0.0
   numberpicker: ^2.1.2
+  mixpanel_flutter: ^2.0.0 # Added for Mixpanel analytics
 
 dev_dependencies:
   flutter_test:
