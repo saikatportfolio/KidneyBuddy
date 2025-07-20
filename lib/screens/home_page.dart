@@ -4,6 +4,7 @@ import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/food_list_page.dart';
+import 'package:myapp/screens/notification_page.dart'; // Import NotificationPage
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/screens/egfr_calculator_screen.dart';
@@ -146,37 +147,59 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      Stack(
+                      // Notification Icon
+                      Row(
                         children: [
+                          // Notification Icon
+                          Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey[200],
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.notifications_none, size: 28.0),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (_) => const NotificationPage()), // Navigate to NotificationPage
+                                    );
+                                  },
+                                ),
+                              ),
+                              Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 12,
+                                    minHeight: 12,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(width: 10), // Spacing between icons
+                          // Settings Icon
                           Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.grey[200],
                             ),
                             child: IconButton(
-                              icon: const Icon(Icons.notifications_none, size: 28.0),
+                              icon: const Icon(Icons.settings, size: 28.0),
                               onPressed: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                                  MaterialPageRoute(builder: (_) => const SettingsPage()), // Navigate to SettingsPage
                                 );
                               },
                             ),
                           ),
-                          Positioned(
-                            right: 8,
-                            top: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 12,
-                                minHeight: 12,
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     ],

@@ -124,6 +124,18 @@ abstract class AppLocalizations {
   /// **'Maintain a proper renal diet with personalized guidance and easy-to-follow meal plans tailored to your CKD stage.'**
   String get renalDietDescription;
 
+  /// No description provided for @vitalTrackingOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Empower Your Health with Vital Tracking'**
+  String get vitalTrackingOnboardingTitle;
+
+  /// No description provided for @vitalTrackingOnboardingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a close eye on key health metrics like blood pressure, weight and fluid. Understand your trends and share data with your care team for better management.'**
+  String get vitalTrackingOnboardingDescription;
+
   /// No description provided for @connectDieticiansTitle.
   ///
   /// In en, this message translates to:
@@ -351,6 +363,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Navigating to {title} (Not yet implemented)'**
   String notYetImplemented(Object title);
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @noNewNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no new notifications.'**
+  String get noNewNotifications;
+
+  /// No description provided for @checkBackLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for updates!'**
+  String get checkBackLater;
 
   /// No description provided for @selectLanguageTitle.
   ///

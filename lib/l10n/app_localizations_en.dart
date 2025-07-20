@@ -23,6 +23,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Maintain a proper renal diet with personalized guidance and easy-to-follow meal plans tailored to your CKD stage.';
 
   @override
+  String get vitalTrackingOnboardingTitle =>
+      'Empower Your Health with Vital Tracking';
+
+  @override
+  String get vitalTrackingOnboardingDescription =>
+      'Keep a close eye on key health metrics like blood pressure, weight and fluid. Understand your trends and share data with your care team for better management.';
+
+  @override
   String get connectDieticiansTitle => 'Connect with Dieticians';
 
   @override
@@ -152,6 +160,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String notYetImplemented(Object title) {
     return 'Navigating to $title (Not yet implemented)';
   }
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get noNewNotifications => 'You have no new notifications.';
+
+  @override
+  String get checkBackLater => 'Check back later for updates!';
 
   @override
   String get selectLanguageTitle => 'Select Language';

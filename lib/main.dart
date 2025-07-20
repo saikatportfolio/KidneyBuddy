@@ -252,6 +252,12 @@ class MyAppState extends State<MyApp> {
       title: 'CKDBuddy', // This will be replaced by localized string later
       theme: ThemeData(
         primarySwatch: _createMaterialColor(const Color(0xFF16C2D5)),
+        primaryColor: const Color(0xFF16C2D5), // Explicitly set primaryColor
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: _createMaterialColor(const Color(0xFF16C2D5)),
+        ).copyWith(
+          primary: const Color(0xFF16C2D5), // Explicitly set colorScheme.primary
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: false, // Temporarily set to false for debugging ANR
       ),

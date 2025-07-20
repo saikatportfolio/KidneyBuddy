@@ -23,6 +23,14 @@ class AppLocalizationsBn extends AppLocalizations {
       'আপনার সিকেডি পর্যায়ের জন্য ব্যক্তিগতকৃত নির্দেশিকা এবং সহজে অনুসরণযোগ্য খাবার পরিকল্পনার সাথে একটি সঠিক রেনাল ডায়েট বজায় রাখুন।';
 
   @override
+  String get vitalTrackingOnboardingTitle =>
+      'Empower Your Health with Vital Tracking';
+
+  @override
+  String get vitalTrackingOnboardingDescription =>
+      'Keep a close eye on key health metrics like blood pressure, weight and fluid. Understand your trends and share data with your care team for better management.';
+
+  @override
   String get connectDieticiansTitle => 'ডায়েটিশিয়ানদের সাথে সংযোগ করুন';
 
   @override
@@ -152,6 +160,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String notYetImplemented(Object title) {
     return '$title এ নেভিগেট করা হচ্ছে (এখনও বাস্তবায়িত হয়নি)';
   }
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get noNewNotifications => 'You have no new notifications.';
+
+  @override
+  String get checkBackLater => 'Check back later for updates!';
 
   @override
   String get selectLanguageTitle => 'ভাষা নির্বাচন করুন';
