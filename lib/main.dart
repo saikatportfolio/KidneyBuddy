@@ -157,15 +157,20 @@ class MyAppState extends State<MyApp> {
           if (mounted) {
             final name = currentUser.userMetadata?['full_name'] as String?;
             final email = currentUser.email;
-
+            final photoUrl = currentUser.userMetadata?['picture'] as String?; // Common key for Google profile picture
             logger.d('MyAppState: Retrieved Google Name1: $name');
             logger.d('MyAppState: Retrieved Google Email1: $email');
+            logger.d('MyAppState: Retrieved Google Photo URL1: $photoUrl');
+            logger.d('MyAppState: Full userMetadata: ${currentUser.userMetadata}'); // Log full metadata for debugging
             SharedPreferences prefs = await SharedPreferences.getInstance();
             if (name != null) {
               await prefs.setString('google_user_name', name);
             }
             if (email != null) {
               await prefs.setString('google_user_email', email);
+            }
+            if (photoUrl != null) {
+              await prefs.setString('google_user_photo_url', photoUrl);
             }
           }
           PatientDetails? fetchedDetails;

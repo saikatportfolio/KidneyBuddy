@@ -26,12 +26,13 @@ class _HomePageState extends State<HomePage> {
   List<String> _allTips = [];
   bool _isLoadingContent = true;
   String? _googleName;
+  String? _googlePhotoUrl;
 
   @override
   void initState() {
     super.initState();
     _loadDynamicContent();
-    _loadGoogleName();
+    _loadGoogleNameAndPhoto();
   }
 
   Future<void> _loadDynamicContent() async {
@@ -65,11 +66,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadGoogleName() async {
+  Future<void> _loadGoogleNameAndPhoto() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _googleName = prefs.getString('google_user_name');
+      _googlePhotoUrl = prefs.getString('google_user_photo_url');
       logger.i('Home page _googleName $_googleName');
+      logger.i('Home page _googlePhotoUrl $_googlePhotoUrl');
     });
   }
 
@@ -82,19 +85,6 @@ class _HomePageState extends State<HomePage> {
     final ckdStage = patientDetailsProvider.patientDetails?.ckdStage ?? 'Not Set';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.homePageTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsPage()),
-              );
-            },
-          ),
-        ],
-      ),
       body: _isLoadingContent
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -102,57 +92,111 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Personalized Greeting Section
-                  Card(
-                    elevation: 4.0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  // Custom Header Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          Row(
+                          // Debugging: Log the photo URL right before using it
+                          Builder(
+                            builder: (context) {
+                              logger.d('HomePage: _googlePhotoUrl before CircleAvatar: $_googlePhotoUrl');
+                              return CircleAvatar(
+                                radius: 25,
+                                backgroundImage: _googlePhotoUrl != null
+                                    ? NetworkImage(_googlePhotoUrl!)
+                                    : null,
+                                backgroundColor: _googlePhotoUrl == null
+                                    ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                                    : Colors.transparent,
+                                child: _googlePhotoUrl == null
+                                    ? Text(
+                                        patientName.isNotEmpty ? patientName[0].toUpperCase() : 'U',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                      )
+                                    : null,
+                              );
+                            }
+                          ),
+                          const SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.person, size: 30.0, color: Theme.of(context).colorScheme.primary),
-                              const SizedBox(width: 10),
                               Text(
-                                'Hello, $patientName!',
-                                style: TextStyle(
-                                  fontSize: 24.0,
+                                'Hi, $patientName!',
+                                style: const TextStyle(
+                                  fontSize: 22.0,
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Your CKD Stage: $ckdStage',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.grey[600],
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Your CKD Stage: $ckdStage',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _welcomeMessage, // Dynamic welcome message
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey[600],
-                            ),
-                          ),
                         ],
                       ),
+                      Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[200],
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.notifications_none, size: 28.0),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                                );
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            right: 8,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 12,
+                                minHeight: 12,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    _welcomeMessage, // Dynamic welcome message
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey[700],
                     ),
                   ),
+                  const SizedBox(height: 24),
 
                   // Tip of the Day Section
                   Card(
                     elevation: 4.0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                     margin: const EdgeInsets.only(bottom: 24.0),
-                    color: Colors.white, // Set background color to white
+                    color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -163,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary, // Use primary color for heading
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -174,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  _tipOfTheDay, // Dynamic tip of the day
+                                  _tipOfTheDay,
                                   style: const TextStyle(
                                     fontSize: 14.0,
                                     color: Colors.black87,
