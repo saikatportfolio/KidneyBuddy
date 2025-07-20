@@ -257,6 +257,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get signInWithGoogleButton => 'Google দিয়ে সাইন ইন করুন';
 
   @override
+  String get authScreenNewTitle => 'Your Partner in Kidney Health';
+
+  @override
+  String get authScreenNewDescription =>
+      'Manage your CKD journey with personalized diet plans, vital tracking, and expert dietician support.';
+
+  @override
   String get pdfGenerationErrorNoPatientDetails =>
       'পিডিএফ প্রতিবেদনের জন্য রোগীর বিবরণ উপলব্ধ নেই। অনুগ্রহ করে আপনার প্রোফাইল আপডেট করুন।';
 

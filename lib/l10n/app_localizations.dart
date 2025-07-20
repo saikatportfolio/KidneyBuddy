@@ -550,6 +550,18 @@ abstract class AppLocalizations {
   /// **'Sign in with Google'**
   String get signInWithGoogleButton;
 
+  /// No description provided for @authScreenNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Partner in Kidney Health'**
+  String get authScreenNewTitle;
+
+  /// No description provided for @authScreenNewDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your CKD journey with personalized diet plans, vital tracking, and expert dietician support.'**
+  String get authScreenNewDescription;
+
   /// No description provided for @pdfGenerationErrorNoPatientDetails.
   ///
   /// In en, this message translates to:

@@ -73,62 +73,88 @@ class _AuthScreenState extends State<AuthScreen> {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.loginTitle),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Placeholder for the promotional image
-              Image.asset(
-                'assets/images/auth_image.png', // Replace with your actual image asset
-                height: 250,
-                errorBuilder: (context, error, stackTrace) {
-                  // This shows a placeholder if the image is not found
-                  return const Icon(Icons.lock_person, size: 150, color: Colors.green);
-                },
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'CKDBuddy',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.greenAccent,
-                ),
-              ),
-              const SizedBox(height: 40),
-              if (_isLoading)
-                const CircularProgressIndicator()
-              else
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: _signInWithGoogle,
-                    icon: Image.asset(
-                      'assets/images/google_logo.png',
-                      height: 24.0,
-                    ),
-                    label: Text(
-                      localizations.signInWithGoogleButton,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      side: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                ),
-            ],
+      body: Stack(
+        children: [
+          // Background Image Section
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/auth_image.png', // Using onboarding1.png as placeholder
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(color: Colors.grey, child: const Center(child: Icon(Icons.error, size: 100, color: Colors.white)));
+              },
+            ),
           ),
-        ),
+          // Content Section (Bottom Half with rounded corners)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.5, // Adjust height as needed
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40.0),
+                  topRight: Radius.circular(40.0),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start, // Align content to start
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      localizations.authScreenNewTitle,
+                      style: const TextStyle(
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      localizations.authScreenNewDescription,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40), // Increased spacing
+                    if (_isLoading)
+                      const CircularProgressIndicator()
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: _signInWithGoogle,
+                          icon: Image.asset(
+                            'assets/images/google_logo.png',
+                            height: 24.0,
+                          ),
+                          label: Text(
+                            localizations.signInWithGoogleButton,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black87, // Text color
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: BorderSide(color: Theme.of(context).colorScheme.primary), // Primary color border
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
