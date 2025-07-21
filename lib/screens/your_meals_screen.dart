@@ -18,21 +18,47 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
   late Future<Map<String, dynamic>> _mealPlanFuture;
   late Future<List<NutritionRestriction>> _nutritionRestrictionsFuture;
 
+  final List<List<Color>> _gradientColors = [
+    [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9)], // Light Green
+    [const Color(0xFFE0F7FA), const Color(0xFFB2EBF2)], // Light Cyan
+    [const Color(0xFFFFF3E0), const Color(0xFFFFE0B2)], // Light Orange
+    [const Color(0xFFF3E5F5), const Color(0xFFE1BEE7)], // Light Purple
+    [const Color(0xFFFBE9E7), const Color(0xFFFFCCBC)], // Light Red/Peach
+  ];
+
+  final Map<String, IconData> _mealIcons = {
+    'Breakfast': Icons.breakfast_dining,
+    'Lunch': Icons.lunch_dining,
+    'Dinner': Icons.dinner_dining,
+    'Snack': Icons.cookie,
+    // Add more meal types and their corresponding icons as needed
+  };
+
+  final Map<String, IconData> _nutritionRestrictionIcons = {
+    'Carbs': Icons.monitor_weight, // Example icon for Carbs
+    'Fat': Icons.local_fire_department, // Example icon for Fat
+    'Protein': Icons.fitness_center, // Example icon for Protein
+    // Add more nutrition keys and their corresponding icons as needed
+  };
+
+  IconData _getMealIcon(String mealType) {
+    return _mealIcons[mealType] ?? Icons.fastfood; // Default icon
+  }
+
+  IconData _getNutritionIcon(String nutritionKey) {
+    return _nutritionRestrictionIcons[nutritionKey] ?? Icons.fastfood; // Default icon
+  }
+
   @override
   void initState() {
     super.initState();
     _mealPlanFuture = SupabaseService().getMealPlan();
-    // Fetch from Supabase
     _nutritionRestrictionsFuture = SupabaseService().getNutritionRestrictions();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Meals'),
-        backgroundColor: Theme.of(context).primaryColor, // Set background color to primary theme color
-      ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _mealPlanFuture,
         builder: (context, snapshot) {
@@ -50,231 +76,269 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
           final mealItems = (data['mealItems'] as List).map((e) => MealItem.fromMap(e)).toList();
           final mealItemOptions = (data['mealItemOptions'] as List).map((e) => MealItemOption.fromMap(e)).toList();
 
-          return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFE1F5FE),
-                  Color(0xFFB3E5FC),
-                ],
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      userMealPlan.planName,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade800,
-                            fontSize: 24.0, // Reduced font size
+          return SafeArea(
+            child: Container(
+              color: Colors.white, // Set background to white
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                userMealPlan.planName,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue.shade800,
+                                      fontSize: 24.0,
+                                    ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                userMealPlan.description ?? '',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: Colors.blue.shade800,
+                                    ),
+                              ),
+                            ],
                           ),
+                        ),
+                        const SizedBox(width: 48), // To balance the back button space
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      userMealPlan.description ?? '',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.blue.shade800,
-                          ),
-                    ),
-                  ),
-                  // Removed SizedBox(height: 8) here
-                  // Nutritional Restrictions Grid List
-                  FutureBuilder<List<NutritionRestriction>>(
-                    future: _nutritionRestrictionsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const SizedBox.shrink(); // Or a message like 'No restrictions found'
-                      }
+                    const SizedBox(height: 16),
+                    // Nutritional Restrictions Grid List
+                    FutureBuilder<List<NutritionRestriction>>(
+                      future: _nutritionRestrictionsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const SizedBox.shrink();
+                        }
 
-                      final restrictions = snapshot.data!;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding( // Removed const keyword
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              'Your Daily Nutritional Limit',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade800, // Changed color to match plan name
+                        final restrictions = snapshot.data!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                'Your Daily Nutritional Limit',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade800,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 100, // Reduced height for horizontal scroll
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: restrictions.length,
-                              itemBuilder: (context, index) {
-                                final restriction = restrictions[index];
-                                return Card(
-                                  elevation: 4,
+                            SizedBox(
+                              height: 100,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: restrictions.length,
+                                itemBuilder: (context, index) {
+                                  final restriction = restrictions[index];
+                                  final gradient = _gradientColors[index % _gradientColors.length];
+                                  return Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                    child: Container(
+                                      width: 100,
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: gradient,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            _getNutritionIcon(restriction.nutritionKey), // Get icon based on nutrition key
+                                            color: Colors.blue.shade900,
+                                            size: 20, // Reduced icon size
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            restriction.nutritionKey,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue.shade900, // Adjusted color for better contrast on gradients
+                                                  fontSize: 12.0, // Set font size to 12
+                                                ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            restriction.nutritionValue,
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                                  color: Colors.blue.shade800, // Adjusted color for better contrast on gradients
+                                                  fontSize: 10.0, // Set font size to 10
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: meals.length,
+                        itemBuilder: (context, index) {
+                          final meal = meals[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                                child: Text(
+                                  '${meal.mealType} (${meal.timing})',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue.shade900,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              for (var item in mealItems.where((item) => item.mealId == meal.mealId))
+                                Card(
+                                  elevation: 6,
+                                  shadowColor: Colors.blue.shade200.withOpacity(0.7),
+                                  margin: const EdgeInsets.only(bottom: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
-                                  margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   child: Container(
-                                    width: 100, // Reduced width for each grid item
-                                    padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
-                                        colors: [Colors.white, Colors.white],
+                                        colors: _gradientColors[
+                                            (mealItems.indexOf(item) + 2) %
+                                                _gradientColors.length], // Use a different gradient for meal items
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       ),
                                       borderRadius: BorderRadius.circular(12.0),
                                     ),
+                                    padding: const EdgeInsets.all(20.0),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          restriction.nutritionKey,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue.shade800,
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.restaurant_menu, // Generic food icon
+                                              color: Colors.blue.shade900,
+                                              size: 24,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                item.itemName,
+                                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.blue.shade900, // Adjusted color for better contrast
+                                                    ),
                                               ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          restriction.nutritionValue,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                                color: Colors.blue.shade700,
+                                        const SizedBox(height: 8),
+                                        ...mealItemOptions.where((option) => option.itemId == item.itemId).toList().asMap().entries.map((entry) {
+                                          final optionIndex = entry.key;
+                                          final option = entry.value;
+                                          final isLastOption = optionIndex == mealItemOptions.where((o) => o.itemId == item.itemId).length - 1;
+
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                        border: Border.all(color: Colors.grey.shade300),
+                                                      ),
+                                                      child: Text(
+                                                        option.amount ?? '',
+                                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                              fontSize: 14.0,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.black87,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        option.foodName,
+                                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                              fontSize: 16.0,
+                                                              color: Colors.blue.shade900,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                        ),
+                                              if (!isLastOption)
+                                                Center(
+                                                  child: Text(
+                                                    'OR',
+                                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.blue.shade400,
+                                                        ),
+                                                  ),
+                                                ),
+                                            ],
+                                          );
+                                        }).toList(),
                                       ],
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 16), // Space between restrictions and meal plan list
-                        ],
-                      );
-                    },
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: meals.length,
-                      itemBuilder: (context, index) {
-                        final meal = meals[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                              margin: const EdgeInsets.only(bottom: 8.0),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade100,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Text(
-                                '${meal.mealType} (${meal.timing})',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue.shade900,
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            for (var item in mealItems.where((item) => item.mealId == meal.mealId))
-                              Card(
-                                elevation: 6,
-                                shadowColor: Colors.blue.shade200.withOpacity(0.7),
-                                margin: const EdgeInsets.only(bottom: 16.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.itemName,
-                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue.shade800,
-                                            ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      ListView.separated(
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: mealItemOptions.where((option) => option.itemId == item.itemId).length,
-                                        itemBuilder: (context, optionIndex) {
-                                          final option = mealItemOptions.where((option) => option.itemId == item.itemId).toList()[optionIndex];
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.baseline, // Align text baselines
-                                              textBaseline: TextBaseline.alphabetic,          // Required for baseline alignment
-                                              children: [
-                                                Text(
-                                                  option.foodName,
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        fontSize: 16.0, // Increased font size
-                                                      ),
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  option.amount ?? '',
-                                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                        fontStyle: FontStyle.italic,
-                                                        color: Colors.grey.shade600,
-                                                        fontSize: 14.0, // Increased font size
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                        separatorBuilder: (context, index) {
-                                          if (mealItemOptions.where((option) => option.itemId == item.itemId).length > 1) {
-                                            return Center(
-                                              child: Text(
-                                                'OR',
-                                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.blue.shade400,
-                                                    ),
-                                              ),
-                                            );
-                                          } else {
-                                            return const SizedBox.shrink();
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -288,7 +352,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
           );
         },
         label: const Text('Upload Diet'),
-        icon: const Icon(Icons.upload_file), // Keeping the icon for now, as extended usually has both. If user wants only text, I'll remove it.
+        icon: const Icon(Icons.upload_file),
       ),
     );
   }
