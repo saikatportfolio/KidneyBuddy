@@ -94,5 +94,11 @@
   "filterAllTime": "All Time",
   "trend": "Trend",
   "bpTrend": "BP Trend",
-  "close": "Close"
+  "close": "Close",
+  "deleteConfirmationTitle": "Delete Confirmation",
+  "deleteBpReadingConfirmation": "Do you want to delete this BP reading?",
+  "no": "No",
+  "yes": "Yes",
+  "bpReadingDeletedSuccessfully": "BP reading deleted successfully!",
+  "errorDeletingBpReading": "Error deleting BP reading: {error}"
 }

@@ -157,6 +157,16 @@ class SupabaseService {
     }
   }
 
+  Future<void> deleteBloodPressureReading(String id) async {
+    try {
+      await _supabase.from('blood_pressure_readings').delete().eq('id', id);
+      logger.i('Blood pressure reading with ID $id deleted from Supabase.');
+    } catch (e) {
+      logger.e('Error deleting blood pressure reading from Supabase: $e');
+      rethrow;
+    }
+  }
+
   // Review Operations
   Future<List<Review>> getReviewsForDietician(String dieticianId) async {
     try {

@@ -181,4 +181,15 @@ class DatabaseHelper {
     await db.delete('blood_pressure_readings');
     logger.i('All blood pressure readings cleared from SQLite.');
   }
+
+  Future<void> deleteBloodPressure(String id) async {
+    if (kIsWeb) return; // Do not delete from SQLite on web
+    Database db = await database;
+    await db.delete(
+      'blood_pressure_readings',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    logger.i('Blood pressure reading with ID $id deleted from SQLite.');
+  }
 }

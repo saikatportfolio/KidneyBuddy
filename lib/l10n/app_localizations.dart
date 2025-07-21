@@ -669,6 +669,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// No description provided for @deleteConfirmationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Confirmation'**
+  String get deleteConfirmationTitle;
+
+  /// No description provided for @deleteBpReadingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this BP reading?'**
+  String get deleteBpReadingConfirmation;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @bpReadingDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'BP reading deleted successfully!'**
+  String get bpReadingDeletedSuccessfully;
+
+  /// No description provided for @errorDeletingBpReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting BP reading: {error}'**
+  String errorDeletingBpReading(Object error);
 }
 
 class _AppLocalizationsDelegate

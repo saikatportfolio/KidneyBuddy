@@ -321,4 +321,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get deleteConfirmationTitle => 'Delete Confirmation';
+
+  @override
+  String get deleteBpReadingConfirmation =>
+      'Do you want to delete this BP reading?';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get bpReadingDeletedSuccessfully => 'BP reading deleted successfully!';
+
+  @override
+  String errorDeletingBpReading(Object error) {
+    return 'Error deleting BP reading: $error';
+  }
 }

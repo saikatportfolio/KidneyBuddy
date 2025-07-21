@@ -8,6 +8,7 @@ import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
 import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:printing/printing.dart'; // Import printing for PDF sharing
+import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 
 class VitalTrackingTab extends StatefulWidget {
   final String vitalType;
@@ -29,6 +30,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   bool _isLoading = true;
   final SupabaseService _supabaseService = SupabaseService(); // Create an instance
+
   String _selectedFilterDuration = 'allTime'; // Default filter
 
   @override
@@ -447,32 +449,27 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
-                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          Text(
+                                            DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue.shade800,
+                                                ),
+                                          ),
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                '${reading.systolic}/${reading.diastolic} mmHg',
+                                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                                       fontWeight: FontWeight.bold,
-                                                      color: Colors.blue.shade800,
+                                                      color: Colors.blue.shade700,
                                                     ),
                                               ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Blood Pressure Reading',
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                          Text(
-                                            '${reading.systolic}/${reading.diastolic} mmHg',
-                                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blue.shade700,
-                                                ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete, color: Colors.black),
+                                            onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
                                           ),
                                         ],
                                       ),
@@ -507,5 +504,48 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         ),
       ],
     );
+  }
+
+  Future<void> _confirmAndDeleteBpReading(BloodPressure reading, AppLocalizations localizations) async {
+    final bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.deleteConfirmationTitle), // Assuming you have this key
+          content: Text(localizations.deleteBpReadingConfirmation), // Assuming you have this key
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // User clicked "No"
+              child: Text(localizations.no), // Assuming you have this key
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // User clicked "Yes"
+              child: Text(localizations.yes), // Assuming you have this key
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      try {
+        // Delete from Supabase
+        await _supabaseService.deleteBloodPressureReading(reading.id!);
+        // Delete from local SQLite
+        await DatabaseHelper().deleteBloodPressure(reading.id!);
+
+        setState(() {
+          _bloodPressureReadings.removeWhere((bp) => bp.id == reading.id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.bpReadingDeletedSuccessfully)), // Assuming you have this key
+        );
+      } catch (e) {
+        logger.e('Error deleting BP reading: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.errorDeletingBpReading(e.toString()))), // Assuming you have this key
+        );
+      }
+    }
   }
 }
