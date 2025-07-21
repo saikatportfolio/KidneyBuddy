@@ -103,27 +103,52 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('eGFR Calculator'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Serum Creatinine Input
-            TextFormField(
-              controller: _serumCreatinineController,
-              decoration: const InputDecoration(
-                labelText: 'Serum Creatinine Value (mg/dL)',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    'eGFR Calculator',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 48), // To balance the back button
               ],
             ),
-            const SizedBox(height: 16.0),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Serum Creatinine Input
+                  TextFormField(
+                    controller: _serumCreatinineController,
+                    decoration: const InputDecoration(
+                      labelText: 'Serum Creatinine Value (mg/dL)',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
 
             // Age Input
             TextFormField(
@@ -230,6 +255,9 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
               ),
           ],
         ),
+            ),
+          ),
+        ],
       ),
     );
   }

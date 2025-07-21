@@ -136,17 +136,42 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Give Your Feedback'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // Dropdown for Feedback Category
-              DropdownButtonFormField<String>(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    'Give Your Feedback',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 48), // To balance the back button
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    // Dropdown for Feedback Category
+                    DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 decoration: const InputDecoration(
                   labelText: 'Feedback Category',
@@ -230,6 +255,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ],
           ),
         ),
+            ),
+          ),
+        ],
       ),
     );
   }
