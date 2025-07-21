@@ -408,13 +408,8 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                          margin: const EdgeInsets.only(bottom: 8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade100,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0), // Adjusted padding
                           child: Text(
                             DateFormat('MMM dd, yyyy').format(DateTime.parse(date)), // Format date for display
                             style: TextStyle(

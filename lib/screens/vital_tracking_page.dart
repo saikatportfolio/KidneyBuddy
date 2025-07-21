@@ -122,94 +122,119 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.vitalTrackingPageTitle),
-        actions: [],
-      ),
-      body: Consumer<PatientDetailsProvider>(
-        builder: (context, patientDetailsProvider, child) {
-          final patientDetails = patientDetailsProvider.patientDetails;
-          return Column(
-            children: [
-              // Category Cards at the top, similar to FoodListPage
-              SizedBox(
-                height: 120, // Adjust height as needed for the category cards
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  itemCount: _categoryCards.length,
-                  itemBuilder: (context, index) {
-                    final category = _categoryCards[index];
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedCategoryIndex = index;
-                          _tabController.animateTo(index); // Switch tab on card tap
-                        });
-                      },
-                      child: Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: _selectedCategoryIndex == index
-                                ? Theme.of(context).primaryColor // Highlight selected card
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-                        child: Container(
-                          width: 100, // Fixed width for each card
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                category['icon'],
-                                size: 40,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                LocalizationHelper.translateKey(context, category['nameKey']), // Use LocalizationHelper
-                                style: const TextStyle(
-                                  fontSize: 12,
+      body: SafeArea(
+        child: Consumer<PatientDetailsProvider>(
+          builder: (context, patientDetailsProvider, child) {
+            final patientDetails = patientDetailsProvider.patientDetails;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            localizations.vitalTrackingPageTitle,
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade800,
+                                  fontSize: 24.0,
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
                           ),
                         ),
                       ),
-                    );
-                  },
+                      const SizedBox(width: 48), // To balance the back button space
+                    ],
+                  ),
                 ),
-              ),
-              // TabBarView to display content for each tab
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: _categoryCards.map((category) {
-                    final String? userId = Supabase.instance.client.auth.currentUser?.id;
-                    if (userId == null) {
-                      // Handle case where user is not logged in, perhaps show a message or redirect
-                      return Center(child: Text(localizations.userNotLoggedIn)); // Assuming you have this localization key
-                    }
-                    return VitalTrackingTab(
-                      vitalType: category['vitalType'],
-                      userId: userId,
-                      patientDetails: patientDetails, // Pass patientDetails
-                    );
-                  }).toList(),
+                const SizedBox(height: 16), // Space after the header
+                // Category Cards at the top, similar to FoodListPage
+                SizedBox(
+                  height: 120, // Adjust height as needed for the category cards
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemCount: _categoryCards.length,
+                    itemBuilder: (context, index) {
+                      final category = _categoryCards[index];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedCategoryIndex = index;
+                            _tabController.animateTo(index); // Switch tab on card tap
+                          });
+                        },
+                        child: Card(
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: _selectedCategoryIndex == index
+                                  ? Theme.of(context).primaryColor // Highlight selected card
+                                  : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                          child: Container(
+                            width: 100, // Fixed width for each card
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  category['icon'],
+                                  size: 40,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  LocalizationHelper.translateKey(context, category['nameKey']), // Use LocalizationHelper
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+                // TabBarView to display content for each tab
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: _categoryCards.map((category) {
+                      final String? userId = Supabase.instance.client.auth.currentUser?.id;
+                      if (userId == null) {
+                        // Handle case where user is not logged in, perhaps show a message or redirect
+                        return Center(child: Text(localizations.userNotLoggedIn)); // Assuming you have this localization key
+                      }
+                      return VitalTrackingTab(
+                        vitalType: category['vitalType'],
+                        userId: userId,
+                        patientDetails: patientDetails, // Pass patientDetails
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
