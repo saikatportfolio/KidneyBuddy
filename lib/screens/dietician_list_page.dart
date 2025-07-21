@@ -35,171 +35,154 @@ class _DieticianListPageState extends State<DieticianListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Contact Dietician',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      body: FutureBuilder<List<Dietician>>(
-        future: _dieticiansFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-              'Error: ${snapshot.error}',
-              style: TextStyle(color: Colors.black),
-            ));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-                child: Text(
-              'No dieticians found.',
-              style: TextStyle(color: Colors.black),
-            ));
-          } else {
-            return ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final dietician = snapshot.data![index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                  child: InkWell(
-                    // Make the whole card tappable
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DieticianDetailsPage(dietician: dietician),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 40,
-                                backgroundImage: NetworkImage(dietician.imageUrl),
-                                onBackgroundImageError: (exception, stackTrace) {
-                                  // Fallback to a default icon if image fails to load
-                                  logger.e('Error loading image: $exception');
-                                },
-                                child: dietician.imageUrl.isEmpty ? const Icon(Icons.person, size: 50) : null,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    'Our Dietician',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 48), // To balance the back button
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Dietician>>(
+              future: _dieticiansFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(color: Colors.black),
+                  ));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text(
+                    'No dieticians found.',
+                    style: TextStyle(color: Colors.black),
+                  ));
+                } else {
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final dietician = snapshot.data![index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16.0),
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                        child: InkWell(
+                          // Make the whole card tappable
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DieticianDetailsPage(dietician: dietician),
                               ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Text(
-                                      dietician.name,
-                                      style: const TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                    CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: NetworkImage(dietician.imageUrl),
+                                      onBackgroundImageError: (exception, stackTrace) {
+                                        // Fallback to a default icon if image fails to load
+                                        logger.e('Error loading image: $exception');
+                                      },
+                                      child: dietician.imageUrl.isEmpty ? const Icon(Icons.person, size: 50) : null,
                                     ),
-                                    const SizedBox(height: 4),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Experience: ',
-                                        style: const TextStyle(
-                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: dietician.experience,
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            dietician.name,
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            dietician.experience,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            dietician.education,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Specialty: ',
-                                        style: const TextStyle(
-                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: dietician.specialty,
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        const Text(
+                                          'Fees',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.grey,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Education: ',
-                                        style: const TextStyle(
-                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: dietician.education,
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
+                                        ),
+                                        Text(
+                                          '₹${dietician.fees}',
+                                          style: const TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Language Known: ',
-                                        style: const TextStyle(
-                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: dietician.languages,
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Consultation Charge: ',
-                                        style: const TextStyle(
-                                            fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: dietician.fees,
-                                            style: const TextStyle(fontWeight: FontWeight.normal),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: ElevatedButton.icon(
-                              onPressed: () => _launchWhatsApp(dietician.whatsappNumber),
-                              icon: const Icon(Icons.message), // Changed to a generic message icon
-                              label: const Text('Contact via WhatsApp'),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                        ),
+                      );
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -76,10 +76,35 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dietician Details'),
-      ),
-      body: SingleChildScrollView(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    'Dietician Details',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 48), // To balance the back button
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,6 +331,9 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                       ),
           ],
         ),
+      ),
+          ),
+        ],
       ),
     );
   }
