@@ -83,24 +83,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             itemBuilder: (context, index) {
               final item = onboardingData[index];
               logger.d('OnboardingScreen: Building page $index');
-              return Column(
-                children: [
-                  // Image Section (Top Half)
-                  Expanded(
-                    flex: 4, // Increased flex to give more space to the image
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Image.asset(
-                        item["image"]!,
-                        fit: BoxFit.cover, // Cover the available space
-                        width: double.infinity,
+              return SingleChildScrollView( // Wrap with SingleChildScrollView
+                child: Column(
+                  children: [
+                    // Image Section (Top Half)
+                    SizedBox( // Use SizedBox instead of Expanded with fixed height
+                      height: MediaQuery.of(context).size.height * 0.6, // Adjust height as needed
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          item["image"]!,
+                          fit: BoxFit.cover, // Cover the available space
+                          width: double.infinity,
+                        ),
                       ),
                     ),
-                  ),
-                  // Content Section (Bottom Half with rounded corners)
-                  Expanded(
-                    flex: 3, // Increased flex to give more space to the content
-                    child: Container(
+                    // Content Section (Bottom Half with rounded corners)
+                    Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -191,8 +190,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
