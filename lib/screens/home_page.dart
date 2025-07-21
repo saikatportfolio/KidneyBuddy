@@ -42,11 +42,14 @@ class _HomePageState extends State<HomePage> {
     });
     try {
       final supabaseService = SupabaseService();
-      final welcomeMsg = await supabaseService.getMessageByKey('welcome_message');
+      final welcomeMsg = await supabaseService.getMessageByKey(
+        'welcome_message',
+      );
       final tips = await supabaseService.getAllTips();
 
       setState(() {
-        _welcomeMessage = welcomeMsg ?? 'Stay informed and healthy on your journey.';
+        _welcomeMessage =
+            welcomeMsg ?? 'Stay informed and healthy on your journey.';
         _allTips = tips;
         if (_allTips.isNotEmpty) {
           _tipOfTheDay = _allTips[DateTime.now().day % _allTips.length];
@@ -82,8 +85,10 @@ class _HomePageState extends State<HomePage> {
     logger.d('HomePage: build called');
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
-    final patientName = _googleName ?? patientDetailsProvider.patientDetails?.name ?? 'User';
-    final ckdStage = patientDetailsProvider.patientDetails?.ckdStage ?? 'Not Set';
+    final patientName =
+        _googleName ?? patientDetailsProvider.patientDetails?.name ?? 'User';
+    final ckdStage =
+        patientDetailsProvider.patientDetails?.ckdStage ?? 'Not Set';
 
     return Scaffold(
       body: _isLoadingContent
@@ -102,27 +107,35 @@ class _HomePageState extends State<HomePage> {
                           // Debugging: Log the photo URL right before using it
                           Builder(
                             builder: (context) {
-                              logger.d('HomePage: _googlePhotoUrl before CircleAvatar: $_googlePhotoUrl');
+                              logger.d(
+                                'HomePage: _googlePhotoUrl before CircleAvatar: $_googlePhotoUrl',
+                              );
                               return CircleAvatar(
                                 radius: 25,
                                 backgroundImage: _googlePhotoUrl != null
                                     ? NetworkImage(_googlePhotoUrl!)
                                     : null,
                                 backgroundColor: _googlePhotoUrl == null
-                                    ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                                    ? Theme.of(
+                                        context,
+                                      ).colorScheme.primary.withOpacity(0.2)
                                     : Colors.transparent,
                                 child: _googlePhotoUrl == null
                                     ? Text(
-                                        patientName.isNotEmpty ? patientName[0].toUpperCase() : 'U',
+                                        patientName.isNotEmpty
+                                            ? patientName[0].toUpperCase()
+                                            : 'U',
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).colorScheme.primary,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
                                         ),
                                       )
                                     : null,
                               );
-                            }
+                            },
                           ),
                           const SizedBox(width: 15),
                           Column(
@@ -131,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Hi, $patientName!',
                                 style: const TextStyle(
-                                  fontSize: 22.0,
+                                  fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -159,10 +172,16 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.grey[200],
                                 ),
                                 child: IconButton(
-                                  icon: const Icon(Icons.notifications_none, size: 28.0),
+                                  icon: const Icon(
+                                    Icons.notifications_none,
+                                    size: 28.0,
+                                  ),
                                   onPressed: () {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (_) => const NotificationPage()), // Navigate to NotificationPage
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const NotificationPage(),
+                                      ), // Navigate to NotificationPage
                                     );
                                   },
                                 ),
@@ -181,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                                     minHeight: 12,
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                           const SizedBox(width: 10), // Spacing between icons
@@ -195,7 +214,9 @@ class _HomePageState extends State<HomePage> {
                               icon: const Icon(Icons.settings, size: 28.0),
                               onPressed: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => const SettingsPage()), // Navigate to SettingsPage
+                                  MaterialPageRoute(
+                                    builder: (_) => const SettingsPage(),
+                                  ), // Navigate to SettingsPage
                                 );
                               },
                             ),
@@ -207,17 +228,16 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 20),
                   Text(
                     _welcomeMessage, // Dynamic welcome message
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey[700],
-                    ),
+                    style: TextStyle(fontSize: 16.0, color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 24),
 
                   // Tip of the Day Section
                   Card(
                     elevation: 4.0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
                     margin: const EdgeInsets.only(bottom: 24.0),
                     color: Colors.white,
                     child: Padding(
@@ -237,7 +257,11 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.lightbulb_outline, size: 24.0, color: Theme.of(context).colorScheme.primary),
+                              Icon(
+                                Icons.lightbulb_outline,
+                                size: 24.0,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
@@ -258,55 +282,52 @@ class _HomePageState extends State<HomePage> {
                   // Original GridView of features
                   GridView.count(
                     shrinkWrap: true, // Important for nested scroll views
-                    physics: const NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
-                    crossAxisCount: 3, // Changed to 3 items per row as per image
+                    physics:
+                        const NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
+                    crossAxisCount:
+                        2, // Changed to 2 items per row as per image
                     crossAxisSpacing: 16.0,
                     mainAxisSpacing: 16.0,
-                    childAspectRatio: 0.9, // Adjusted for square-like cards with text below
+                    childAspectRatio:
+                        1.0, // Adjusted for square-like cards with text below
                     children: [
                       // Food Recommendations (Working)
-                      _buildFeatureItem(
-                        context,
-                        'Food Recommendations',
-                        'Get personalized food recommendations based on your CKD stage.',
-                        Icons.restaurant_menu,
-                        const FoodListPage(),
-                      ),
+                      // _buildFeatureItem(
+                      //   context,
+                      //   'Food Recommendations',
+                      //   'assets/images/onboarding1.png', // Placeholder image
+                      //   const FoodListPage(),
+                      // ),
                       // Contact Dietician (Working)
                       _buildFeatureItem(
                         context,
+                        localizations.vitalMonitoringCard,
+                        'assets/images/vital.png', // Placeholder image
+                        const VitalTrackingPage(),
+                      ),
+                      _buildFeatureItem(
+                        context,
+                        "Your meals",
+                        'assets/images/your_meal.jpg', // Placeholder image
+                        const YourMealsScreen(),
+                      ),
+                      _buildFeatureItem(
+                        context,
                         localizations.contactDieticianCard,
-                        localizations.contactDieticianDescription,
-                        Icons.person_pin,
+                        'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
                       // Give Your Feedback (Working)
                       _buildFeatureItem(
                         context,
                         localizations.giveYourFeedbackCard,
-                        localizations.giveYourFeedbackDescription,
-                        Icons.feedback,
+                        'assets/images/feedback.jpg', // Placeholder image
                         const FeedbackPage(),
                       ),
                       _buildFeatureItem(
                         context,
-                        "Your meals",
-                        localizations.dietManagementDescription,
-                        Icons.food_bank,
-                        const YourMealsScreen(),
-                      ),
-                      _buildFeatureItem(
-                        context,
-                        localizations.vitalMonitoringCard,
-                        localizations.vitalMonitoringDescription,
-                        Icons.monitor_heart,
-                        const VitalTrackingPage(),
-                      ),
-                      _buildFeatureItem(
-                        context,
                         localizations.eGFRCalculatorCard,
-                        localizations.eGFRCalculatorDescription,
-                        Icons.calculate,
+                        'assets/images/gfr.png', // Placeholder image
                         const EgfrCalculatorScreen(), // Navigate to the new screen
                       ),
                     ],
@@ -318,46 +339,97 @@ class _HomePageState extends State<HomePage> {
   }
 
   // New widget to build each feature item (card + text below)
-  Widget _buildFeatureItem(BuildContext context, String title, String description, IconData icon, Widget? destinationPage) {
+  Widget _buildFeatureItem(
+    BuildContext context,
+    String title,
+    String imagePath,
+    Widget? destinationPage,
+  ) {
     final localizations = AppLocalizations.of(context)!;
-    return Column(
-      children: [
-        Expanded(
-          child: Card(
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-            color: Theme.of(context).colorScheme.primary, // Fill card with primary color
-            child: InkWell(
-              onTap: () {
-                if (destinationPage != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => destinationPage),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(localizations.notYetImplemented(title))),
-                  );
-                }
-              },
-              child: Center(
-                child: Icon(icon, size: 50.0, color: Colors.white), // Large white icon
+    return Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      clipBehavior: Clip.antiAlias, // Ensures image respects rounded corners
+      child: InkWell(
+        onTap: () {
+          if (destinationPage != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => destinationPage),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(localizations.notYetImplemented(title))),
+            );
+          }
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3, // Image takes more space
+              child: Container(
+                width: double.infinity,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover, // Cover the available space
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
+            Expanded(
+              flex: 1, // Text and icon take less space
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 8.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors
+                            .grey[200], // Light grey background for the arrow icon
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16.0,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary, // Primary color for the arrow
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 8.0), // Space between card and text
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold), // Smaller font for text below
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+      ),
     );
   }
-  
+
   @override
   void dispose() {
     super.dispose();
