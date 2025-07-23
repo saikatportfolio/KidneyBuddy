@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For FilteringTextInputFormatter
 import 'dart:math'; // For pow, min, max
+import 'package:numberpicker/numberpicker.dart'; // For NumberPicker
 
 class EgfrCalculatorScreen extends StatefulWidget {
   const EgfrCalculatorScreen({super.key});
@@ -11,15 +12,14 @@ class EgfrCalculatorScreen extends StatefulWidget {
 
 class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
   final TextEditingController _serumCreatinineController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  String? _selectedGender; // Nullable to indicate no selection initially
+  int _currentAge = 40; // Default age
+  String? _selectedGender = 'Male'; // Nullable to indicate no selection initially
   String? _egfrResult; // To store the calculated eGFR result
   String? _ckdStageInterpretation; // To store the CKD stage and interpretation
 
   @override
   void dispose() {
     _serumCreatinineController.dispose();
-    _ageController.dispose();
     super.dispose();
   }
 
@@ -56,13 +56,13 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
     }
   }
 
-  void _performCalculation() {
+void _performCalculation() {
     final String scrText = _serumCreatinineController.text;
-    final String ageText = _ageController.text;
 
-    if (scrText.isEmpty || ageText.isEmpty || _selectedGender == null) {
+    if (scrText.isEmpty || _selectedGender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter all values and select a gender.')),
+        const SnackBar(
+            content: Text('Please enter all values and select a gender.')),
       );
       setState(() {
         _egfrResult = null; // Clear previous result if inputs are incomplete
@@ -72,11 +72,11 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
 
     try {
       final double scr = double.parse(scrText);
-      final int age = int.parse(ageText);
 
-      if (scr <= 0 || age <= 0) {
+      if (scr <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Serum Creatinine and Age must be positive values.')),
+          const SnackBar(
+              content: Text('Serum Creatinine must be positive values.')),
         );
         setState(() {
           _egfrResult = null;
@@ -84,15 +84,17 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
         return;
       }
 
-      final double egfr = _calculateEGFR(_selectedGender!, age, scr);
+      final double egfr = _calculateEGFR(_selectedGender!, _currentAge, scr);
 
       setState(() {
         _egfrResult = 'eGFR: ${egfr.toStringAsFixed(2)} mL/min/1.73 m²';
-        _ckdStageInterpretation = _getCKDStageAndInterpretation(egfr); // Set the interpretation
+        _ckdStageInterpretation =
+            _getCKDStageAndInterpretation(egfr); // Set the interpretation
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid input. Please enter valid numbers.')),
+        const SnackBar(
+            content: Text('Invalid input. Please enter valid numbers.')),
       );
       setState(() {
         _egfrResult = null;
@@ -151,38 +153,65 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
                   const SizedBox(height: 16.0),
 
             // Age Input
-            TextFormField(
-              controller: _ageController,
-              decoration: const InputDecoration(
-                labelText: 'Age (Years)',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly, // Allow only digits
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNumberPickerColumn(
+                  label: 'Age (Years)',
+                  value: _currentAge,
+                  minValue: 1,
+                  maxValue: 120,
+                  onChanged: (value) => setState(() => _currentAge = value),
+                  width: 100,
+                ),
+                const SizedBox(width: 8.0),
+                Column(
+                  children: [
+                    const Text(
+                      "I'm a",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedGender = 'Male';
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _selectedGender == 'Male' ? Colors.lightBlue : Colors.grey[300],
+                            foregroundColor: _selectedGender == 'Male' ? Colors.black : Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text('Male'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedGender = 'Female';
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _selectedGender == 'Female' ? Colors.lightBlue : Colors.grey[300],
+                            foregroundColor: _selectedGender == 'Female' ? Colors.black : Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text('Female'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 16.0),
-
-            // Gender Dropdown
-            DropdownButtonFormField<String>(
-              value: _selectedGender,
-              decoration: const InputDecoration(
-                labelText: 'Gender',
-                border: OutlineInputBorder(),
-              ),
-              items: const [
-                DropdownMenuItem(value: null, child: Text('Select Gender')),
-                DropdownMenuItem(value: 'Male', child: Text('Male')),
-                DropdownMenuItem(value: 'Female', child: Text('Female')),
-              ],
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedGender = newValue;
-                });
-              },
-            ),
-            const SizedBox(height: 24.0),
 
             // Calculate Button
             ElevatedButton(
@@ -255,6 +284,40 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
               ),
           ],
         ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+Widget _buildNumberPickerColumn({
+    required String label,
+    required int value,
+    required int minValue,
+    required int maxValue,
+    required ValueChanged<int> onChanged,
+    double? width,
+  }) {
+    return SizedBox(
+      width: width,
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          NumberPicker(
+            value: value,
+            minValue: minValue,
+            maxValue: maxValue,
+            onChanged: onChanged,
+            textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
+            selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+            decoration: BoxDecoration(
+              border: Border.symmetric(
+                horizontal: BorderSide(color: Colors.grey[300]!),
+              ),
             ),
           ),
         ],
