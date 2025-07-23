@@ -57,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     try {
       await SupabaseService().signOut();
-      
+
       // Clear SharedPreferences data related to Google Sign-in
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('google_user_name');
@@ -94,32 +94,62 @@ class _SettingsPageState extends State<SettingsPage> {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.settingsTitle),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              children: [
-                ListTile(
-                  title: Text(localizations.languageSetting),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const LanguageSelectionScreen(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      localizations.settingsTitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                    );
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  title: Text(localizations.signOutButton),
-                  leading: const Icon(Icons.logout),
-                  onTap: _showSignOutConfirmationDialog,
-                ),
-              ],
+                    ),
+                  ),
+                  const SizedBox(width: 48), // To balance the back button
+                ],
+              ),
             ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                      children: [
+                        ListTile(
+                          title: Text(localizations.languageSetting),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const LanguageSelectionScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Divider(),
+                        ListTile(
+                          title: Text(localizations.signOutButton),
+                          leading: const Icon(Icons.logout),
+                          onTap: _showSignOutConfirmationDialog,
+                        ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
