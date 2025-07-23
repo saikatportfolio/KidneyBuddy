@@ -317,6 +317,12 @@ class _HomePageState extends State<HomePage> {
                         'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
+                      _buildFeatureItem(
+                        context,
+                        localizations.eGFRCalculatorCard,
+                        'assets/images/gfr.png', // Placeholder image
+                        const EgfrCalculatorScreen(), // Navigate to the new screen
+                      ),
                       // Give Your Feedback (Working)
                       _buildFeatureItem(
                         context,
@@ -324,12 +330,7 @@ class _HomePageState extends State<HomePage> {
                         'assets/images/feedback.jpg', // Placeholder image
                         const FeedbackPage(),
                       ),
-                      _buildFeatureItem(
-                        context,
-                        localizations.eGFRCalculatorCard,
-                        'assets/images/gfr.png', // Placeholder image
-                        const EgfrCalculatorScreen(), // Navigate to the new screen
-                      ),
+
                     ],
                   ),
                 ],

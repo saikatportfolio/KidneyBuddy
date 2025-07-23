@@ -138,80 +138,87 @@ void _performCalculation() {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Serum Creatinine Input
-                  TextFormField(
-                    controller: _serumCreatinineController,
-                    decoration: const InputDecoration(
-                      labelText: 'Serum Creatinine Value (mg/dL)',
-                      border: OutlineInputBorder(),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextFormField(
+                        controller: _serumCreatinineController,
+                        decoration: const InputDecoration(
+                          labelText: 'Serum Creatinine Value (mg/dL)',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
+                        ],
+                      ),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
-                    ],
                   ),
                   const SizedBox(height: 16.0),
-
-            // Age Input
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNumberPickerColumn(
-                  label: 'Age (Years)',
-                  value: _currentAge,
-                  minValue: 1,
-                  maxValue: 120,
-                  onChanged: (value) => setState(() => _currentAge = value),
-                  width: 100,
-                ),
-                const SizedBox(width: 8.0),
-                Column(
-                  children: [
-                    const Text(
-                      "I'm a",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedGender = 'Male';
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _selectedGender == 'Male' ? Colors.lightBlue : Colors.grey[300],
-                            foregroundColor: _selectedGender == 'Male' ? Colors.black : Colors.black,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildNumberPickerColumn(
+                            label: 'Age (Years)',
+                            value: _currentAge,
+                            minValue: 1,
+                            maxValue: 120,
+                            onChanged: (value) => setState(() => _currentAge = value),
+                            width: 100,
                           ),
-                          child: const Text('Male'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedGender = 'Female';
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _selectedGender == 'Female' ? Colors.lightBlue : Colors.grey[300],
-                            foregroundColor: _selectedGender == 'Female' ? Colors.black : Colors.black,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          const SizedBox(width: 8.0),
+                          Column(
+                            children: [
+                              const Text(
+                                "I'm a",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedGender = 'Male';
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _selectedGender == 'Male' ? Colors.lightBlue : Colors.grey[300],
+                                      foregroundColor: _selectedGender == 'Male' ? Colors.black : Colors.black,
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      minimumSize: Size.zero,
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: const Text('Male'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedGender = 'Female';
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _selectedGender == 'Female' ? Colors.lightBlue : Colors.grey[300],
+                                      foregroundColor: _selectedGender == 'Female' ? Colors.black : Colors.black,
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      minimumSize: Size.zero,
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: const Text('Female'),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          child: const Text('Female'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
+                  ),
+                  const SizedBox(height: 16.0),
 
             // Calculate Button
             ElevatedButton(
@@ -226,59 +233,25 @@ void _performCalculation() {
 
             // eGFR Result Display
             if (_egfrResult != null)
-              RichText(
+              Text(
+                _egfrResult!,
                 textAlign: TextAlign.center,
-                softWrap: true, // Allow text to wrap
-                maxLines: 2, // Allow up to 2 lines
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'eGFR: ',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue, // Blue color for "eGFR:"
-                      ),
-                    ),
-                    TextSpan(
-                      text: _egfrResult!.replaceAll('eGFR: ', ''), // Remove "eGFR: " to get only the value
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black, // Black color for the value
-                      ),
-                    ),
-                  ],
+                style: const TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
             if (_ckdStageInterpretation != null)
               Padding(
-                padding: const EdgeInsets.only(top: 8.0), // Add some spacing
-                child: RichText(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  _ckdStageInterpretation!,
                   textAlign: TextAlign.center,
-                  softWrap: true, // Allow text to wrap
-                  maxLines: 2, // Allow up to 2 lines
-                  text: TextSpan(
-                    style: DefaultTextStyle.of(context).style,
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'CKD Stage: ',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue, // Blue color for "CKD Stage:"
-                        ),
-                      ),
-                      TextSpan(
-                        text: _ckdStageInterpretation!.replaceAll('CKD Stage: ', ''), // Remove "CKD Stage: " to get only the value
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black, // Black color for the value
-                        ),
-                      ),
-                    ],
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue,
                   ),
                 ),
               ),
