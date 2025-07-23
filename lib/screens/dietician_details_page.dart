@@ -76,262 +76,276 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    'Dietician Details',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 48), // To balance the back button
-              ],
+          Positioned(
+            top: 16.0,
+            left: 16.0,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
-          Expanded(
+          Positioned(
+            top: 16.0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'Dietician Details',
+                style: const TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 60.0),
             child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Main Info Card
-            Card(
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              margin: const EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(widget.dietician.imageUrl),
-                      onBackgroundImageError: (exception, stackTrace) {
-                        logger.e('Error loading image: $exception');
-                      },
-                      child: widget.dietician.imageUrl.isEmpty
-                          ? const Icon(Icons.person, size: 80)
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.dietician.name,
-                      style: const TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Education: ',
-                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.dietician.education,
-                            style: const TextStyle(fontWeight: FontWeight.normal),
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Main Info Card
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                    margin: const EdgeInsets.only(bottom: 16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundImage: NetworkImage(widget.dietician.imageUrl),
+                            onBackgroundImageError: (exception, stackTrace) {
+                              logger.e('Error loading image: $exception');
+                            },
+                            child: widget.dietician.imageUrl.isEmpty
+                                ? const Icon(Icons.person, size: 80)
+                                : null,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Experience: ',
-                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.dietician.experience,
-                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          const SizedBox(height: 16),
+                          Text(
+                            widget.dietician.name,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Specialty: ',
-                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.dietician.specialty,
-                            style: const TextStyle(fontWeight: FontWeight.normal),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.dietician.education,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Language Known: ',
-                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.dietician.languages,
-                            style: const TextStyle(fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: 'Consultation Charge: ',
-                        style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: widget.dietician.fees,
-                            style: const TextStyle(fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Contact Section
-            const Text(
-              'Contact',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              margin: const EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.message, color: Colors.green),
-                      title: Text(widget.dietician.whatsappNumber),
-                      trailing: ElevatedButton(
-                        onPressed: () => _launchWhatsApp(context, widget.dietician.whatsappNumber),
-                        child: const Text('WhatsApp'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Availability Section
-            const Text(
-              'Availability',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              margin: const EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.calendar_today),
-                      title: Text('Available Days: ${widget.dietician.availableDay}'),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.access_time),
-                      title: Text('Available Hours: ${widget.dietician.availableHour}'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            // Reviews Section
-            const SizedBox(height: 16),
-            const Text(
-              'Reviews',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            _isLoadingReviews
-                ? const Center(child: CircularProgressIndicator())
-                : _reviews.isEmpty
-                    ? const Center(child: Text('No reviews yet.'))
-                    : ListView.builder(
-                        shrinkWrap: true, // Important for nested list views
-                        physics: const NeverScrollableScrollPhysics(), // Disable scrolling for nested list
-                        itemCount: _reviews.length,
-                        itemBuilder: (context, index) {
-                          final review = _reviews[index];
-                          return Card(
-                            elevation: 2.0,
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
                                 children: [
-                                  Text(
-                                    review.patientName,
-                                    style: const TextStyle(
+                                  const Text(
+                                    'Known Languages',
+                                    style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    review.patientDetails,
+                                    widget.dietician.languages,
                                     style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    review.comment,
-                                    style: const TextStyle(fontSize: 15.0),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      '${review.createdAt.day}/${review.createdAt.month}/${review.createdAt.year}',
-                                      style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                                      fontSize: 16.0,
+                                      color: Colors.blue,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          );
-                        },
+                              Column(
+                                children: [
+                                  const Text(
+                                    'Experience',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.dietician.experience,
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text(
+                                    'Fees',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '₹${widget.dietician.fees}',
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-          ],
-        ),
-      ),
+                    ),
+                  ),
+
+                  // About Section
+                  const Text(
+                    'About',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Speciality in ${widget.dietician.specialty}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Contact Section
+                  const Text(
+                    'Contact',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                    margin: const EdgeInsets.only(bottom: 16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.phone, color: Colors.green),
+                            title: Text('+91 ${widget.dietician.whatsappNumber}'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Availability Section
+                  const Text(
+                    'Availability',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                    margin: const EdgeInsets.only(bottom: 16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.calendar_today),
+                            title: Text('Available Days: ${widget.dietician.availableDay}'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.access_time),
+                            title: Text('Available Hours: ${widget.dietician.availableHour}'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Reviews Section
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Reviews',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  _isLoadingReviews
+                      ? const Center(child: CircularProgressIndicator())
+                      : _reviews.isEmpty
+                          ? const Center(child: Text('No reviews yet.'))
+                          : ListView.builder(
+                              shrinkWrap: true, // Important for nested list views
+                              physics: const NeverScrollableScrollPhysics(), // Disable scrolling for nested list
+                              itemCount: _reviews.length,
+                              itemBuilder: (context, index) {
+                                final review = _reviews[index];
+                                final colors = [Colors.blue[50], Colors.green[50], Colors.orange[50]];
+                                final color = colors[index % colors.length];
+                                return Card(
+                                  color: color,
+                                  elevation: 0,
+                                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          review.patientName,
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          review.patientDetails,
+                                          style: const TextStyle(
+                                            fontSize: 14.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          review.comment,
+                                          style: const TextStyle(fontSize: 15.0),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            '${review.createdAt.day}/${review.createdAt.month}/${review.createdAt.year}',
+                                            style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

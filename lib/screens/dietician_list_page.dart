@@ -124,7 +124,7 @@ class _DieticianListPageState extends State<DieticianListPage> {
                                           Text(
                                             dietician.name,
                                             style: const TextStyle(
-                                              fontSize: 20.0,
+                                              fontSize: 18.0,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,
                                             ),
