@@ -153,25 +153,7 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
-                                children: [
-                                  const Text(
-                                    'Known Languages',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.dietician.languages,
-                                    style: const TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     'Experience',
@@ -216,17 +198,39 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                     ),
                   ),
 
-                  // About Section
-                  const Text(
-                    'About',
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  // About and Known Languages Section
+                  Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                    margin: const EdgeInsets.only(bottom: 16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'About',
+                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Speciality in ${widget.dietician.specialty}',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Known Languages',
+                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.dietician.languages,
+                            style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Speciality in ${widget.dietician.specialty}',
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                  const SizedBox(height: 16),
 
                   // Contact Section
                   const Text(
