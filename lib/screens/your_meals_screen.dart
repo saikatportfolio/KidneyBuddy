@@ -327,7 +327,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                 ),
                                             ],
                                           );
-                                        }).toList(),
+                                        }),
                                       ],
                                     ),
                                   ),

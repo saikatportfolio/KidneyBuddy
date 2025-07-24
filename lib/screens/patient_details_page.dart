@@ -23,8 +23,6 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
   String? _ckdStage;
   String? _email;
 
@@ -66,8 +64,6 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       setState(() {
         _nameController.text = loadedDetails!.name;
         _phoneController.text = loadedDetails.phoneNumber;
-        _weightController.text = loadedDetails.weight.toString();
-        _heightController.text = loadedDetails.height.toString();
         _ckdStage = loadedDetails.ckdStage;
       });
       // Update provider with loaded details
@@ -80,8 +76,6 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _weightController.dispose();
-    _heightController.dispose();
     super.dispose();
   }
 
@@ -91,12 +85,12 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       final existingDetails = Provider.of<PatientDetailsProvider>(context, listen: false).patientDetails;
 
       final patientDetails = PatientDetails(
-        id: existingDetails?.id ?? Uuid().v4(), // Use existing ID or generate new UUID
+        id: existingDetails?.id ?? const Uuid().v4(), // Use existing ID or generate new UUID
         userId: existingDetails?.userId, // Preserve existing userId if available
         name: _nameController.text,
         phoneNumber: _phoneController.text,
-        weight: double.parse(_weightController.text),
-        height: double.parse(_heightController.text),
+        weight: existingDetails?.weight ?? 0.0,
+        height: existingDetails?.height ?? 0.0,
         ckdStage: _ckdStage!,
         email: _email,
       );
@@ -134,7 +128,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Details'),
+        title: const Text('Patient Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -142,79 +136,79 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
+              SizedBox(
+                height: 100,
+                child: Image.asset('assets/images/patient_image.png'),
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _weightController,
-                decoration: InputDecoration(labelText: 'Weight (kg)'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your weight';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _heightController,
-                decoration: InputDecoration(labelText: 'Height (cm)'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your height';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _ckdStage,
-                decoration: InputDecoration(labelText: 'CKD Stage'),
-                items: <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _ckdStage = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select your CKD stage';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _savePatientDetails,
-                child: Text('Save Details'),
+              const SizedBox(height: 24),
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _phoneController,
+                        decoration: const InputDecoration(labelText: 'Phone Number'),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your phone number';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _ckdStage,
+                        decoration: const InputDecoration(labelText: 'CKD Stage'),
+                        items: <String>[
+                          'Stage 1',
+                          'Stage 2',
+                          'Stage 3',
+                          'Stage 4',
+                          'Stage 5'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _ckdStage = newValue;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select your CKD stage';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 32),
+                      ElevatedButton(
+                        onPressed: _savePatientDetails,
+                        child: const Text('Submit'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

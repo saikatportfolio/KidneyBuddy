@@ -6,8 +6,8 @@ class PatientDetails {
   String name;
   String? email;
   String phoneNumber;
-  double weight;
-  double height;
+  double? weight;
+  double? height;
   String ckdStage;
 
   PatientDetails({
@@ -16,8 +16,8 @@ class PatientDetails {
     required this.name,
     this.email,
     required this.phoneNumber,
-    required this.weight,
-    required this.height,
+    this.weight,
+    this.height,
     required this.ckdStage,
   });
 

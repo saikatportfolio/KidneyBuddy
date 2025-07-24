@@ -3,7 +3,6 @@ import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/settings_page.dart';
-import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/notification_page.dart'; // Import NotificationPage
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -369,7 +368,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
               flex: 3, // Image takes more space
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 child: Image.asset(
                   imagePath,
