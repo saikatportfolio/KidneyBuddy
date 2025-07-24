@@ -160,104 +160,131 @@ class _AddBpPageState extends State<AddBpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.addBpPageTitle),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNumberPickerColumn(
-                  label: LocalizationHelper.translateKey(context, 'SYS'),
-                  value: _currentSystolicValue,
-                  minValue: 70,
-                  maxValue: 180,
-                  onChanged: (value) => setState(() => _currentSystolicValue = value),
-                ),
-                _buildNumberPickerColumn(
-                  label: LocalizationHelper.translateKey(context, 'DIA'),
-                  value: _currentDiastolicValue,
-                  minValue: 40,
-                  maxValue: 120,
-                  onChanged: (value) => setState(() => _currentDiastolicValue = value),
-                ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const Text(
+                    'Add BP reading',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 48), // To balance the IconButton
                 ],
               ),
-              const SizedBox(height: 16),
-            Text(
-              LocalizationHelper.translateKey(context, 'Add Your Comment'),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _commentController,
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-              minLines: 3,
-              decoration: InputDecoration(
-                labelText: LocalizationHelper.translateKey(context, 'Add Your Comment'),
-                hintText: 'Add any relevant comments...',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.comment),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              LocalizationHelper.translateKey(context, 'Select Date'),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _dateController,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: LocalizationHelper.translateKey(context, 'Select date'),
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.calendar_today),
-              ),
-              onTap: () => _selectDate(context),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              LocalizationHelper.translateKey(context, 'Select Time'),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _timeController,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: LocalizationHelper.translateKey(context, 'Select Time'),
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.access_time),
-              ),
-              onTap: () => _selectTime(context),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saveBloodPressure,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildNumberPickerColumn(
+                            label: LocalizationHelper.translateKey(context, 'SYS'),
+                            value: _currentSystolicValue,
+                            minValue: 70,
+                            maxValue: 180,
+                            onChanged: (value) =>
+                                setState(() => _currentSystolicValue = value),
+                          ),
+                          _buildNumberPickerColumn(
+                            label: LocalizationHelper.translateKey(context, 'DIA'),
+                            value: _currentDiastolicValue,
+                            minValue: 40,
+                            maxValue: 120,
+                            onChanged: (value) =>
+                                setState(() => _currentDiastolicValue = value),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        LocalizationHelper.translateKey(context, 'Add Your Comment'),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _commentController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                        minLines: 3,
+                        decoration: InputDecoration(
+                          labelText: LocalizationHelper.translateKey(
+                              context, 'Add Your Comment'),
+                          hintText: 'Add any relevant comments...',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.comment),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        LocalizationHelper.translateKey(context, 'Select Date'),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _dateController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText:
+                              LocalizationHelper.translateKey(context, 'Select date'),
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.calendar_today),
+                        ),
+                        onTap: () => _selectDate(context),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        LocalizationHelper.translateKey(context, 'Select Time'),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _timeController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText:
+                              LocalizationHelper.translateKey(context, 'Select Time'),
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.access_time),
+                        ),
+                        onTap: () => _selectTime(context),
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _saveBloodPressure,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            LocalizationHelper.translateKey(context, 'Save'),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Text(
-                  LocalizationHelper.translateKey(context, 'Save'),
-                  style: const TextStyle(fontSize: 18),
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
