@@ -227,40 +227,36 @@ class _AddBpPageState extends State<AddBpPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        LocalizationHelper.translateKey(context, 'Select Date'),
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _dateController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText:
-                              LocalizationHelper.translateKey(context, 'Select date'),
-                          border: const OutlineInputBorder(),
-                          prefixIcon: const Icon(Icons.calendar_today),
-                        ),
-                        onTap: () => _selectDate(context),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        LocalizationHelper.translateKey(context, 'Select Time'),
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _timeController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText:
-                              LocalizationHelper.translateKey(context, 'Select Time'),
-                          border: const OutlineInputBorder(),
-                          prefixIcon: const Icon(Icons.access_time),
-                        ),
-                        onTap: () => _selectTime(context),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _dateController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                labelText: LocalizationHelper.translateKey(
+                                    context, 'Select date'),
+                                border: const OutlineInputBorder(),
+                                prefixIcon: const Icon(Icons.calendar_today),
+                              ),
+                              onTap: () => _selectDate(context),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _timeController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                labelText: LocalizationHelper.translateKey(
+                                    context, 'Select Time'),
+                                border: const OutlineInputBorder(),
+                                prefixIcon: const Icon(Icons.access_time),
+                              ),
+                              onTap: () => _selectTime(context),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
                       SizedBox(
