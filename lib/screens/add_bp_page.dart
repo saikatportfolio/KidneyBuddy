@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model

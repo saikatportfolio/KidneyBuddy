@@ -1,9 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
-import 'package:myapp/models/patient_details.dart'; // Import PatientDetails
-import 'package:myapp/services/supabase_service.dart'; // Import SupabaseService
+import 'package:myapp/models/blood_pressure.dart';
+import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/patient_details.dart';
+import 'package:myapp/widgets/add_creatine_dialog.dart';
+import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
 import 'package:intl/intl.dart'; // Import for DateFormat
@@ -28,8 +30,14 @@ class VitalTrackingTab extends StatefulWidget {
 
 class _VitalTrackingTabState extends State<VitalTrackingTab> {
   List<BloodPressure> _bloodPressureReadings = [];
+  List<Creatine> _creatineReadings = [];
   bool _isLoading = true;
-  final SupabaseService _supabaseService = SupabaseService(); // Create an instance
+  final SupabaseService _supabaseService = SupabaseService();
+
+  // Public method to refresh data
+  void refreshData() {
+    _fetchData();
+  }
 
   String _selectedFilterDuration = 'allTime'; // Default filter
 
@@ -74,6 +82,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         List<BloodPressure> fetchedReadings = await _supabaseService.getBloodPressureReadings(startDate: startDate);
         setState(() {
           _bloodPressureReadings = fetchedReadings;
+        });
+      } else if (widget.vitalType == 'Creatinine') {
+        final startDate = _calculateStartDate(_selectedFilterDuration);
+        List<Creatine> fetchedReadings = await _supabaseService.getCreatineReadings(startDate: startDate);
+        setState(() {
+          _creatineReadings = fetchedReadings;
         });
       }
       // Add fetching logic for other vital types here
@@ -165,6 +179,18 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
     return grouped;
   }
 
+  Map<String, List<Creatine>> _groupCreatineReadingsByDate(List<Creatine> readings) {
+    final Map<String, List<Creatine>> grouped = {};
+    for (var cr in readings) {
+      final dateKey = DateFormat('yyyy-MM-dd').format(cr.timestamp);
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(cr);
+    }
+    return grouped;
+  }
+
   Future<void> _generatePdfReport(AppLocalizations localizations) async {
     logger.i('Attempting to generate PDF report for ${widget.vitalType}...');
 
@@ -188,6 +214,21 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         final pdfBytes = await PdfGenerator.generateBpReport(widget.patientDetails!, _bloodPressureReadings);
         await Printing.sharePdf(bytes: pdfBytes, filename: 'blood_pressure_report.pdf');
         logger.i('PDF report shared successfully.');
+      } else if (widget.vitalType == 'Creatinine') {
+        if (_creatineReadings.isEmpty) {
+          logger.w('No creatine readings available for PDF generation.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(localizations.pdfGenerationErrorNoReadings)),
+          );
+          return;
+        }
+        // TODO: Implement PDF generation for Creatine
+        // final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
+        // await Printing.sharePdf(bytes: pdfBytes, filename: 'creatine_report.pdf');
+        logger.i('PDF generation not yet implemented for Creatine.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.notYetImplemented('PDF Export for Creatine'))),
+        );
       } else {
         logger.i('PDF generation not yet implemented for ${widget.vitalType}.');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,7 +244,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
   }
 
   void _showTrendChart(AppLocalizations localizations) {
-    if (_bloodPressureReadings.isEmpty) {
+    if (widget.vitalType == 'BP' && _bloodPressureReadings.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.noDataAvailable)),
+      );
+      return;
+    } else if (widget.vitalType == 'Creatinine' && _creatineReadings.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.noDataAvailable)),
       );
@@ -429,7 +475,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                             final reading = readingsForDate[readingIndex];
                             return Card(
                               elevation: 6,
-                              shadowColor: Colors.blue.shade200.withOpacity(0.7),
+                              shadowColor: Colors.blue.shade200.withAlpha(179),
                               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
@@ -495,8 +541,104 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                     );
                   },
                 );
+              } else if (widget.vitalType == 'Creatinine') {
+                if (_creatineReadings.isEmpty) {
+                  return Center(child: Text(localizations.noDataAvailable));
+                }
+
+                final groupedCrData = _groupCreatineReadingsByDate(_creatineReadings);
+                final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  itemCount: sortedDates.length,
+                  itemBuilder: (context, groupIndex) {
+                    final date = sortedDates[groupIndex];
+                    final readingsForDate = groupedCrData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                          child: Text(
+                            DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade900,
+                            ),
+                          ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: readingsForDate.length,
+                          itemBuilder: (context, readingIndex) {
+                            final reading = readingsForDate[readingIndex];
+                            return Card(
+                              elevation: 6,
+                              shadowColor: Colors.blue.shade200.withAlpha(179),
+                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            DateFormat('hh:mm a').format(reading.timestamp),
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue.shade900,
+                                                ),
+                                          ),
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                '${reading.value.toStringAsFixed(2)} mg/dL',
+                                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.blue.shade900,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete, color: Colors.black),
+                                            onPressed: () => _confirmAndDeleteCreatineReading(reading, localizations),
+                                          ),
+                                        ],
+                                      ),
+                                      if (reading.comment != null && reading.comment!.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: Text(
+                                            'Comment: ${reading.comment}',
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.grey.shade700,
+                                                ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               } else {
-                // Placeholder for other vital types
                 return Center(child: Text(localizations.noDataAvailable));
               }
             },
@@ -544,6 +686,47 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         logger.e('Error deleting BP reading: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(localizations.errorDeletingBpReading(e.toString()))), // Assuming you have this key
+        );
+      }
+    }
+  }
+
+  Future<void> _confirmAndDeleteCreatineReading(Creatine reading, AppLocalizations localizations) async {
+    final bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.deleteConfirmationTitle),
+          content: Text(localizations.deleteCreatineReadingConfirmation),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(localizations.no),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(localizations.yes),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      try {
+        await _supabaseService.deleteCreatine(reading.id!);
+        await DatabaseHelper().deleteCreatine(reading.id!);
+
+        setState(() {
+          _creatineReadings.removeWhere((cr) => cr.id == reading.id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.creatineReadingDeletedSuccessfully)),
+        );
+      } catch (e) {
+        logger.e('Error deleting Creatine reading: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.errorDeletingCreatineReading(e.toString()))),
         );
       }
     }

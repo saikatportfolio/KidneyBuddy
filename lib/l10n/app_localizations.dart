@@ -705,6 +705,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error deleting BP reading: {error}'**
   String errorDeletingBpReading(Object error);
+
+  /// No description provided for @addCreatineReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Creatine Reading'**
+  String get addCreatineReading;
+
+  /// No description provided for @deleteCreatineReadingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to delete this Creatine reading?'**
+  String get deleteCreatineReadingConfirmation;
+
+  /// No description provided for @creatineReadingDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Creatine reading deleted successfully!'**
+  String get creatineReadingDeletedSuccessfully;
+
+  /// No description provided for @errorDeletingCreatineReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting Creatine reading: {error}'**
+  String errorDeletingCreatineReading(Object error);
+
+  /// No description provided for @creatineSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Creatine reading saved successfully!'**
+  String get creatineSavedSuccess;
+
+  /// No description provided for @creatineSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving Creatine reading: {error}'**
+  String creatineSaveError(Object error);
+
+  /// No description provided for @selectDateAndTimeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a date and time'**
+  String get selectDateAndTimeError;
+
+  /// No description provided for @addYourComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Your Comment'**
+  String get addYourComment;
+
+  /// No description provided for @creatine.
+  ///
+  /// In en, this message translates to:
+  /// **'Creatine'**
+  String get creatine;
+
+  /// No description provided for @sys.
+  ///
+  /// In en, this message translates to:
+  /// **'SYS'**
+  String get sys;
+
+  /// No description provided for @dia.
+  ///
+  /// In en, this message translates to:
+  /// **'DIA'**
+  String get dia;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @selectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get selectTime;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 }
 
 class _AppLocalizationsDelegate

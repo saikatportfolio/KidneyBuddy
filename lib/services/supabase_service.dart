@@ -4,6 +4,7 @@ import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/models/dietician.dart'; // Import Dietician model
 import 'package:myapp/models/review.dart'; // Import Review model
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
+import 'package:myapp/models/creatine.dart'; // Import Creatine model
 import 'package:google_sign_in/google_sign_in.dart'; // Import google_sign_in
 import 'dart:typed_data';
 import 'package:mime/mime.dart';
@@ -238,6 +239,72 @@ class SupabaseService {
     } catch (e) {
       logger.e('Error fetching blood pressure readings from Supabase: $e');
       return []; // Return empty list on error
+    }
+  }
+
+  // Creatine Operations
+  Future<void> insertCreatine(Creatine creatine) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('insertCreatine: No authenticated user found. Cannot insert creatine reading.');
+        return;
+      }
+      // Do NOT set creatine.id here; let Supabase generate it.
+      // Ensure toMap() handles null id correctly for Supabase insertion.
+      final data = {
+        'user_id': user.id,
+        'value': creatine.value,
+        'timestamp': creatine.timestamp.toIso8601String(),
+        'comment': creatine.comment,
+      };
+      await _supabase.from('creatine_readings').insert(data);
+      logger.i('Creatine reading inserted to Supabase: ${creatine.value} for user ${user.id}');
+    } catch (e) {
+      logger.e('Error inserting creatine reading to Supabase: $e');
+    }
+  }
+
+  Future<List<Creatine>> getCreatineReadings({DateTime? startDate}) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getCreatineReadings: No authenticated user found. Cannot fetch creatine readings.');
+        return [];
+      }
+
+      var query = _supabase
+          .from('creatine_readings')
+          .select()
+          .eq('user_id', user.id);
+
+      if (startDate != null) {
+        query = query.gte('timestamp', startDate.toIso8601String());
+      }
+
+      final response = await query.order('timestamp', ascending: false);
+
+      if (response.isEmpty) {
+        logger.i('No creatine readings found for user ${user.id} with filter starting from $startDate.');
+        return [];
+      }
+
+      final List<Creatine> readings = (response as List).map((map) => Creatine.fromMap(map)).toList();
+      logger.d('Fetched ${readings.length} creatine readings for user ${user.id} with filter starting from $startDate.');
+      return readings;
+    } catch (e) {
+      logger.e('Error fetching creatine readings from Supabase: $e');
+      return [];
+    }
+  }
+
+  Future<void> deleteCreatine(String id) async {
+    try {
+      await _supabase.from('creatine_readings').delete().eq('id', id);
+      logger.i('Creatine reading with ID $id deleted from Supabase.');
+    } catch (e) {
+      logger.e('Error deleting creatine reading from Supabase: $e');
+      rethrow;
     }
   }
 

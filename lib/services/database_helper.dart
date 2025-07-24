@@ -2,8 +2,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
-import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
-import 'package:uuid/uuid.dart'; // Import uuid package
+import 'package:myapp/models/blood_pressure.dart';
+import 'package:myapp/models/creatine.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/utils/logger_config.dart'; // Import logger
 
@@ -29,9 +30,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'ckd_care_app.db');
     return await openDatabase(
       path,
-      version: 5, // Increment database version to 5 for email column
+      version: 6,
       onCreate: _onCreate,
-      onUpgrade: _onUpgrade, // Add onUpgrade callback
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -66,6 +67,15 @@ class DatabaseHelper {
         diastolic INTEGER,
         timestamp TEXT,
         comment TEXT -- New column for comment
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE creatine_readings(
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        value REAL,
+        timestamp TEXT,
+        comment TEXT
       )
     ''');
   }
@@ -107,6 +117,17 @@ class DatabaseHelper {
     if (oldVersion < 5) {
       // Migrate from version 4 to 5: Add email column to patient_details
       await db.execute('ALTER TABLE patient_details ADD COLUMN email TEXT;');
+    }
+    if (oldVersion < 6) {
+      await db.execute('''
+        CREATE TABLE creatine_readings(
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          value REAL,
+          timestamp TEXT,
+          comment TEXT
+        )
+      ''');
     }
   }
 
@@ -191,5 +212,47 @@ class DatabaseHelper {
       whereArgs: [id],
     );
     logger.i('Blood pressure reading with ID $id deleted from SQLite.');
+  }
+
+  // Creatine Operations
+  Future<String?> insertCreatine(Creatine creatine) async {
+    if (kIsWeb) return null;
+    Database db = await database;
+    creatine.id ??= Uuid().v4();
+    await db.insert('creatine_readings', creatine.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    return creatine.id!;
+  }
+
+  Future<List<Creatine>> getCreatineReadings(String userId) async {
+    if (kIsWeb) return [];
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query(
+      'creatine_readings',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'timestamp DESC',
+    );
+    return List.generate(maps.length, (i) {
+      return Creatine.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> deleteCreatine(String id) async {
+    if (kIsWeb) return;
+    Database db = await database;
+    await db.delete(
+      'creatine_readings',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    logger.i('Creatine reading with ID $id deleted from SQLite.');
+  }
+
+  Future<void> clearCreatineReadings() async {
+    if (kIsWeb) return;
+    Database db = await database;
+    await db.delete('creatine_readings');
+    logger.i('All creatine readings cleared from SQLite.');
   }
 }

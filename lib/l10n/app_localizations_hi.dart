@@ -342,4 +342,52 @@ class AppLocalizationsHi extends AppLocalizations {
   String errorDeletingBpReading(Object error) {
     return 'Error deleting BP reading: $error';
   }
+
+  @override
+  String get addCreatineReading => 'Add Creatine Reading';
+
+  @override
+  String get deleteCreatineReadingConfirmation =>
+      'Do you want to delete this Creatine reading?';
+
+  @override
+  String get creatineReadingDeletedSuccessfully =>
+      'Creatine reading deleted successfully!';
+
+  @override
+  String errorDeletingCreatineReading(Object error) {
+    return 'Error deleting Creatine reading: $error';
+  }
+
+  @override
+  String get creatineSavedSuccess => 'Creatine reading saved successfully!';
+
+  @override
+  String creatineSaveError(Object error) {
+    return 'Error saving Creatine reading: $error';
+  }
+
+  @override
+  String get selectDateAndTimeError => 'Please select a date and time';
+
+  @override
+  String get addYourComment => 'Add Your Comment';
+
+  @override
+  String get creatine => 'Creatine';
+
+  @override
+  String get sys => 'SYS';
+
+  @override
+  String get dia => 'DIA';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get selectTime => 'Select Time';
+
+  @override
+  String get save => 'Save';
 }
