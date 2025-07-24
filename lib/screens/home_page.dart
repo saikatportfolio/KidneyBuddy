@@ -163,44 +163,25 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           // Notification Icon
-                          Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[200],
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.notifications_none,
-                                    size: 28.0,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const NotificationPage(),
-                                      ), // Navigate to NotificationPage
-                                    );
-                                  },
-                                ),
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[200],
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.notifications_none,
+                                size: 28.0,
                               ),
-                              Positioned(
-                                right: 8,
-                                top: 8,
-                                child: Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 12,
-                                    minHeight: 12,
-                                  ),
-                                ),
-                              ),
-                            ],
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const NotificationPage(),
+                                  ), // Navigate to NotificationPage
+                                );
+                              },
+                            ),
                           ),
                           const SizedBox(width: 10), // Spacing between icons
                           // Settings Icon
