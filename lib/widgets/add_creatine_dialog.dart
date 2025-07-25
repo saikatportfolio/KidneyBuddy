@@ -13,9 +13,10 @@ import 'package:myapp/utils/localization_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddCreatineDialog extends StatefulWidget {
-  final Function onCreatineAdded;
+  final String userId;
+  final Function refreshData;
 
-  const AddCreatineDialog({super.key, required this.onCreatineAdded});
+  const AddCreatineDialog({super.key, required this.userId, required this.refreshData});
 
   @override
   State<AddCreatineDialog> createState() => _AddCreatineDialogState();
@@ -140,7 +141,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
                 LocalizationHelper.translateKey(context, 'creatineSavedSuccess'))),
       );
 
-      widget.onCreatineAdded();
+      widget.refreshData();
       Navigator.of(context).pop();
     } catch (e) {
       logger.e('Error saving Creatine: $e');

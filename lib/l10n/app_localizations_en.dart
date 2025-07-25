@@ -390,4 +390,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get save => 'Save';
+
+  @override
+  String get addCreatine => 'Add Creatine';
 }

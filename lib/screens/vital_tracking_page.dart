@@ -252,7 +252,8 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
             showDialog(
               context: context,
               builder: (context) => AddCreatineDialog(
-                onCreatineAdded: () {
+                userId: Supabase.instance.client.auth.currentUser!.id,
+                refreshData: () {
                   // This callback is triggered when creatine is successfully added.
                   // We need to ensure the VitalTrackingTab refreshes its data.
                   // Since VitalTrackingTab listens to didUpdateWidget,
