@@ -222,13 +222,9 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
           );
           return;
         }
-        // TODO: Implement PDF generation for Creatine
-        // final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
-        // await Printing.sharePdf(bytes: pdfBytes, filename: 'creatine_report.pdf');
-        logger.i('PDF generation not yet implemented for Creatine.');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localizations.notYetImplemented('PDF Export for Creatine'))),
-        );
+        final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
+        await Printing.sharePdf(bytes: pdfBytes, filename: 'creatine_report.pdf');
+        logger.i('PDF report shared successfully.');
       } else {
         logger.i('PDF generation not yet implemented for ${widget.vitalType}.');
         ScaffoldMessenger.of(context).showSnackBar(
