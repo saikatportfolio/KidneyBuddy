@@ -126,7 +126,7 @@
   "weightReadingDeletedSuccessfully": "Weight reading deleted successfully.",
   "errorDeletingWeightReading": "Error deleting weight reading: {error}",
   "creatinineTrend": "Creatinine Trend",
-  "yourHealthBoard": "Your Health Board",
+  "yourHealthBoard": "Your latest Health Board",
   "noDataAvailableForBp": "No data available for Blood Pressure.",
   "noDataAvailableForCreatinine": "No data available for Creatinine.",
   "noDataAvailableForWeight": "No data available for Weight.",

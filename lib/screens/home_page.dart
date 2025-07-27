@@ -24,7 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _welcomeMessage = 'Stay informed and healthy on your journey.';
   String _tipOfTheDay = 'Loading tip...';
   List<String> _allTips = [];
   bool _isLoadingContent = true;
@@ -55,8 +54,6 @@ class _HomePageState extends State<HomePage> {
       final tips = await supabaseService.getAllTips();
 
       setState(() {
-        _welcomeMessage =
-            welcomeMsg ?? 'Stay informed and healthy on your journey.';
         _allTips = tips;
         if (_allTips.isNotEmpty) {
           _tipOfTheDay = _allTips[DateTime.now().day % _allTips.length];
@@ -67,7 +64,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       logger.e('Error loading dynamic content: $e');
       setState(() {
-        _welcomeMessage = 'Error loading message.';
         _tipOfTheDay = 'Error loading tip.';
       });
     } finally {
@@ -440,57 +436,53 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(color: Colors.grey[300]!),
       ),
-      child: Row(
+      child: Column( // Changed from Row to Column
+        crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
         children: [
           Icon(icon, size: 30.0, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 8), // Spacing between icon and title
+          Text(
+            title,
+            textAlign: TextAlign.center, // Center the title text
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 4), // Spacing between title and value
+          if (value != null && date != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center, // Center value and date
               children: [
                 Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                  value,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 4),
-                if (value != null && date != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        value,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        'Date: ${date.toLocal().toString().split(' ')[0]}',
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  )
-                else
-                  Text(
-                    noDataMessage,
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey[600],
-                    ),
+                Text(
+                  'Date: ${date.toLocal().toString().split(' ')[0]}',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey[600],
                   ),
+                ),
               ],
+            )
+          else
+            Text(
+              noDataMessage,
+              textAlign: TextAlign.center, // Center no data message
+              style: TextStyle(
+                fontSize: 14.0,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey[600],
+              ),
             ),
-          ),
         ],
       ),
     );

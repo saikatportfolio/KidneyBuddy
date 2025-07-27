@@ -158,11 +158,12 @@ class _DieticianListPageState extends State<DieticianListPage> {
                                             color: Colors.grey,
                                           ),
                                         ),
+                                        const SizedBox(height: 4),
                                         Text(
                                           '₹${dietician.fees}',
                                           style: const TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.normal,
                                             color: Colors.green,
                                           ),
                                         ),

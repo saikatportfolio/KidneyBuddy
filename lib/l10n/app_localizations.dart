@@ -859,7 +859,7 @@ abstract class AppLocalizations {
   /// No description provided for @yourHealthBoard.
   ///
   /// In en, this message translates to:
-  /// **'Your Health Board'**
+  /// **'Your latest Health Board'**
   String get yourHealthBoard;
 
   /// No description provided for @noDataAvailableForBp.
