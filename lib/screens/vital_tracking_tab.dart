@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/screens/add_bp_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/blood_pressure.dart';
 import 'package:myapp/models/creatine.dart';
@@ -442,100 +443,119 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                 final groupedBpData = _groupBpReadingsByDate(_bloodPressureReadings);
                 final sortedDates = groupedBpData.keys.toList()..sort((a, b) => b.compareTo(a)); // Sort dates descending
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: sortedDates.length,
-                  itemBuilder: (context, groupIndex) {
-                    final date = sortedDates[groupIndex];
-                    final readingsForDate = groupedBpData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // Sort readings by time descending
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: sortedDates.length,
+                        itemBuilder: (context, groupIndex) {
+                          final date = sortedDates[groupIndex];
+                          final readingsForDate = groupedBpData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // Sort readings by time descending
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0), // Adjusted padding
-                          child: Text(
-                            DateFormat('MMM dd, yyyy').format(DateTime.parse(date)), // Format date for display
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade900,
-                            ),
-                          ),
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(), // Disable inner list scrolling
-                          itemCount: readingsForDate.length,
-                          itemBuilder: (context, readingIndex) {
-                            final reading = readingsForDate[readingIndex];
-                            return Card(
-                              elevation: 6,
-                              shadowColor: Colors.blue.shade200.withAlpha(179),
-                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              child: InkWell(
-                                // onTap: () {
-                                //   // TODO: Implement navigation to detail page for this vital reading
-                                //   ScaffoldMessenger.of(context).showSnackBar(
-                                //     SnackBar(content: Text('Tapped on BP reading: ${reading.systolic}/${reading.diastolic} at ${DateFormat('hh:mm a').format(reading.timestamp)}')),
-                                //   );
-                                // },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blue.shade800,
-                                                ),
-                                          ),
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                '${reading.systolic}/${reading.diastolic} mmHg',
-                                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.blue.shade700,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete, color: Colors.black),
-                                            onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
-                                          ),
-                                        ],
-                                      ),
-                                      if (reading.comment != null && reading.comment!.isNotEmpty)
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Text(
-                                            'Comment: ${reading.comment}',
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  fontStyle: FontStyle.italic,
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                          ),
-                                        ),
-                                    ],
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0), // Adjusted padding
+                                child: Text(
+                                  DateFormat('MMM dd, yyyy').format(DateTime.parse(date)), // Format date for display
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue.shade900,
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(), // Disable inner list scrolling
+                                itemCount: readingsForDate.length,
+                                itemBuilder: (context, readingIndex) {
+                                  final reading = readingsForDate[readingIndex];
+                                  return Card(
+                                    elevation: 6,
+                                    shadowColor: Colors.blue.shade200.withAlpha(179),
+                                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: InkWell(
+                                      // onTap: () {
+                                      //   // TODO: Implement navigation to detail page for this vital reading
+                                      //   ScaffoldMessenger.of(context).showSnackBar(
+                                      //     SnackBar(content: Text('Tapped on BP reading: ${reading.systolic}/${reading.diastolic} at ${DateFormat('hh:mm a').format(reading.timestamp)}')),
+                                      //   );
+                                      // },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
+                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.blue.shade800,
+                                                      ),
+                                                ),
+                                                Expanded(
+                                                  child: Center(
+                                                    child: Text(
+                                                      '${reading.systolic}/${reading.diastolic} mmHg',
+                                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.blue.shade700,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.delete, color: Colors.black),
+                                                  onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
+                                                ),
+                                              ],
+                                            ),
+                                            if (reading.comment != null && reading.comment!.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8.0),
+                                                child: Text(
+                                                  'Comment: ${reading.comment}',
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                        fontStyle: FontStyle.italic,
+                                                        color: Colors.grey.shade700,
+                                                      ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: const EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AddBpPage()),
+                          );
+                        },
+                        child: Text(localizations.addBpButton),
+                      ),
+                    ),
+                  ],
                 );
               } else if (widget.vitalType == 'Creatinine') {
                 if (_creatineReadings.isEmpty) {
@@ -725,7 +745,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(localizations.yes),
+              child: Text(localizations.yes), // Assuming you have this key
             ),
           ],
         );

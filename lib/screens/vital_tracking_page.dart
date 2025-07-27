@@ -240,38 +240,6 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final currentVitalType = _categoryCards[_selectedCategoryIndex]['vitalType'];
-          if (currentVitalType == 'BP') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const AddBpPage()),
-            );
-          } else if (currentVitalType == 'Creatinine') {
-            showDialog(
-              context: context,
-              builder: (context) => AddCreatineDialog(
-                userId: Supabase.instance.client.auth.currentUser!.id,
-                refreshData: () {
-                  // This callback is triggered when creatine is successfully added.
-                  // We need to ensure the VitalTrackingTab refreshes its data.
-                  // Since VitalTrackingTab listens to didUpdateWidget,
-                  // rebuilding VitalTrackingPage (by calling setState here, or by Navigator.pop)
-                  // should trigger a refresh in the tab.
-                  // For now, we'll just pop the dialog. The tab's didUpdateWidget should handle the refresh.
-                },
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(localizations.notYetImplemented(LocalizationHelper.translateKey(context, 'add${currentVitalType}Button')))),
-            );
-          }
-        },
-        label: Text(LocalizationHelper.translateKey(context, 'Add ${_categoryCards[_selectedCategoryIndex]['vitalType']}')),
-        icon: const Icon(Icons.add),
-      ),
     );
   }
 }
