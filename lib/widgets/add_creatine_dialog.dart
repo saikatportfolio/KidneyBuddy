@@ -23,20 +23,16 @@ class AddCreatineDialog extends StatefulWidget {
 }
 
 class _AddCreatineDialogState extends State<AddCreatineDialog> {
-  final TextEditingController _commentController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
 
   double _currentCreatineValue = 1.2;
 
   DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _selectedTime = TimeOfDay.now();
   }
 
   @override
@@ -47,21 +43,13 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
 
   @override
   void dispose() {
-    _commentController.dispose();
     _dateController.dispose();
-    _timeController.dispose();
     super.dispose();
   }
 
   void _updateDateAndTimeControllers() {
     if (_selectedDate != null) {
       _dateController.text = DateFormat('yyyy-MM-dd').format(_selectedDate!);
-    }
-    if (_selectedTime != null) {
-      final localizations = AppLocalizations.of(context);
-      if (localizations != null) {
-        _timeController.text = _selectedTime!.format(context);
-      }
     }
   }
 
@@ -80,23 +68,10 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime ?? TimeOfDay.now(),
-    );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-        _updateDateAndTimeControllers();
-      });
-    }
-  }
-
   void _saveCreatine() async {
     logger.d('_saveCreatine call');
 
-    if (_selectedDate == null || _selectedTime == null) {
+    if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(LocalizationHelper.translateKey(
@@ -105,12 +80,13 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       return;
     }
 
+    final now = DateTime.now();
     final combinedDateTime = DateTime(
       _selectedDate!.year,
       _selectedDate!.month,
       _selectedDate!.day,
-      _selectedTime!.hour,
-      _selectedTime!.minute,
+      now.hour,
+      now.minute,
     );
 
     final String newId = Uuid().v4();
@@ -118,7 +94,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       id: newId,
       value: _currentCreatineValue,
       timestamp: combinedDateTime,
-      comment: _commentController.text.isEmpty ? null : _commentController.text,
+      comment: null,
     );
     logger.d('Creatine data: $creatine');
 
@@ -165,56 +141,16 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
           children: [
             _buildDecimalNumberPicker(),
             const SizedBox(height: 16),
-            Text(
-              LocalizationHelper.translateKey(context, 'addYourComment'),
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
             TextFormField(
-              controller: _commentController,
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-              minLines: 3,
+              controller: _dateController,
+              readOnly: true,
               decoration: InputDecoration(
-                labelText: LocalizationHelper.translateKey(
-                    context, 'addYourComment'),
-                hintText: 'Add any relevant comments...',
+                labelText:
+                    LocalizationHelper.translateKey(context, 'selectDate'),
                 border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.comment),
+                prefixIcon: const Icon(Icons.calendar_today),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _dateController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: LocalizationHelper.translateKey(
-                          context, 'selectDate'),
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.calendar_today),
-                    ),
-                    onTap: () => _selectDate(context),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _timeController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: LocalizationHelper.translateKey(
-                          context, 'selectTime'),
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.access_time),
-                    ),
-                    onTap: () => _selectTime(context),
-                  ),
-                ),
-              ],
+              onTap: () => _selectDate(context),
             ),
           ],
         ),
