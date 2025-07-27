@@ -367,7 +367,7 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
       final sortedDates = groupedBpData.keys.toList()..sort((a, b) => b.compareTo(a));
 
       mainContent = ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0), // Add padding to the bottom
+        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0), // Add padding to the bottom
         itemCount: sortedDates.length,
         itemBuilder: (context, groupIndex) {
           final date = sortedDates[groupIndex];

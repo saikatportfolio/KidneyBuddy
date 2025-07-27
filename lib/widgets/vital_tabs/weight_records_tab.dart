@@ -210,7 +210,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
 
       mainContent = ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0), // Add padding to the bottom
+        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0), // Add padding to the bottom
         itemCount: sortedDates.length,
         itemBuilder: (context, groupIndex) {
           final date = sortedDates[groupIndex];
@@ -248,13 +248,13 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                               children: [
                                 Text(
                                   DateFormat('hh:mm a').format(reading.timestamp),
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
                                 ),
                                 Expanded(
                                   child: Center(
                                     child: Text(
                                       '${reading.value.toStringAsFixed(2)} kg',
-                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
                                     ),
                                   ),
                                 ),
