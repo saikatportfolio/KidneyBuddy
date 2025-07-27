@@ -609,24 +609,23 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
               if (widget.vitalType == 'BP')
                 Positioned(
                   bottom: 16,
-                  left: 16,
                   right: 16,
-                  child: ElevatedButton(
+                  child: FloatingActionButton.extended(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const AddBpPage()),
                       );
                     },
-                    child: Text(localizations.addBpButton),
+                    label: Text(localizations.addBpButton),
+                    icon: const Icon(Icons.add),
                   ),
                 ),
               if (widget.vitalType == 'Creatinine')
                 Positioned(
                   bottom: 16,
-                  left: 16,
                   right: 16,
-                  child: ElevatedButton(
+                  child: FloatingActionButton.extended(
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -638,7 +637,8 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                         },
                       );
                     },
-                    child: Text(localizations.addCreatine),
+                    label: Text(localizations.addCreatine),
+                    icon: const Icon(Icons.add),
                   ),
                 ),
             ],
