@@ -448,6 +448,12 @@ abstract class AppLocalizations {
   /// **'Potassium'**
   String get potassiumTab;
 
+  /// No description provided for @weightTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weightTab;
+
   /// No description provided for @noDataAvailable.
   ///
   /// In en, this message translates to:
@@ -795,6 +801,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Creatine'**
   String get addCreatine;
+
+  /// No description provided for @addWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Weight'**
+  String get addWeight;
+
+  /// No description provided for @addWeightReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Weight Reading'**
+  String get addWeightReading;
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get weight;
+
+  /// No description provided for @weightSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight reading saved successfully.'**
+  String get weightSavedSuccess;
+
+  /// No description provided for @weightSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving weight reading: {error}'**
+  String weightSaveError(Object error);
+
+  /// No description provided for @deleteWeightReadingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this weight reading?'**
+  String get deleteWeightReadingConfirmation;
+
+  /// No description provided for @weightReadingDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight reading deleted successfully.'**
+  String get weightReadingDeletedSuccessfully;
+
+  /// No description provided for @errorDeletingWeightReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting weight reading: {error}'**
+  String errorDeletingWeightReading(Object error);
 }
 
 class _AppLocalizationsDelegate

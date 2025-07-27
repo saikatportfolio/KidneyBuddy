@@ -4,6 +4,7 @@ import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/models/blood_pressure.dart';
 import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/weight.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/utils/logger_config.dart'; // Import logger
@@ -78,6 +79,15 @@ class DatabaseHelper {
         comment TEXT
       )
     ''');
+    await db.execute('''
+      CREATE TABLE weight_readings(
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        value REAL,
+        timestamp TEXT,
+        comment TEXT
+      )
+    ''');
   }
 
   // Handle database upgrades
@@ -121,6 +131,17 @@ class DatabaseHelper {
     if (oldVersion < 6) {
       await db.execute('''
         CREATE TABLE creatine_readings(
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          value REAL,
+          timestamp TEXT,
+          comment TEXT
+        )
+      ''');
+    }
+     if (oldVersion < 7) {
+      await db.execute('''
+        CREATE TABLE weight_readings(
           id TEXT PRIMARY KEY,
           user_id TEXT,
           value REAL,
@@ -254,5 +275,47 @@ class DatabaseHelper {
     Database db = await database;
     await db.delete('creatine_readings');
     logger.i('All creatine readings cleared from SQLite.');
+  }
+
+  // Weight Operations
+  Future<String?> insertWeight(Weight weight) async {
+    if (kIsWeb) return null;
+    Database db = await database;
+    weight.id ??= Uuid().v4();
+    await db.insert('weight_readings', weight.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    return weight.id!;
+  }
+
+  Future<List<Weight>> getWeightReadings(String userId) async {
+    if (kIsWeb) return [];
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query(
+      'weight_readings',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'timestamp DESC',
+    );
+    return List.generate(maps.length, (i) {
+      return Weight.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> deleteWeight(String id) async {
+    if (kIsWeb) return;
+    Database db = await database;
+    await db.delete(
+      'weight_readings',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    logger.i('Weight reading with ID $id deleted from SQLite.');
+  }
+
+  Future<void> clearWeightReadings() async {
+    if (kIsWeb) return;
+    Database db = await database;
+    await db.delete('weight_readings');
+    logger.i('All weight readings cleared from SQLite.');
   }
 }

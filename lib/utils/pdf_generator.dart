@@ -252,8 +252,8 @@ class PdfGenerator {
         pw.Table.fromTextArray(
           headers: tableHeaders, // Use non-constant headers
           data: readingsForDate.map((cr) => [
-            DateFormat('hh:mm a').format(cr.timestamp!),
-            cr.value!.toStringAsFixed(2),
+            DateFormat('hh:mm a').format(cr.timestamp),
+            cr.value.toStringAsFixed(2),
             cr.comment ?? '', // Display empty string if comment is null
           ]).toList(),
           border: pw.TableBorder.all(color: PdfColors.grey500),

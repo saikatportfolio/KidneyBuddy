@@ -204,6 +204,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get potassiumTab => 'पोटेशियम';
 
   @override
+  String get weightTab => 'Weight';
+
+  @override
   String get noDataAvailable => 'इस श्रेणी के लिए कोई डेटा उपलब्ध नहीं है।';
 
   @override
@@ -393,4 +396,34 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get addCreatine => 'Add Creatine';
+
+  @override
+  String get addWeight => 'Add Weight';
+
+  @override
+  String get addWeightReading => 'Add Weight Reading';
+
+  @override
+  String get weight => 'Weight';
+
+  @override
+  String get weightSavedSuccess => 'Weight reading saved successfully.';
+
+  @override
+  String weightSaveError(Object error) {
+    return 'Error saving weight reading: $error';
+  }
+
+  @override
+  String get deleteWeightReadingConfirmation =>
+      'Are you sure you want to delete this weight reading?';
+
+  @override
+  String get weightReadingDeletedSuccessfully =>
+      'Weight reading deleted successfully.';
+
+  @override
+  String errorDeletingWeightReading(Object error) {
+    return 'Error deleting weight reading: $error';
+  }
 }

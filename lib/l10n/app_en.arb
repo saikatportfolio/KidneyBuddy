@@ -58,6 +58,7 @@
   "bpTab": "Blood Pressure",
   "creatinineTab": "Creatinine",
   "potassiumTab": "Potassium",
+  "weightTab": "Weight",
   "noDataAvailable": "No data available for this category.",
   "addBpButton": "Add Blood Pressure",
   "addCreatinineButton": "Add Creatinine",
@@ -115,5 +116,13 @@
   "selectDate": "Select date",
   "selectTime": "Select Time",
   "save": "Save",
-  "addCreatine": "Add Creatine"
+  "addCreatine": "Add Creatine",
+  "addWeight": "Add Weight",
+  "addWeightReading": "Add Weight Reading",
+  "weight": "Weight",
+  "weightSavedSuccess": "Weight reading saved successfully.",
+  "weightSaveError": "Error saving weight reading: {error}",
+  "deleteWeightReadingConfirmation": "Are you sure you want to delete this weight reading?",
+  "weightReadingDeletedSuccessfully": "Weight reading deleted successfully.",
+  "errorDeletingWeightReading": "Error deleting weight reading: {error}"
 }

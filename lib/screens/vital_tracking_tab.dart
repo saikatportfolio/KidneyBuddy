@@ -4,8 +4,10 @@ import 'package:myapp/screens/add_bp_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/blood_pressure.dart';
 import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/weight.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/widgets/add_creatine_dialog.dart';
+import 'package:myapp/widgets/add_weight_dialog.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
@@ -32,6 +34,7 @@ class VitalTrackingTab extends StatefulWidget {
 class _VitalTrackingTabState extends State<VitalTrackingTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   List<Creatine> _creatineReadings = [];
+  List<Weight> _weightReadings = [];
   bool _isLoading = true;
   final SupabaseService _supabaseService = SupabaseService();
 
@@ -89,6 +92,12 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         List<Creatine> fetchedReadings = await _supabaseService.getCreatineReadings(startDate: startDate);
         setState(() {
           _creatineReadings = fetchedReadings;
+        });
+      } else if (widget.vitalType == 'Weight') {
+        final startDate = _calculateStartDate(_selectedFilterDuration);
+        List<Weight> fetchedReadings = await _supabaseService.getWeightReadings(startDate: startDate);
+        setState(() {
+          _weightReadings = fetchedReadings;
         });
       }
       // Add fetching logic for other vital types here
@@ -192,6 +201,18 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
     return grouped;
   }
 
+  Map<String, List<Weight>> _groupWeightReadingsByDate(List<Weight> readings) {
+    final Map<String, List<Weight>> grouped = {};
+    for (var w in readings) {
+      final dateKey = DateFormat('yyyy-MM-dd').format(w.timestamp);
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(w);
+    }
+    return grouped;
+  }
+
   Future<void> _generatePdfReport(AppLocalizations localizations) async {
     logger.i('Attempting to generate PDF report for ${widget.vitalType}...');
 
@@ -226,6 +247,17 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
         await Printing.sharePdf(bytes: pdfBytes, filename: 'creatine_report.pdf');
         logger.i('PDF report shared successfully.');
+      } else if (widget.vitalType == 'Weight') {
+        if (_weightReadings.isEmpty) {
+          logger.w('No weight readings available for PDF generation.');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(localizations.pdfGenerationErrorNoReadings)),
+          );
+          return;
+        }
+        // final pdfBytes = await PdfGenerator.generateWeightReport(widget.patientDetails!, _weightReadings);
+        // await Printing.sharePdf(bytes: pdfBytes, filename: 'weight_report.pdf');
+        logger.i('PDF report shared successfully.');
       } else {
         logger.i('PDF generation not yet implemented for ${widget.vitalType}.');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -247,6 +279,11 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
       );
       return;
     } else if (widget.vitalType == 'Creatinine' && _creatineReadings.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.noDataAvailable)),
+      );
+      return;
+    } else if (widget.vitalType == 'Weight' && _weightReadings.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.noDataAvailable)),
       );
@@ -571,6 +608,88 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
           },
         );
       }
+    } else if (widget.vitalType == 'Weight') {
+      if (_weightReadings.isEmpty) {
+        mainContent = Center(child: Text(localizations.noDataAvailable));
+      } else {
+        final groupedCrData = _groupWeightReadingsByDate(_weightReadings);
+        final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
+
+        mainContent = ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0), // Add padding to the bottom
+          itemCount: sortedDates.length,
+          itemBuilder: (context, groupIndex) {
+            final date = sortedDates[groupIndex];
+            final readingsForDate = groupedCrData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                  child: Text(
+                    DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: readingsForDate.length,
+                  itemBuilder: (context, readingIndex) {
+                    final reading = readingsForDate[readingIndex];
+                    return Card(
+                      elevation: 6,
+                      shadowColor: Colors.blue.shade200.withAlpha(179),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    DateFormat('hh:mm a').format(reading.timestamp),
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                  ),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        '${reading.value.toStringAsFixed(2)} kg',
+                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.black),
+                                    onPressed: () => _confirmAndDeleteWeightReading(reading, localizations),
+                                  ),
+                                ],
+                              ),
+                              if (reading.comment != null && reading.comment!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Comment: ${reading.comment}',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey.shade700),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       mainContent = Center(child: Text(localizations.noDataAvailable));
     }
@@ -638,6 +757,26 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                       );
                     },
                     label: Text(localizations.addCreatine),
+                    icon: const Icon(Icons.add),
+                  ),
+                ),
+              if (widget.vitalType == 'Weight')
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddWeightDialog(
+                            userId: widget.userId,
+                            refreshData: refreshData,
+                          );
+                        },
+                      );
+                    },
+                    label: Text(localizations.addWeight),
                     icon: const Icon(Icons.add),
                   ),
                 ),
@@ -727,6 +866,47 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
         logger.e('Error deleting Creatine reading: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(localizations.errorDeletingCreatineReading(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _confirmAndDeleteWeightReading(Weight reading, AppLocalizations localizations) async {
+    final bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.deleteConfirmationTitle),
+          content: Text(localizations.deleteWeightReadingConfirmation),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(localizations.no),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(localizations.yes),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmDelete == true) {
+      try {
+        await _supabaseService.deleteWeight(reading.id!);
+        await DatabaseHelper().deleteWeight(reading.id!);
+
+        setState(() {
+          _weightReadings.removeWhere((w) => w.id == reading.id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.weightReadingDeletedSuccessfully)),
+        );
+      } catch (e) {
+        logger.e('Error deleting Weight reading: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(localizations.errorDeletingWeightReading(e.toString()))),
         );
       }
     }

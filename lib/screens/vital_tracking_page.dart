@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/vital_tracking_tab.dart';
 import 'package:myapp/utils/localization_helper.dart';
-import 'package:myapp/screens/add_bp_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -11,7 +10,6 @@ import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/models/blood_pressure.dart';
 import 'package:myapp/models/creatine.dart';
 import 'package:myapp/services/database_helper.dart';
-import 'package:myapp/widgets/add_creatine_dialog.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:myapp/services/supabase_service.dart';
 
@@ -30,7 +28,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
   final List<Map<String, dynamic>> _categoryCards = [
     {'nameKey': 'bpTab', 'icon': Icons.monitor_heart, 'vitalType': 'BP'},
     {'nameKey': 'creatinineTab', 'icon': Icons.science, 'vitalType': 'Creatinine'},
-    {'nameKey': 'potassiumTab', 'icon': Icons.bloodtype, 'vitalType': 'Potassium'},
+    {'nameKey': 'weightTab', 'icon': Icons.monitor_weight, 'vitalType': 'Weight'},
   ];
 
   @override

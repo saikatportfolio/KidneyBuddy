@@ -5,6 +5,7 @@ import 'package:myapp/models/dietician.dart'; // Import Dietician model
 import 'package:myapp/models/review.dart'; // Import Review model
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:myapp/models/creatine.dart'; // Import Creatine model
+import 'package:myapp/models/weight.dart'; // Import Weight model
 import 'package:google_sign_in/google_sign_in.dart'; // Import google_sign_in
 import 'dart:typed_data';
 import 'package:mime/mime.dart';
@@ -304,6 +305,70 @@ class SupabaseService {
       logger.i('Creatine reading with ID $id deleted from Supabase.');
     } catch (e) {
       logger.e('Error deleting creatine reading from Supabase: $e');
+      rethrow;
+    }
+  }
+
+  // Weight Operations
+  Future<void> insertWeight(Weight weight) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('insertWeight: No authenticated user found. Cannot insert weight reading.');
+        return;
+      }
+      final data = {
+        'user_id': user.id,
+        'value': weight.value,
+        'timestamp': weight.timestamp.toIso8601String(),
+        'comment': weight.comment,
+      };
+      await _supabase.from('weight_readings').insert(data);
+      logger.i('Weight reading inserted to Supabase: ${weight.value} for user ${user.id}');
+    } catch (e) {
+      logger.e('Error inserting weight reading to Supabase: $e');
+    }
+  }
+
+  Future<List<Weight>> getWeightReadings({DateTime? startDate}) async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getWeightReadings: No authenticated user found. Cannot fetch weight readings.');
+        return [];
+      }
+
+      var query = _supabase
+          .from('weight_readings')
+          .select()
+          .eq('user_id', user.id);
+
+      if (startDate != null) {
+        query = query.gte('timestamp', startDate.toIso8601String());
+      }
+
+      final response = await query.order('timestamp', ascending: false);
+
+      if (response.isEmpty) {
+        logger.i('No weight readings found for user ${user.id} with filter starting from $startDate.');
+        return [];
+      }
+
+      final List<Weight> readings = (response as List).map((map) => Weight.fromMap(map)).toList();
+      logger.d('Fetched ${readings.length} weight readings for user ${user.id} with filter starting from $startDate.');
+      return readings;
+    } catch (e) {
+      logger.e('Error fetching weight readings from Supabase: $e');
+      return [];
+    }
+  }
+
+  Future<void> deleteWeight(String id) async {
+    try {
+      await _supabase.from('weight_readings').delete().eq('id', id);
+      logger.i('Weight reading with ID $id deleted from Supabase.');
+    } catch (e) {
+      logger.e('Error deleting weight reading from Supabase: $e');
       rethrow;
     }
   }

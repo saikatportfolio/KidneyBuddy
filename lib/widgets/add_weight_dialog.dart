@@ -5,27 +5,27 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/weight.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-class AddCreatineDialog extends StatefulWidget {
+class AddWeightDialog extends StatefulWidget {
   final String userId;
   final Function refreshData;
 
-  const AddCreatineDialog({super.key, required this.userId, required this.refreshData});
+  const AddWeightDialog({super.key, required this.userId, required this.refreshData});
 
   @override
-  State<AddCreatineDialog> createState() => _AddCreatineDialogState();
+  State<AddWeightDialog> createState() => _AddWeightDialogState();
 }
 
-class _AddCreatineDialogState extends State<AddCreatineDialog> {
+class _AddWeightDialogState extends State<AddWeightDialog> {
   final TextEditingController _dateController = TextEditingController();
 
-  double _currentCreatineValue = 1.2;
+  double _currentWeightValue = 70.0;
 
   DateTime? _selectedDate;
 
@@ -68,8 +68,8 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
     }
   }
 
-  void _saveCreatine() async {
-    logger.d('_saveCreatine call');
+  void _saveWeight() async {
+    logger.d('_saveWeight call');
 
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,41 +90,41 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
     );
 
     final String newId = Uuid().v4();
-    final creatine = Creatine(
+    final weight = Weight(
       id: newId,
-      value: _currentCreatineValue,
+      value: _currentWeightValue,
       timestamp: combinedDateTime,
       comment: null,
     );
-    logger.d('Creatine data: $creatine');
+    logger.d('Weight data: $weight');
 
     try {
       final currentUser = Supabase.instance.client.auth.currentUser;
       logger.d(
-          'AddCreatineDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
+          'AddWeightDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
 
       if (!kIsWeb) {
-        await DatabaseHelper().insertCreatine(creatine);
-        logger.i('AddCreatineDialog: Creatine saved to SQLite: ${creatine.value}');
+        await DatabaseHelper().insertWeight(weight);
+        logger.i('AddWeightDialog: Weight saved to SQLite: ${weight.value}');
       }
 
-      await SupabaseService().insertCreatine(creatine);
-      logger.i('AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}');
+      await SupabaseService().insertWeight(weight);
+      logger.i('AddWeightDialog: Weight saved to Supabase: ${weight.value}');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                LocalizationHelper.translateKey(context, 'creatineSavedSuccess'))),
+                LocalizationHelper.translateKey(context, 'weightSavedSuccess'))),
       );
 
       widget.refreshData();
       Navigator.of(context).pop();
     } catch (e) {
-      logger.e('Error saving Creatine: $e');
+      logger.e('Error saving Weight: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(LocalizationHelper.translateKey(
-                    context, 'creatineSaveError')
+                    context, 'weightSaveError')
                 .replaceFirst('{error}', e.toString()))),
       );
     }
@@ -133,7 +133,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(LocalizationHelper.translateKey(context, 'Add Creatine')),
+      title: Text(LocalizationHelper.translateKey(context, 'Add Weight')),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -161,7 +161,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
           child: Text(LocalizationHelper.translateKey(context, 'close')),
         ),
         ElevatedButton(
-          onPressed: _saveCreatine,
+          onPressed: _saveWeight,
           child: Text(LocalizationHelper.translateKey(context, 'save')),
         ),
       ],
@@ -173,15 +173,15 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       child: Column(
         children: [
           Text(
-            LocalizationHelper.translateKey(context, 'creatine'),
+            LocalizationHelper.translateKey(context, 'weight'),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           DecimalNumberPicker(
-            value: _currentCreatineValue,
-            minValue: 0,
-            maxValue: 10,
-            decimalPlaces: 2,
-            onChanged: (value) => setState(() => _currentCreatineValue = value),
+            value: _currentWeightValue,
+            minValue: 20,
+            maxValue: 200,
+            decimalPlaces: 1,
+            onChanged: (value) => setState(() => _currentWeightValue = value),
             textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
             selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
           ),
