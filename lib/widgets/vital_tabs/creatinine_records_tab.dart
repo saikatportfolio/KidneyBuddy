@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/creatine.dart';
@@ -194,6 +195,148 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
     }
   }
 
+  void _showTrendChart(AppLocalizations localizations) {
+    if (_creatineReadings.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.noDataAvailable)),
+      );
+      return;
+    }
+
+    final sortedReadings = List<Creatine>.from(_creatineReadings)
+      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+    final spots = <FlSpot>[];
+    for (int i = 0; i < sortedReadings.length; i++) {
+      spots.add(FlSpot(i.toDouble(), sortedReadings[i].value));
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations.creatinineTrend),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 300,
+          child: Column(
+            children: [
+              Expanded(
+                child: LineChart(
+                  LineChartData(
+                    minX: 0,
+                    maxX: sortedReadings.length > 1
+                        ? (sortedReadings.length - 1).toDouble()
+                        : 1,
+                    gridData: FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 48,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              value.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontSize: 9,
+                                color: Colors.black,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 32,
+                          interval: 1,
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            final index = value.toInt();
+                            if (index >= 0 &&
+                                index < sortedReadings.length) {
+                              if (index % 3 == 0) {
+                                return Text(
+                                  DateFormat('dd MMM')
+                                      .format(sortedReadings[index].timestamp),
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
+                                );
+                              }
+                            }
+                            return const Text('');
+                          },
+                        ),
+                      ),
+                      topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    borderData: FlBorderData(show: true),
+                    minY: 0,
+                    maxY: 6,
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: spots,
+                        isCurved: true,
+                        color: Colors.green,
+                        barWidth: 4,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                    lineTouchData: LineTouchData(
+                      touchTooltipData: LineTouchTooltipData(
+                        getTooltipItems: (touchedSpots) {
+                          return touchedSpots.map((spot) {
+                            final reading = sortedReadings[spot.spotIndex];
+                            return LineTooltipItem(
+                              '${spot.y.toStringAsFixed(2)} mg/dL\n${DateFormat('MMM dd, hh:mm a').format(reading.timestamp)}',
+                              const TextStyle(color: Colors.white),
+                            );
+                          }).toList();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: _buildLegendItem(
+                    Colors.green, localizations.creatine),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(localizations.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          color: color,
+        ),
+        const SizedBox(width: 8),
+        Text(label),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -296,6 +439,12 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                 onPressed: () => _generatePdfReport(localizations),
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
+              ),
+              const SizedBox(width: 8),
+              TextButton.icon(
+                onPressed: () => _showTrendChart(localizations),
+                icon: const Icon(Icons.trending_up),
+                label: Text(localizations.trend),
               ),
               const SizedBox(width: 8),
               IconButton(

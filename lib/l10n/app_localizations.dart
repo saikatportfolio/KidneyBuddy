@@ -849,6 +849,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error deleting weight reading: {error}'**
   String errorDeletingWeightReading(Object error);
+
+  /// No description provided for @creatinineTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Creatinine Trend'**
+  String get creatinineTrend;
 }
 
 class _AppLocalizationsDelegate

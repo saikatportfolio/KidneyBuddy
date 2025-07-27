@@ -427,4 +427,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String errorDeletingWeightReading(Object error) {
     return 'Error deleting weight reading: $error';
   }
+
+  @override
+  String get creatinineTrend => 'ক্রিয়েটিনিন ট্রেন্ড';
 }

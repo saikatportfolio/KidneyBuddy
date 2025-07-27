@@ -124,5 +124,6 @@
   "weightSaveError": "Error saving weight reading: {error}",
   "deleteWeightReadingConfirmation": "Are you sure you want to delete this weight reading?",
   "weightReadingDeletedSuccessfully": "Weight reading deleted successfully.",
-  "errorDeletingWeightReading": "Error deleting weight reading: {error}"
+  "errorDeletingWeightReading": "Error deleting weight reading: {error}",
+  "creatinineTrend": "Creatinine Trend"
 }
