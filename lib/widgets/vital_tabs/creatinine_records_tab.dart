@@ -254,7 +254,8 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                             final index = value.toInt();
                             if (index >= 0 &&
                                 index < sortedReadings.length) {
-                              if (index % 3 == 0) {
+                              if (index % 3 == 0 ||
+                                  index == sortedReadings.length - 1) {
                                 return Text(
                                   DateFormat('dd MMM')
                                       .format(sortedReadings[index].timestamp),
