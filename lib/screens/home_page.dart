@@ -12,6 +12,9 @@ import 'package:myapp/screens/vital_tracking_page.dart';
 import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
+import 'package:myapp/models/creatine.dart'; // Import Creatine model
+import 'package:myapp/models/weight.dart'; // Import Weight model
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,11 +31,16 @@ class _HomePageState extends State<HomePage> {
   String? _googleName;
   String? _googlePhotoUrl;
 
+  BloodPressure? _lastBpRecord;
+  Creatine? _lastCreatineRecord;
+  Weight? _lastWeightRecord;
+
   @override
   void initState() {
     super.initState();
     _loadDynamicContent();
     _loadGoogleNameAndPhoto();
+    _fetchLastVitals(); // Fetch last vital records
   }
 
   Future<void> _loadDynamicContent() async {
@@ -66,6 +74,23 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isLoadingContent = false;
       });
+    }
+  }
+
+  Future<void> _fetchLastVitals() async {
+    try {
+      final supabaseService = SupabaseService();
+      final bpReadings = await supabaseService.getBloodPressureReadings();
+      final creatineReadings = await supabaseService.getCreatineReadings();
+      final weightReadings = await supabaseService.getWeightReadings();
+
+      setState(() {
+        _lastBpRecord = bpReadings.isNotEmpty ? bpReadings.first : null;
+        _lastCreatineRecord = creatineReadings.isNotEmpty ? creatineReadings.first : null;
+        _lastWeightRecord = weightReadings.isNotEmpty ? weightReadings.first : null;
+      });
+    } catch (e) {
+      logger.e('Error fetching last vital records: $e');
     }
   }
 
@@ -259,6 +284,84 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
+                  // Your Health Board Section
+                  Text(
+                    localizations.yourHealthBoard,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Card(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    margin: const EdgeInsets.only(bottom: 24.0),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          _buildVitalSection(
+                            context,
+                            localizations.bpTab,
+                            Icons.monitor_heart,
+                            _lastBpRecord != null
+                                ? '${_lastBpRecord!.systolic}/${_lastBpRecord!.diastolic} mmHg'
+                                : null,
+                            _lastBpRecord?.timestamp,
+                            localizations.noDataAvailableForBp,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildVitalSection(
+                            context,
+                            localizations.creatinineTab,
+                            Icons.science,
+                            _lastCreatineRecord != null
+                                ? '${_lastCreatineRecord!.value} mg/dL'
+                                : null,
+                            _lastCreatineRecord?.timestamp,
+                            localizations.noDataAvailableForCreatinine,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildVitalSection(
+                            context,
+                            localizations.weight,
+                            Icons.scale,
+                            _lastWeightRecord != null
+                                ? '${_lastWeightRecord!.value} kg'
+                                : null,
+                            _lastWeightRecord?.timestamp,
+                            localizations.noDataAvailableForWeight,
+                          ),
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const VitalTrackingPage(),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.track_changes),
+                              label: Text(localizations.goToVitalMonitoring),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   // Original GridView of features
                   GridView.count(
                     shrinkWrap: true, // Important for nested scroll views
@@ -316,6 +419,75 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildVitalSection(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String? value,
+    DateTime? date,
+    String noDataMessage,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 30.0, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                if (value != null && date != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Text(
+                        'Date: ${date.toLocal().toString().split(' ')[0]}',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  Text(
+                    noDataMessage,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

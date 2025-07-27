@@ -4,7 +4,7 @@ import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
-import 'package:myapp/screens/home_page.dart';
+import 'package:myapp/screens/home_page.dart' as home_page;
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
@@ -120,7 +120,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
       // Navigate to Home Page
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => HomePage()),
+        MaterialPageRoute(builder: (_) => home_page.HomePage()),
       );
     }
   }

@@ -429,4 +429,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get creatinineTrend => 'क्रिएटिनिन ट्रेंड';
+
+  @override
+  String get yourHealthBoard => 'Your Health Board';
+
+  @override
+  String get noDataAvailableForBp => 'No data available for Blood Pressure.';
+
+  @override
+  String get noDataAvailableForCreatinine =>
+      'No data available for Creatinine.';
+
+  @override
+  String get noDataAvailableForWeight => 'No data available for Weight.';
+
+  @override
+  String get goToVitalMonitoring => 'Go to Vital Monitoring';
 }

@@ -125,5 +125,10 @@
   "deleteWeightReadingConfirmation": "Are you sure you want to delete this weight reading?",
   "weightReadingDeletedSuccessfully": "Weight reading deleted successfully.",
   "errorDeletingWeightReading": "Error deleting weight reading: {error}",
-  "creatinineTrend": "Creatinine Trend"
+  "creatinineTrend": "Creatinine Trend",
+  "yourHealthBoard": "Your Health Board",
+  "noDataAvailableForBp": "No data available for Blood Pressure.",
+  "noDataAvailableForCreatinine": "No data available for Creatinine.",
+  "noDataAvailableForWeight": "No data available for Weight.",
+  "goToVitalMonitoring": "Go to Vital Monitoring"
 }

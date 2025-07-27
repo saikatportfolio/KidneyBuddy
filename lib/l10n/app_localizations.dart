@@ -855,6 +855,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Creatinine Trend'**
   String get creatinineTrend;
+
+  /// No description provided for @yourHealthBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Health Board'**
+  String get yourHealthBoard;
+
+  /// No description provided for @noDataAvailableForBp.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available for Blood Pressure.'**
+  String get noDataAvailableForBp;
+
+  /// No description provided for @noDataAvailableForCreatinine.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available for Creatinine.'**
+  String get noDataAvailableForCreatinine;
+
+  /// No description provided for @noDataAvailableForWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available for Weight.'**
+  String get noDataAvailableForWeight;
+
+  /// No description provided for @goToVitalMonitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Vital Monitoring'**
+  String get goToVitalMonitoring;
 }
 
 class _AppLocalizationsDelegate

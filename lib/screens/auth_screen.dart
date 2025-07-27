@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
-import 'package:myapp/screens/home_page.dart';
+import 'package:myapp/screens/home_page.dart' as home_page;
 import 'package:myapp/screens/patient_details_page.dart';
 import 'package:myapp/utils/logger_config.dart';
 
@@ -45,7 +45,7 @@ class _AuthScreenState extends State<AuthScreen> {
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => const home_page.HomePage()),
             );
           }
           _showSnackBar(LocalizationHelper.translateKey(context, 'loginSuccessMessage'));
