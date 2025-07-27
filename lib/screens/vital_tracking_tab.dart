@@ -405,6 +405,176 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    // The main content widget which is either the list of readings or a "no data" message.
+    Widget mainContent;
+    if (widget.vitalType == 'BP') {
+      if (_bloodPressureReadings.isEmpty) {
+        mainContent = Center(child: Text(localizations.noDataAvailable));
+      } else {
+        final groupedBpData = _groupBpReadingsByDate(_bloodPressureReadings);
+        final sortedDates = groupedBpData.keys.toList()..sort((a, b) => b.compareTo(a));
+
+        mainContent = ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0), // Add padding to the bottom
+          itemCount: sortedDates.length,
+          itemBuilder: (context, groupIndex) {
+            final date = sortedDates[groupIndex];
+            final readingsForDate = groupedBpData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                  child: Text(
+                    DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: readingsForDate.length,
+                  itemBuilder: (context, readingIndex) {
+                    final reading = readingsForDate[readingIndex];
+                    return Card(
+                      elevation: 6,
+                      shadowColor: Colors.blue.shade200.withAlpha(179),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    DateFormat('hh:mm a').format(reading.timestamp),
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade800),
+                                  ),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        '${reading.systolic}/${reading.diastolic} mmHg',
+                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.black),
+                                    onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
+                                  ),
+                                ],
+                              ),
+                              if (reading.comment != null && reading.comment!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Comment: ${reading.comment}',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey.shade700),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else if (widget.vitalType == 'Creatinine') {
+      if (_creatineReadings.isEmpty) {
+        mainContent = Center(child: Text(localizations.noDataAvailable));
+      } else {
+        final groupedCrData = _groupCreatineReadingsByDate(_creatineReadings);
+        final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
+
+        mainContent = ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 80.0), // Add padding to the bottom
+          itemCount: sortedDates.length,
+          itemBuilder: (context, groupIndex) {
+            final date = sortedDates[groupIndex];
+            final readingsForDate = groupedCrData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                  child: Text(
+                    DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: readingsForDate.length,
+                  itemBuilder: (context, readingIndex) {
+                    final reading = readingsForDate[readingIndex];
+                    return Card(
+                      elevation: 6,
+                      shadowColor: Colors.blue.shade200.withAlpha(179),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    DateFormat('hh:mm a').format(reading.timestamp),
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                  ),
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        '${reading.value.toStringAsFixed(2)} mg/dL',
+                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.black),
+                                    onPressed: () => _confirmAndDeleteCreatineReading(reading, localizations),
+                                  ),
+                                ],
+                              ),
+                              if (reading.comment != null && reading.comment!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Comment: ${reading.comment}',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey.shade700),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      mainContent = Center(child: Text(localizations.noDataAvailable));
+    }
+
     return Column(
       children: [
         Padding(
@@ -423,7 +593,7 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
               ),
-              const SizedBox(width: 8), // Spacing between buttons
+              const SizedBox(width: 8),
               IconButton(
                 onPressed: () => _showFilterOptions(localizations),
                 icon: const Icon(Icons.filter_list),
@@ -433,255 +603,45 @@ class _VitalTrackingTabState extends State<VitalTrackingTab> {
           ),
         ),
         Expanded(
-          child: Builder(
-            builder: (context) {
-              if (widget.vitalType == 'BP') {
-                if (_bloodPressureReadings.isEmpty) {
-                  return Center(child: Text(localizations.noDataAvailable));
-                }
-
-                final groupedBpData = _groupBpReadingsByDate(_bloodPressureReadings);
-                final sortedDates = groupedBpData.keys.toList()..sort((a, b) => b.compareTo(a)); // Sort dates descending
-
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: sortedDates.length,
-                        itemBuilder: (context, groupIndex) {
-                          final date = sortedDates[groupIndex];
-                          final readingsForDate = groupedBpData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // Sort readings by time descending
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0), // Adjusted padding
-                                child: Text(
-                                  DateFormat('MMM dd, yyyy').format(DateTime.parse(date)), // Format date for display
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade900,
-                                  ),
-                                ),
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(), // Disable inner list scrolling
-                                itemCount: readingsForDate.length,
-                                itemBuilder: (context, readingIndex) {
-                                  final reading = readingsForDate[readingIndex];
-                                  return Card(
-                                    elevation: 6,
-                                    shadowColor: Colors.blue.shade200.withAlpha(179),
-                                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: InkWell(
-                                      // onTap: () {
-                                      //   // TODO: Implement navigation to detail page for this vital reading
-                                      //   ScaffoldMessenger.of(context).showSnackBar(
-                                      //     SnackBar(content: Text('Tapped on BP reading: ${reading.systolic}/${reading.diastolic} at ${DateFormat('hh:mm a').format(reading.timestamp)}')),
-                                      //   );
-                                      // },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  DateFormat('hh:mm a').format(reading.timestamp), // Format time for display
-                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.blue.shade800,
-                                                      ),
-                                                ),
-                                                Expanded(
-                                                  child: Center(
-                                                    child: Text(
-                                                      '${reading.systolic}/${reading.diastolic} mmHg',
-                                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.blue.shade700,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.delete, color: Colors.black),
-                                                  onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
-                                                ),
-                                              ],
-                                            ),
-                                            if (reading.comment != null && reading.comment!.isNotEmpty)
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 8.0),
-                                                child: Text(
-                                                  'Comment: ${reading.comment}',
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        fontStyle: FontStyle.italic,
-                                                        color: Colors.grey.shade700,
-                                                      ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+          child: Stack(
+            children: [
+              mainContent,
+              if (widget.vitalType == 'BP')
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AddBpPage()),
+                      );
+                    },
+                    child: Text(localizations.addBpButton),
+                  ),
+                ),
+              if (widget.vitalType == 'Creatinine')
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddCreatineDialog(
+                            userId: widget.userId,
+                            refreshData: refreshData,
                           );
                         },
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const AddBpPage()),
-                          );
-                        },
-                        child: Text(localizations.addBpButton),
-                      ),
-                    ),
-                  ],
-                );
-              } else if (widget.vitalType == 'Creatinine') {
-                if (_creatineReadings.isEmpty) {
-                  return Center(child: Text(localizations.noDataAvailable));
-                }
-
-                final groupedCrData = _groupCreatineReadingsByDate(_creatineReadings);
-                final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
-
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: sortedDates.length,
-                        itemBuilder: (context, groupIndex) {
-                          final date = sortedDates[groupIndex];
-                          final readingsForDate = groupedCrData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
-                                child: Text(
-                                  DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade900,
-                                  ),
-                                ),
-                              ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: readingsForDate.length,
-                                itemBuilder: (context, readingIndex) {
-                                  final reading = readingsForDate[readingIndex];
-                                  return Card(
-                                    elevation: 6,
-                                    shadowColor: Colors.blue.shade200.withAlpha(179),
-                                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  DateFormat('hh:mm a').format(reading.timestamp),
-                                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.blue.shade900,
-                                                      ),
-                                                ),
-                                                Expanded(
-                                                  child: Center(
-                                                    child: Text(
-                                                      '${reading.value.toStringAsFixed(2)} mg/dL',
-                                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.blue.shade900,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.delete, color: Colors.black),
-                                                  onPressed: () => _confirmAndDeleteCreatineReading(reading, localizations),
-                                                ),
-                                              ],
-                                            ),
-                                            if (reading.comment != null && reading.comment!.isNotEmpty)
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 8.0),
-                                                child: Text(
-                                                  'Comment: ${reading.comment}',
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        fontStyle: FontStyle.italic,
-                                                        color: Colors.grey.shade700,
-                                                      ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AddCreatineDialog(
-                                userId: widget.userId,
-                                refreshData: refreshData,
-                              );
-                            },
-                          );
-                        },
-                        child: Text(localizations.addCreatine),
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Center(child: Text(localizations.noDataAvailable));
-              }
-            },
+                      );
+                    },
+                    child: Text(localizations.addCreatine),
+                  ),
+                ),
+            ],
           ),
         ),
       ],
