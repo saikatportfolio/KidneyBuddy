@@ -11,6 +11,8 @@ class LocalizationHelper {
         return localizations.creatinineTab;
       case 'potassiumTab':
         return localizations.potassiumTab;
+      case 'weightTab':
+        return localizations.weightTab;
       case 'vitalTrackingPageTitle':
         return localizations.vitalTrackingPageTitle;
       case 'noDataAvailable':
