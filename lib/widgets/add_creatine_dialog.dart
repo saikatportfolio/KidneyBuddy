@@ -114,7 +114,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                LocalizationHelper.translateKey(context, 'creatineSavedSuccess'))),
+                LocalizationHelper.translateKey(context, 'Creatine saved Successfully'))),
       );
 
       widget.refreshData();

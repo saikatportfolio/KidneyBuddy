@@ -114,7 +114,7 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                LocalizationHelper.translateKey(context, 'weightSavedSuccess'))),
+                LocalizationHelper.translateKey(context, 'Weight saved successfully'))),
       );
 
       widget.refreshData();
