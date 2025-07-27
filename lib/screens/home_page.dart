@@ -231,11 +231,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    _welcomeMessage, // Dynamic welcome message
-                    style: TextStyle(fontSize: 16.0, color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 24),
 
                   // Tip of the Day Section
                   Card(
@@ -304,26 +299,34 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          _buildVitalSection(
-                            context,
-                            localizations.bpTab,
-                            Icons.monitor_heart,
-                            _lastBpRecord != null
-                                ? '${_lastBpRecord!.systolic}/${_lastBpRecord!.diastolic} mmHg'
-                                : null,
-                            _lastBpRecord?.timestamp,
-                            localizations.noDataAvailableForBp,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildVitalSection(
-                            context,
-                            localizations.creatinineTab,
-                            Icons.science,
-                            _lastCreatineRecord != null
-                                ? '${_lastCreatineRecord!.value} mg/dL'
-                                : null,
-                            _lastCreatineRecord?.timestamp,
-                            localizations.noDataAvailableForCreatinine,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildVitalSection(
+                                  context,
+                                  localizations.bpTab,
+                                  Icons.monitor_heart,
+                                  _lastBpRecord != null
+                                      ? '${_lastBpRecord!.systolic}/${_lastBpRecord!.diastolic} mmHg'
+                                      : null,
+                                  _lastBpRecord?.timestamp,
+                                  localizations.noDataAvailableForBp,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildVitalSection(
+                                  context,
+                                  localizations.creatinineTab,
+                                  Icons.science,
+                                  _lastCreatineRecord != null
+                                      ? '${_lastCreatineRecord!.value} mg/dL'
+                                      : null,
+                                  _lastCreatineRecord?.timestamp,
+                                  localizations.noDataAvailableForCreatinine,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 16),
                           _buildVitalSection(
@@ -447,9 +450,10 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -465,6 +469,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black87,
                         ),
                       ),
+                      const SizedBox(width: 5),
                       Text(
                         'Date: ${date.toLocal().toString().split(' ')[0]}',
                         style: TextStyle(
