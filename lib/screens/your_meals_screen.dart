@@ -5,7 +5,7 @@ import 'package:myapp/models/meal_item_option.dart';
 import 'package:myapp/models/user_meal_plan.dart';
 import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRestriction
 import 'package:myapp/services/supabase_service.dart';
-import 'package:myapp/screens/upload_file_screen.dart';
+import 'package:myapp/widgets/upload_diet_dialog.dart'; // Import the new dialog widget
 
 class YourMealsScreen extends StatefulWidget {
   const YourMealsScreen({super.key});
@@ -368,9 +368,11 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const UploadFileScreen()),
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const UploadDietDialog();
+            },
           );
         },
         label: const Text('Upload Diet'),
