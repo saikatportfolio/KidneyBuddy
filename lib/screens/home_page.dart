@@ -340,12 +340,13 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.of(context).push(
+                              onPressed: () async {
+                                await Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (_) => const VitalTrackingPage(),
                                   ),
                                 );
+                                _fetchLastVitals(); // Refresh data when returning
                               },
                               icon: const Icon(Icons.track_changes),
                               label: Text(localizations.goToVitalMonitoring),
@@ -502,12 +503,15 @@ class _HomePageState extends State<HomePage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       clipBehavior: Clip.antiAlias, // Ensures image respects rounded corners
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           if (destinationPage != null) {
-            Navigator.push(
+            await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => destinationPage),
             );
+            if (destinationPage is VitalTrackingPage) {
+              _fetchLastVitals(); // Refresh data when returning from VitalTrackingPage
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(localizations.notYetImplemented(title))),
