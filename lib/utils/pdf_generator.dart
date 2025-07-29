@@ -3,6 +3,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/weight.dart'; // Import Weight model
 
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/blood_pressure.dart';
@@ -255,6 +256,137 @@ class PdfGenerator {
             DateFormat('hh:mm a').format(cr.timestamp),
             cr.value.toStringAsFixed(2),
             cr.comment ?? '', // Display empty string if comment is null
+          ]).toList(),
+          border: pw.TableBorder.all(color: PdfColors.grey500),
+          headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          cellAlignment: pw.Alignment.centerLeft,
+          cellPadding: pw.EdgeInsets.all(cellPad),
+          columnWidths: {
+            0: pw.FlexColumnWidth(colWidth2),
+            1: pw.FlexColumnWidth(colWidth1_5),
+            2: pw.FlexColumnWidth(colWidth3),
+          },
+        ),
+      );
+      dateSections.add(pw.SizedBox(height: 20)); // Space between date sections
+    }
+
+    return pw.Column(children: dateSections);
+  }
+
+  static Future<Uint8List> generateWeightReport(
+      PatientDetails? patientDetails, List<Weight> weightReadings) async {
+    final pdf = pw.Document();
+
+    // Sort readings by timestamp in descending order (newest first)
+    weightReadings.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4.copyWith(
+          marginTop: 36,
+          marginBottom: 36,
+          marginLeft: 36,
+          marginRight: 36,
+        ),
+        build: (pw.Context context) {
+          return [
+            pw.Header(
+              level: 0,
+              child: pw.Text('Weight Report',
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
+            ),
+            pw.SizedBox(height: 20),
+
+            // Patient Details Section
+            if (patientDetails != null)
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('Patient Information:',
+                      style: pw.TextStyle(
+                          fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                  pw.SizedBox(height: 10),
+                  pw.Text('Name: ${patientDetails.name}',
+                      style: pw.TextStyle(fontSize: 14)),
+                  if (patientDetails.email != null)
+                    pw.Text('Email: ${patientDetails.email}',
+                        style: pw.TextStyle(fontSize: 14)),
+                  pw.Text('Phone Number: ${patientDetails.phoneNumber}',
+                      style: pw.TextStyle(fontSize: 14)),
+                  pw.Text('CKD Stage: ${patientDetails.ckdStage}',
+                      style: pw.TextStyle(fontSize: 14)),
+                  pw.SizedBox(height: 20),
+                ],
+              ),
+
+            // Weight Readings Section
+            pw.Text('Weight Readings:',
+                style: pw.TextStyle(
+                    fontSize: 18, fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 10),
+
+            if (weightReadings.isEmpty)
+              pw.Text('No weight readings available.',
+                  style: pw.TextStyle(fontSize: 12, fontStyle: pw.FontStyle.italic))
+            else
+              _buildWeightReadingsTable(weightReadings),
+          ];
+        },
+      ),
+    );
+
+    logger.i('PDF report generated successfully.');
+    return pdf.save();
+  }
+
+  static pw.Widget _buildWeightReadingsTable(List<Weight> readings) {
+    // Group readings by date
+    final Map<String, List<Weight>> grouped = {};
+    for (var wt in readings) {
+      final dateKey = DateFormat('yyyy-MM-dd').format(wt.timestamp);
+      if (!grouped.containsKey(dateKey)) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey]!.add(wt);
+    }
+
+    final List<pw.Widget> dateSections = [];
+    final sortedDates = grouped.keys.toList()..sort((a, b) => b.compareTo(a)); // Sort dates descending
+
+    for (var date in sortedDates) {
+      final readingsForDate = grouped[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // Sort readings by time descending
+      final formattedDate = DateFormat('MMM dd, yyyy').format(DateTime.parse(date)); // Pre-format date
+
+      final verticalPadding = 8.0;
+      dateSections.add(
+        pw.Column(
+          children: [
+            pw.Padding(
+              padding: pw.EdgeInsets.symmetric(vertical: verticalPadding),
+              child: pw.Text(
+                formattedDate,
+                style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      final cellPad = 8.0;
+      final colWidth2 = 2.0;
+      final colWidth1_5 = 1.5;
+      final colWidth3 = 3.0;
+      final tableHeaders = ['Time', 'Weight (kg)', 'Comment'];
+
+      dateSections.add(
+        pw.Table.fromTextArray(
+          headers: tableHeaders,
+          data: readingsForDate.map((wt) => [
+            DateFormat('hh:mm a').format(wt.timestamp),
+            wt.value.toStringAsFixed(2),
+            wt.comment ?? '',
           ]).toList(),
           border: pw.TableBorder.all(color: PdfColors.grey500),
           headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),

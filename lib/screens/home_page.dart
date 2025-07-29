@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    logger.d('HomePage: initState called');
     _loadDynamicContent();
     _loadGoogleNameAndPhoto();
     _fetchLastVitals(); // Fetch last vital records

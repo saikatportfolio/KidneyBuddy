@@ -184,8 +184,15 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
         );
         return;
       }
-      // final pdfBytes = await PdfGenerator.generateWeightReport(widget.patientDetails!, _weightReadings);
-      // await Printing.sharePdf(bytes: pdfBytes, filename: 'weight_report.pdf');
+      final pdfBytes = await PdfGenerator.generateWeightReport(widget.patientDetails!, _weightReadings);
+      
+      String fileName = 'weight_report.pdf';
+      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
+        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+        fileName = '${patientName}_weight_report.pdf';
+      }
+      
+      await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
       logger.e('Error generating or sharing PDF for Weight: $e', error: e, stackTrace: stack);

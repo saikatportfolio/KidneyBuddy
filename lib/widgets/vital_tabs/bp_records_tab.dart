@@ -186,7 +186,13 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         return;
       }
       final pdfBytes = await PdfGenerator.generateBpReport(widget.patientDetails!, _bloodPressureReadings);
-      await Printing.sharePdf(bytes: pdfBytes, filename: 'blood_pressure_report.pdf');
+
+      String fileName = 'BP_report.pdf';
+      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
+        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+        fileName = '${patientName}_BP_report.pdf';
+      }
+      await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
       logger.e('Error generating or sharing PDF for BP: $e', error: e, stackTrace: stack);

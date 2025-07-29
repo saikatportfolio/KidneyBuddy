@@ -185,7 +185,14 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
         return;
       }
       final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
-      await Printing.sharePdf(bytes: pdfBytes, filename: 'creatine_report.pdf');
+      
+      String fileName = 'creatine_report.pdf';
+      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
+        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+        fileName = '${patientName}_creatine_report.pdf';
+      }
+      
+      await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
       logger.e('Error generating or sharing PDF for Creatinine: $e', error: e, stackTrace: stack);
