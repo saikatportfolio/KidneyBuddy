@@ -81,30 +81,59 @@ class _UploadFileScreenState extends State<UploadFileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Upload Diet Chart'),
-      ),
-      body: Center(
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_fileName != null) ...[
-                Text('Selected file: $_fileName'),
-                const SizedBox(height: 16),
-              ],
-            ElevatedButton(
-              onPressed: _pickFile,
-              child: const Text('Pick a file'),
-            ),
-            const SizedBox(height: 16),
-            if (_isLoading)
-              const CircularProgressIndicator()
-            else
-              ElevatedButton(
-                onPressed: _fileBytes != null ? _uploadFile : null,
-                child: const Text('Upload file'),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Upload Diet Chart', // Fixed title as requested
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade800,
+                            fontSize: 24.0,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 48), // To balance the back button space
+                ],
+              ),
+              const SizedBox(height: 16),
+              Expanded( // Wrap the main content in Expanded to center it vertically
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_fileName != null) ...[
+                        Text('Selected file: $_fileName'),
+                        const SizedBox(height: 16),
+                      ],
+                      ElevatedButton(
+                        onPressed: _pickFile,
+                        child: const Text('Pick a file'),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_isLoading)
+                        const CircularProgressIndicator()
+                      else
+                        ElevatedButton(
+                          onPressed: _fileBytes != null ? _uploadFile : null,
+                          child: const Text('Upload file'),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
