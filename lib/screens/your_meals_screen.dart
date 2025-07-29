@@ -98,7 +98,25 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                     } else if (snapshot.hasError) {
                       return Expanded(child: Center(child: Text('Error: ${snapshot.error}')));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Expanded(child: Center(child: Text('No meal plan found.')));
+                      return Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'No meal plan found.',
+                                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Upload your diet chart by clicking the 'Upload Diet' button below to import your personalized meal plan.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14.0, color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
                     }
 
                     final data = snapshot.data!;
