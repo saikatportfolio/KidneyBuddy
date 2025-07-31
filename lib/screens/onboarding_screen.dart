@@ -152,11 +152,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             const SizedBox(height: 30),
                             _currentPage == onboardingData.length - 1
                                 ? SizedBox(
-                                    width: double.infinity,
+width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () => _onIntroEnd(context),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary,
+style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF16C2D5),
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                                         shape: RoundedRectangleBorder(
@@ -176,7 +176,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                        backgroundColor: const Color(0xFF16C2D5),
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                                         shape: RoundedRectangleBorder(
