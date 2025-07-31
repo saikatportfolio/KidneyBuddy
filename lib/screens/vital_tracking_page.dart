@@ -140,7 +140,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
                       IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context, true); // Pop with a result to indicate a potential change
                         },
                       ),
                       Expanded(

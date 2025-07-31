@@ -243,6 +243,31 @@ class SupabaseService {
     }
   }
 
+  Future<BloodPressure?> getLatestBloodPressureReading() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getLatestBloodPressureReading: No authenticated user found. Cannot fetch latest blood pressure reading.');
+        return null;
+      }
+
+      final response = await _supabase
+          .from('blood_pressure_readings')
+          .select()
+          .eq('user_id', user.id)
+          .order('timestamp', ascending: false)
+          .limit(1);
+
+      if (response.isNotEmpty) {
+        return BloodPressure.fromMap(response.first);
+      }
+      return null;
+    } catch (e) {
+      logger.e('Error fetching latest blood pressure reading from Supabase: $e');
+      return null;
+    }
+  }
+
   // Creatine Operations
   Future<void> insertCreatine(Creatine creatine) async {
     try {
@@ -296,6 +321,31 @@ class SupabaseService {
     } catch (e) {
       logger.e('Error fetching creatine readings from Supabase: $e');
       return [];
+    }
+  }
+
+  Future<Creatine?> getLatestCreatineReading() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getLatestCreatineReading: No authenticated user found. Cannot fetch latest creatine reading.');
+        return null;
+      }
+
+      final response = await _supabase
+          .from('creatine_readings')
+          .select()
+          .eq('user_id', user.id)
+          .order('timestamp', ascending: false)
+          .limit(1);
+
+      if (response.isNotEmpty) {
+        return Creatine.fromMap(response.first);
+      }
+      return null;
+    } catch (e) {
+      logger.e('Error fetching latest creatine reading from Supabase: $e');
+      return null;
     }
   }
 
@@ -360,6 +410,31 @@ class SupabaseService {
     } catch (e) {
       logger.e('Error fetching weight readings from Supabase: $e');
       return [];
+    }
+  }
+
+  Future<Weight?> getLatestWeightReading() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        logger.w('getLatestWeightReading: No authenticated user found. Cannot fetch latest weight reading.');
+        return null;
+      }
+
+      final response = await _supabase
+          .from('weight_readings')
+          .select()
+          .eq('user_id', user.id)
+          .order('timestamp', ascending: false)
+          .limit(1);
+
+      if (response.isNotEmpty) {
+        return Weight.fromMap(response.first);
+      }
+      return null;
+    } catch (e) {
+      logger.e('Error fetching latest weight reading from Supabase: $e');
+      return null;
     }
   }
 

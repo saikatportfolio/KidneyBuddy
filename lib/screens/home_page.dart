@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:myapp/models/creatine.dart'; // Import Creatine model
 import 'package:myapp/models/weight.dart'; // Import Weight model
+import 'package:intl/intl.dart'; // Import for date formatting
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -77,14 +78,14 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchLastVitals() async {
     try {
       final supabaseService = SupabaseService();
-      final bpReadings = await supabaseService.getBloodPressureReadings();
-      final creatineReadings = await supabaseService.getCreatineReadings();
-      final weightReadings = await supabaseService.getWeightReadings();
+      final latestBp = await supabaseService.getLatestBloodPressureReading();
+      final latestCreatine = await supabaseService.getLatestCreatineReading();
+      final latestWeight = await supabaseService.getLatestWeightReading();
 
       setState(() {
-        _lastBpRecord = bpReadings.isNotEmpty ? bpReadings.first : null;
-        _lastCreatineRecord = creatineReadings.isNotEmpty ? creatineReadings.first : null;
-        _lastWeightRecord = weightReadings.isNotEmpty ? weightReadings.first : null;
+        _lastBpRecord = latestBp;
+        _lastCreatineRecord = latestCreatine;
+        _lastWeightRecord = latestWeight;
       });
     } catch (e) {
       logger.e('Error fetching last vital records: $e');
@@ -185,26 +186,26 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           // Notification Icon
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey[200],
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.notifications_none,
-                                size: 28.0,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const NotificationPage(),
-                                  ), // Navigate to NotificationPage
-                                );
-                              },
-                            ),
-                          ),
+                          // Container(
+                          //   decoration: BoxDecoration(
+                          //     shape: BoxShape.circle,
+                          //     color: Colors.grey[200],
+                          //   ),
+                          //   child: IconButton(
+                          //     icon: const Icon(
+                          //       Icons.notifications_none,
+                          //       size: 28.0,
+                          //     ),
+                          //     onPressed: () {
+                          //       Navigator.of(context).push(
+                          //         MaterialPageRoute(
+                          //           builder: (_) =>
+                          //               const NotificationPage(),
+                          //         ), // Navigate to NotificationPage
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
                           const SizedBox(width: 10), // Spacing between icons
                           // Settings Icon
                           Container(
@@ -467,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Date: ${date.toLocal().toString().split(' ')[0]}',
+                  'Date: ${DateFormat('dd-MM-yyyy').format(date)}',
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey[600],

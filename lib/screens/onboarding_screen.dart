@@ -116,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Text(
                               _getLocalizedText(context, item["titleKey"]!),
                               style: const TextStyle(
-                                fontSize: 28.0,
+                                fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
                               ),
@@ -126,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Text(
                               _getLocalizedText(context, item["descriptionKey"]!),
                               style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 15.0,
                                 color: Colors.grey[600],
                               ),
                               textAlign: TextAlign.center,

@@ -188,8 +188,8 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
       final pdfBytes = await PdfGenerator.generateBpReport(widget.patientDetails!, _bloodPressureReadings);
 
       String fileName = 'BP_report.pdf';
-      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
-        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+      if (widget.patientDetails != null) {
+        final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
         fileName = '${patientName}_BP_report.pdf';
       }
       await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
@@ -483,11 +483,14 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                 bottom: 16,
                 right: 16,
                 child: FloatingActionButton.extended(
-                  onPressed: () {
-                    Navigator.pushReplacement(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const AddBpPage()),
                     );
+                    if (result == true) {
+                      _fetchData(); // Refresh data if a new BP record was added
+                    }
                   },
                   label: Text(localizations.addBpButton),
                   icon: const Icon(Icons.add),

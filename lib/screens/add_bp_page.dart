@@ -130,7 +130,7 @@ class _AddBpPageState extends State<AddBpPage> {
         logger.i('AddBpPage: BP saved to Supabase: ${bloodPressure.systolic}/${bloodPressure.diastolic}');
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocalizationHelper.translateKey(context, 'bpSavedSuccess'))),
+          SnackBar(content: Text(LocalizationHelper.translateKey(context, 'BP Saved Successfully'))),
         );
 
         // Clear fields after successful save
@@ -143,11 +143,9 @@ class _AddBpPageState extends State<AddBpPage> {
           _currentDiastolicValue = 80; // Reset to default
         });
 
-        // Redirect to VitalTrackingPage
+        // Pop back to the previous screen (VitalTrackingPage) with a result indicating success
         if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const VitalTrackingPage()),
-          );
+          Navigator.of(context).pop(true); // Pass true to indicate success
         }
       } catch (e) {
         logger.e('Error saving BP: $e');
