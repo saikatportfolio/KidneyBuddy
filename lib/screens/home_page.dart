@@ -17,6 +17,7 @@ import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 import 'package:myapp/models/creatine.dart'; // Import Creatine model
 import 'package:myapp/models/weight.dart'; // Import Weight model
 import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:video_player/video_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,6 +32,9 @@ class _HomePageState extends State<HomePage> {
   bool _isLoadingContent = true;
   String? _googleName;
   String? _googlePhotoUrl;
+  String? _videoUrl =
+      'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4';
+  late VideoPlayerController _videoPlayerController;
 
   BloodPressure? _lastBpRecord;
   Creatine? _lastCreatineRecord;
@@ -43,6 +47,10 @@ class _HomePageState extends State<HomePage> {
     _loadDynamicContent();
     _loadGoogleNameAndPhoto();
     _fetchLastVitals(); // Fetch last vital records
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
+      ..initialize().then((_) {
+        setState(() {});
+      });
   }
 
   Future<void> _loadDynamicContent() async {
@@ -103,9 +111,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
   Widget build(BuildContext context) {
     logger.d('HomePage: build called');
+    logger.i('HomePage: _videoUrl = $_videoUrl');
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
     final patientName =
@@ -141,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                                 backgroundColor: _googlePhotoUrl == null
                                     ? Theme.of(
                                         context,
-                                      ).colorScheme.primary.withOpacity(0.2)
+                                      ).colorScheme.primary.withValues(alpha: 0.2)
                                     : Colors.transparent,
                                 child: _googlePhotoUrl == null
                                     ? Text(
@@ -277,7 +285,37 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-
+                  if (_videoUrl != null)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          _videoPlayerController.value.isInitialized
+                              ? AspectRatio(
+                                  aspectRatio: _videoPlayerController.value.aspectRatio,
+                                  child: VideoPlayer(_videoPlayerController),
+                                )
+                              : const Center(child: CircularProgressIndicator()),
+                          FloatingActionButton(
+                            backgroundColor: Colors.black.withValues(alpha: 0.5),
+                            onPressed: () {
+                              setState(() {
+                                if (_videoPlayerController.value.isPlaying) {
+                                  _videoPlayerController.pause();
+                                } else {
+                                  _videoPlayerController.play();
+                                }
+                              });
+                            },
+                            child: Icon(
+                              _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   // Your Health Board Section
                   Text(
                     localizations.yourHealthBoard,
@@ -301,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Expanded(
-                                child: _buildVitalSection(
+                                child: buildVitalSection(
                                   context,
                                   localizations.bpTab,
                                   Icons.monitor_heart,
@@ -314,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(width: 16),
                               Expanded(
-                                child: _buildVitalSection(
+                                child: buildVitalSection(
                                   context,
                                   localizations.creatinineTab,
                                   Icons.science,
@@ -328,7 +366,7 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          _buildVitalSection(
+                          buildVitalSection(
                             context,
                             localizations.weight,
                             Icons.scale,
@@ -378,45 +416,45 @@ class _HomePageState extends State<HomePage> {
                         1.0, // Adjusted for square-like cards with text below
                     children: [
                       // Food Recommendations (Working)
-                      // _buildFeatureItem(
+                      // buildFeatureItem(
                       //   context,
                       //   'Food Recommendations',
                       //   'assets/images/onboarding1.png', // Placeholder image
                       //   const FoodListPage(),
                       // ),
                       // Contact Dietician (Working)
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         localizations.vitalMonitoringCard,
                         'assets/images/vital.png', // Placeholder image
                         const VitalTrackingPage(),
                       ),
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         "Your meals",
                         'assets/images/your_meal.jpg', // Placeholder image
                         const YourMealsScreen(),
                       ),
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         localizations.contactDieticianCard,
                         'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         localizations.eGFRCalculatorCard,
                         'assets/images/gfr.png', // Placeholder image
                         const EgfrCalculatorScreen(), // Navigate to the new screen
                       ),
                       // Give Your Feedback (Working)
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         localizations.giveYourFeedbackCard,
                         'assets/images/feedback.jpg', // Placeholder image
                         const FeedbackPage(),
                       ),
-                      _buildFeatureItem(
+                      buildFeatureItem(
                         context,
                         'Educational Content',
                         'assets/images/kidney_health.png', // Placeholder image
@@ -430,7 +468,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildVitalSection(
+  Widget buildVitalSection(
     BuildContext context,
     String title,
     IconData icon,
@@ -445,24 +483,24 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(color: Colors.grey[300]!),
       ),
-      child: Column( // Changed from Row to Column
-        crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(icon, size: 30.0, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(height: 8), // Spacing between icon and title
+          const SizedBox(height: 8),
           Text(
             title,
-            textAlign: TextAlign.center, // Center the title text
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 4), // Spacing between title and value
+          const SizedBox(height: 4),
           if (value != null && date != null)
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center, // Center value and date
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   value,
@@ -485,7 +523,7 @@ class _HomePageState extends State<HomePage> {
           else
             Text(
               noDataMessage,
-              textAlign: TextAlign.center, // Center no data message
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.0,
                 fontStyle: FontStyle.italic,
@@ -497,8 +535,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // New widget to build each feature item (card + text below)
-  Widget _buildFeatureItem(
+  Widget buildFeatureItem(
     BuildContext context,
     String title,
     String imagePath,
@@ -508,7 +545,7 @@ class _HomePageState extends State<HomePage> {
     return Card(
       elevation: 4.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      clipBehavior: Clip.antiAlias, // Ensures image respects rounded corners
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () async {
           if (destinationPage != null) {
@@ -529,12 +566,12 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 3, // Image takes more space
+              flex: 3,
               child: SizedBox(
                 width: double.infinity,
                 child: Image.asset(
                   imagePath,
-                  fit: BoxFit.cover, // Cover the available space
+                  fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return const Center(
                       child: Icon(
@@ -548,7 +585,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              flex: 1, // Text and icon take less space
+              flex: 1,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12.0,
@@ -571,15 +608,14 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors
-                            .grey[200], // Light grey background for the arrow icon
+                        color: Colors.grey[200],
                       ),
                       child: Icon(
                         Icons.arrow_forward_ios,
                         size: 16.0,
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary, // Primary color for the arrow
+                        ).colorScheme.primary,
                       ),
                     ),
                   ],
@@ -595,5 +631,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
+    _videoPlayerController.dispose();
   }
 }
