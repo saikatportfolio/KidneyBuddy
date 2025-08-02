@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   BloodPressure? _lastBpRecord;
   Creatine? _lastCreatineRecord;
   Weight? _lastWeightRecord;
+  bool _isVideoPlaying = false;
 
   @override
   void initState() {
@@ -51,7 +52,22 @@ class _HomePageState extends State<HomePage> {
       ..initialize().then((_) {
         setState(() {});
       });
+
+      _videoPlayerController.addListener((){
+              if (_videoPlayerController.value.position == _videoPlayerController.value.duration) {
+        setState(() {
+          logger.d('HomePgae, video finished');
+           _isVideoPlaying = false;
+          
+        });
+      }
+
+
+      });
+      
   }
+
+  
 
   Future<void> _loadDynamicContent() async {
     setState(() {
@@ -300,25 +316,31 @@ class _HomePageState extends State<HomePage> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              _videoPlayerController.value.isInitialized
-                                  ? AspectRatio(
+                            if (_videoPlayerController.value.isInitialized)
+                            
+                                   AspectRatio(
                                       aspectRatio: _videoPlayerController.value.aspectRatio,
                                       child: VideoPlayer(_videoPlayerController),
                                     )
-                                  : const Center(child: CircularProgressIndicator()),
+                                  else 
+                                  const Center(child: CircularProgressIndicator()),
                               FloatingActionButton(
-                                backgroundColor: Colors.black.withValues(alpha: 0.5),
+                                backgroundColor: Colors.blue.withValues(alpha: 0.5),
                                 onPressed: () {
                                   setState(() {
-                                    if (_videoPlayerController.value.isPlaying) {
+                                    logger.d('Video paused');
+                                    if (_isVideoPlaying) {
                                       _videoPlayerController.pause();
+                                      _isVideoPlaying = false;
                                     } else {
+                                      logger.d('Video played');
                                       _videoPlayerController.play();
+                                      _isVideoPlaying = true;
                                     }
                                   });
                                 },
                                 child: Icon(
-                                  _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                                  _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
                                 ),
                               ),
                             ],
