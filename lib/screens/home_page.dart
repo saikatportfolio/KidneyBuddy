@@ -286,36 +286,47 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   if (_videoUrl != null)
-                    SizedBox(
-                      width: double.infinity,
-                      height: 200,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          _videoPlayerController.value.isInitialized
-                              ? AspectRatio(
-                                  aspectRatio: _videoPlayerController.value.aspectRatio,
-                                  child: VideoPlayer(_videoPlayerController),
-                                )
-                              : const Center(child: CircularProgressIndicator()),
-                          FloatingActionButton(
-                            backgroundColor: Colors.black.withValues(alpha: 0.5),
-                            onPressed: () {
-                              setState(() {
-                                if (_videoPlayerController.value.isPlaying) {
-                                  _videoPlayerController.pause();
-                                } else {
-                                  _videoPlayerController.play();
-                                }
-                              });
-                            },
-                            child: Icon(
-                              _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                            ),
+                    Card(
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: const EdgeInsets.only(bottom: 24.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 200,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              _videoPlayerController.value.isInitialized
+                                  ? AspectRatio(
+                                      aspectRatio: _videoPlayerController.value.aspectRatio,
+                                      child: VideoPlayer(_videoPlayerController),
+                                    )
+                                  : const Center(child: CircularProgressIndicator()),
+                              FloatingActionButton(
+                                backgroundColor: Colors.black.withValues(alpha: 0.5),
+                                onPressed: () {
+                                  setState(() {
+                                    if (_videoPlayerController.value.isPlaying) {
+                                      _videoPlayerController.pause();
+                                    } else {
+                                      _videoPlayerController.play();
+                                    }
+                                  });
+                                },
+                                child: Icon(
+                                  _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 8),
                   // Your Health Board Section
                   Text(
                     localizations.yourHealthBoard,
