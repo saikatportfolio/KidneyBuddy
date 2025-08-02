@@ -310,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       margin: const EdgeInsets.only(bottom: 24.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(2.0),
                         child: SizedBox(
                           width: double.infinity,
                           //height: 200,
@@ -321,11 +321,11 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: [
                                 AspectRatio(
-                                  aspectRatio: _videoPlayerController.value.aspectRatio,
+                                  aspectRatio: 15/8,
                                   child: VideoPlayer(_videoPlayerController),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  padding: const EdgeInsets.only(bottom: 2.0),
                                   child: VideoProgressIndicator(
                                     _videoPlayerController,
                                     allowScrubbing: true,
@@ -359,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 2),
                   // Your Health Board Section
                   Text(
                     localizations.yourHealthBoard,
