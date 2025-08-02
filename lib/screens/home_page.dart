@@ -309,19 +309,29 @@ class _HomePageState extends State<HomePage> {
                       ),
                       margin: const EdgeInsets.only(bottom: 24.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(3.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: SizedBox(
                           width: double.infinity,
-                          height: 200,
+                          //height: 200,
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
                             if (_videoPlayerController.value.isInitialized)
-                            
-                                   AspectRatio(
-                                      aspectRatio: _videoPlayerController.value.aspectRatio,
-                                      child: VideoPlayer(_videoPlayerController),
-                                    )
+                            Column(
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: _videoPlayerController.value.aspectRatio,
+                                  child: VideoPlayer(_videoPlayerController),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: VideoProgressIndicator(
+                                    _videoPlayerController,
+                                    allowScrubbing: true,
+                                  ),
+                                ),
+                              ],
+                            )
                                   else 
                                   const Center(child: CircularProgressIndicator()),
                               FloatingActionButton(
