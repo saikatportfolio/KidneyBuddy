@@ -49,26 +49,22 @@ class _HomePageState extends State<HomePage> {
     _loadDynamicContent();
     _loadGoogleNameAndPhoto();
     _fetchLastVitals(); // Fetch last vital records
-    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
-      ..initialize().then((_) {
-        setState(() {});
-      });
+    _videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
+          ..initialize().then((_) {
+            setState(() {});
+          });
 
-      _videoPlayerController.addListener((){
-              if (_videoPlayerController.value.position == _videoPlayerController.value.duration) {
+    _videoPlayerController.addListener(() {
+      if (_videoPlayerController.value.position ==
+          _videoPlayerController.value.duration) {
         setState(() {
           logger.d('HomePgae, video finished');
-           _isVideoPlaying = false;
-          
+          _isVideoPlaying = false;
         });
       }
-
-
-      });
-      
+    });
   }
-
-  
 
   Future<void> _loadDynamicContent() async {
     setState(() {
@@ -80,6 +76,7 @@ class _HomePageState extends State<HomePage> {
         'welcome_message',
       );
       final tips = await supabaseService.getAllTips();
+      final videoUrlData = await supabaseService.getMessageByKey('video_url');
 
       setState(() {
         _allTips = tips;
@@ -88,7 +85,26 @@ class _HomePageState extends State<HomePage> {
         } else {
           _tipOfTheDay = 'No tips available at the moment.';
         }
+        _videoUrl = videoUrlData;
       });
+
+      if (_videoUrl != null) {
+        _videoPlayerController =
+            VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
+              ..initialize().then((_) {
+                setState(() {});
+              });
+
+        _videoPlayerController.addListener(() {
+          if (_videoPlayerController.value.position ==
+              _videoPlayerController.value.duration) {
+            setState(() {
+              logger.d('HomePgae, video finished');
+              _isVideoPlaying = false;
+            });
+          }
+        });
+      }
     } catch (e) {
       logger.e('Error loading dynamic content: $e');
       setState(() {
@@ -164,9 +180,8 @@ class _HomePageState extends State<HomePage> {
                                     ? NetworkImage(_googlePhotoUrl!)
                                     : null,
                                 backgroundColor: _googlePhotoUrl == null
-                                    ? Theme.of(
-                                        context,
-                                      ).colorScheme.primary.withValues(alpha: 0.2)
+                                    ? Theme.of(context).colorScheme.primary
+                                          .withValues(alpha: 0.2)
                                     : Colors.transparent,
                                 child: _googlePhotoUrl == null
                                     ? Text(
@@ -317,26 +332,34 @@ class _HomePageState extends State<HomePage> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                            if (_videoPlayerController.value.isInitialized)
-                            Column(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 15/8,
-                                  child: VideoPlayer(_videoPlayerController),
+                              if (_videoPlayerController.value.isInitialized)
+                                Column(
+                                  children: [
+                                    AspectRatio(
+                                      aspectRatio: 15 / 8,
+                                      child: VideoPlayer(
+                                        _videoPlayerController,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 2.0,
+                                      ),
+                                      child: VideoProgressIndicator(
+                                        _videoPlayerController,
+                                        allowScrubbing: true,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              else
+                                const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 2.0),
-                                  child: VideoProgressIndicator(
-                                    _videoPlayerController,
-                                    allowScrubbing: true,
-                                  ),
-                                ),
-                              ],
-                            )
-                                  else 
-                                  const Center(child: CircularProgressIndicator()),
                               FloatingActionButton(
-                                backgroundColor: Colors.blue.withValues(alpha: 0.5),
+                                backgroundColor: Colors.blue.withValues(
+                                  alpha: 0.5,
+                                ),
                                 onPressed: () {
                                   setState(() {
                                     logger.d('Video paused');
@@ -351,7 +374,9 @@ class _HomePageState extends State<HomePage> {
                                   });
                                 },
                                 child: Icon(
-                                  _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                                  _isVideoPlaying
+                                      ? Icons.pause
+                                      : Icons.play_circle_filled_rounded,
                                 ),
                               ),
                             ],
@@ -359,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   // Your Health Board Section
                   Text(
                     localizations.yourHealthBoard,
@@ -435,7 +460,9 @@ class _HomePageState extends State<HomePage> {
                               icon: const Icon(Icons.track_changes),
                               label: Text(localizations.goToVitalMonitoring),
                               style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -488,7 +515,10 @@ class _HomePageState extends State<HomePage> {
                         context,
                         'Educational Content',
                         'assets/images/kidney_health.png', // Placeholder image
-                        EducationalContentScreen(videoUrl: 'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4'),
+                        EducationalContentScreen(
+                          videoUrl:
+                              'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4',
+                        ),
                       ),
                       buildFeatureItem(
                         context,
@@ -556,10 +586,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 4),
                 Text(
                   'Date: ${DateFormat('dd-MM-yyyy').format(date)}',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.0, color: Colors.grey[600]),
                 ),
               ],
             )
@@ -656,9 +683,7 @@ class _HomePageState extends State<HomePage> {
                       child: Icon(
                         Icons.arrow_forward_ios,
                         size: 16.0,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],
