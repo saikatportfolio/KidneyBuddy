@@ -4,7 +4,7 @@ import 'package:video_player/video_player.dart';
 class EducationalContentScreen extends StatefulWidget {
   final String videoUrl;
 
-  const EducationalContentScreen({Key? key, required this.videoUrl}) : super(key: key);
+  const EducationalContentScreen({super.key, required this.videoUrl});
 
   @override
   State<EducationalContentScreen> createState() => _EducationalContentScreenState();
@@ -18,7 +18,9 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          _controller.play();
+        });
       });
   }
 
@@ -42,23 +44,6 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
             const Text(
               'Article Title',
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16.0),
-            Image.asset('assets/images/auth_image.png'), // Or Image.network
-            const SizedBox(height: 16.0),
-            const Text(
-              'Article Text...',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            const SizedBox(height: 16.0),
-            const Text(
-              'Subheading',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8.0),
-            const Text(
-              'More Article Text...',
-              style: TextStyle(fontSize: 16.0),
             ),
             const SizedBox(height: 16.0),
             _controller.value.isInitialized
