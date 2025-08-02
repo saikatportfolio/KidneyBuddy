@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to KidneyBuddy'**
+  /// **'Welcome to PreventO'**
   String get welcomeTitle;
 
   /// No description provided for @welcomeDescription.

@@ -249,7 +249,7 @@ class MyAppState extends State<MyApp> {
     }
 
     return MaterialApp(
-      title: 'CKDBuddy', // This will be replaced by localized string later
+      title: 'PreventO', // This will be replaced by localized string later
       theme: ThemeData(
         primarySwatch: _createMaterialColor(const Color(0xFF16C2D5)),
         primaryColor: const Color(0xFF16C2D5), // Explicitly set primaryColor

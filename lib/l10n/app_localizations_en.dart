@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get welcomeTitle => 'Welcome to KidneyBuddy';
+  String get welcomeTitle => 'Welcome to PreventO';
 
   @override
   String get welcomeDescription =>
