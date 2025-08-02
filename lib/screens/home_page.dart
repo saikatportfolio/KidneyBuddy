@@ -257,51 +257,51 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 20),
 
                   // Tip of the Day Section
-                  Card(
-                    elevation: 4.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    margin: const EdgeInsets.only(bottom: 24.0),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Tip of the Day',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.lightbulb_outline,
-                                size: 24.0,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  _tipOfTheDay,
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Card(
+                  //   elevation: 4.0,
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(15.0),
+                  //   ),
+                  //   margin: const EdgeInsets.only(bottom: 24.0),
+                  //   color: Colors.white,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(20.0),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Text(
+                  //           'Tip of the Day',
+                  //           style: TextStyle(
+                  //             fontSize: 18.0,
+                  //             fontWeight: FontWeight.bold,
+                  //             color: Theme.of(context).colorScheme.primary,
+                  //           ),
+                  //         ),
+                  //         const SizedBox(height: 10),
+                  //         Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Icon(
+                  //               Icons.lightbulb_outline,
+                  //               size: 24.0,
+                  //               color: Theme.of(context).colorScheme.primary,
+                  //             ),
+                  //             const SizedBox(width: 10),
+                  //             Expanded(
+                  //               child: Text(
+                  //                 _tipOfTheDay,
+                  //                 style: const TextStyle(
+                  //                   fontSize: 14.0,
+                  //                   color: Colors.black87,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   if (_videoUrl != null)
                     Card(
                       elevation: 4.0,
