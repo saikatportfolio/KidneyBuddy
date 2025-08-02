@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
+import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/educational_content_screen.dart';
 // Import NotificationPage
@@ -459,13 +460,6 @@ class _HomePageState extends State<HomePage> {
                         1.0, // Adjusted for square-like cards with text below
                     children: [
                       // Food Recommendations (Working)
-                      // buildFeatureItem(
-                      //   context,
-                      //   'Food Recommendations',
-                      //   'assets/images/onboarding1.png', // Placeholder image
-                      //   const FoodListPage(),
-                      // ),
-                      // Contact Dietician (Working)
                       buildFeatureItem(
                         context,
                         localizations.vitalMonitoringCard,
@@ -480,9 +474,21 @@ class _HomePageState extends State<HomePage> {
                       ),
                       buildFeatureItem(
                         context,
+                        'Nutritions Info',
+                        'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
+                        const FoodListPage(),
+                      ),
+                      buildFeatureItem(
+                        context,
                         localizations.contactDieticianCard,
                         'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
+                      ),
+                      buildFeatureItem(
+                        context,
+                        'Educational Content',
+                        'assets/images/kidney_health.png', // Placeholder image
+                        EducationalContentScreen(videoUrl: 'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4'),
                       ),
                       buildFeatureItem(
                         context,
@@ -496,12 +502,6 @@ class _HomePageState extends State<HomePage> {
                         localizations.giveYourFeedbackCard,
                         'assets/images/feedback.jpg', // Placeholder image
                         const FeedbackPage(),
-                      ),
-                      buildFeatureItem(
-                        context,
-                        'Educational Content',
-                        'assets/images/kidney_health.png', // Placeholder image
-                        EducationalContentScreen(videoUrl: 'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4'),
                       ),
                     ],
                   ),

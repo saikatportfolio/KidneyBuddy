@@ -85,85 +85,91 @@ class _FoodListPageState extends State<FoodListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Food Recommendations'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Center(child: Text('Nutritional Info')),
       ),
-      body: Column(
-        children: [
-          // Category Cards at the top
-          SizedBox(
-            height: 120, // Adjust height as needed for the category cards
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: _categoryCards.length,
-              itemBuilder: (context, index) {
-                final category = _categoryCards[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedCategoryIndex = index; // Update selected category index
-                    });
-                  },
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(
-                        color: _selectedCategoryIndex == index
-                            ? Theme.of(context).primaryColor // Highlight selected card
-                            : Colors.transparent,
-                        width: 2,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Category Cards at the top
+            SizedBox(
+              height: 120, // Adjust height as needed for the category cards
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                itemCount: _categoryCards.length,
+                itemBuilder: (context, index) {
+                  final category = _categoryCards[index];
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategoryIndex = index; // Update selected category index
+                      });
+                    },
+                    child: Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: _selectedCategoryIndex == index
+                              ? Theme.of(context).primaryColor // Highlight selected card
+                              : Colors.transparent,
+                          width: 2,
+                        ),
                       ),
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-                    child: Container(
-                      width: 100, // Fixed width for each card
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            category['icon'],
-                            size: 40,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            category['name'],
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                      child: Container(
+                        width: 100, // Fixed width for each card
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              category['icon'],
+                              size: 40,
+                              color: Theme.of(context).primaryColor,
                             ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                            const SizedBox(height: 4),
+                            Text(
+                              category['name'],
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: ElevatedButton(
-              onPressed: () => _showSafetyFlagMeaningDialog(context),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(40), // Make button full width
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  );
+                },
               ),
-              child: const Text('See Safety Flag Meanings'),
             ),
-          ),
-          // Display FoodCategoryTab based on selected category
-          Expanded(
-            child: FoodCategoryTab(
-              categories: _categoryCards[_selectedCategoryIndex]['categories'],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: ElevatedButton(
+                onPressed: () => _showSafetyFlagMeaningDialog(context),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40), // Make button full width
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text('See Safety Flag Meanings'),
+              ),
             ),
-          ),
-        ],
+            // Display FoodCategoryTab based on selected category
+            Expanded(
+              child: FoodCategoryTab(
+                categories: _categoryCards[_selectedCategoryIndex]['categories'],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

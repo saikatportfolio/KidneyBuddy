@@ -12,6 +12,7 @@ class EducationalContentScreen extends StatefulWidget {
 
 class _EducationalContentScreenState extends State<EducationalContentScreen> {
   late VideoPlayerController _controller;
+  bool _isVideoPlaying = false;
 
   @override
   void initState() {
@@ -19,9 +20,18 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
       ..initialize().then((_) {
         setState(() {
+          _isVideoPlaying = true;
           _controller.play();
         });
       });
+
+    _controller.addListener(() {
+      if (_controller.value.position == _controller.value.duration) {
+        setState(() {
+          _isVideoPlaying = false;
+        });
+      }
+    });
   }
 
   @override
@@ -46,27 +56,47 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
-            _controller.value.isInitialized
-                ? AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            )
-                : const SizedBox(
-              height: 200,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  if (_controller.value.isPlaying) {
-                    _controller.pause();
-                  } else {
-                    _controller.play();
-                  }
-                });
-              },
-              child: Icon(
-                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            SizedBox(
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (_controller.value.isInitialized)
+                    Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: VideoProgressIndicator(
+                            _controller,
+                            allowScrubbing: true,
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    const Center(child: CircularProgressIndicator()),
+                  FloatingActionButton(
+                    backgroundColor: Colors.blue.withValues(alpha: 0.5),
+                    onPressed: () {
+                      setState(() {
+                        if (_isVideoPlaying) {
+                          _controller.pause();
+                          _isVideoPlaying = false;
+                        } else {
+                          _controller.play();
+                          _isVideoPlaying = true;
+                        }
+                      });
+                    },
+                    child: Icon(
+                      _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
