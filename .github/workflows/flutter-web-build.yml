@@ -17,11 +17,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.x' # Replace with your desired Flutter version
-          channel: 'stable'
-          cache: true
+      - name: Clone Flutter repository
+        run: git clone https://github.com/flutter/flutter.git -b stable
+
+      - name: Add Flutter to path
+        run: echo "::add-path::${{ github.workspace }}/flutter/bin" && echo "::add-path::${{ github.workspace }}/flutter/dart-sdk/bin"
+
+      - name: Flutter doctor
+        run: flutter doctor -v
 
       - run: flutter pub get
 
