@@ -23,6 +23,9 @@ jobs:
       - name: Add Flutter to path
         run: echo "::add-path::${{ github.workspace }}/flutter/bin" && echo "::add-path::${{ github.workspace }}/flutter/dart-sdk/bin"
 
+      - name: Remove .gitmodules file
+        run: rm .gitmodules
+
       - name: Flutter doctor
         run: flutter doctor -v
 
