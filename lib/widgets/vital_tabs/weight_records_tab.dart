@@ -187,8 +187,8 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       final pdfBytes = await PdfGenerator.generateWeightReport(widget.patientDetails!, _weightReadings);
       
       String fileName = 'weight_report.pdf';
-      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
-        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+      if (widget.patientDetails != null) {
+        final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
         fileName = '${patientName}_weight_report.pdf';
       }
       

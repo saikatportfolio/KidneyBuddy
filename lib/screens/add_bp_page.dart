@@ -7,7 +7,7 @@ import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
-import 'package:myapp/screens/vital_tracking_page.dart'; // Import VitalTrackingPage
+// Import VitalTrackingPage
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:numberpicker/numberpicker.dart'; // Import numberpicker
 

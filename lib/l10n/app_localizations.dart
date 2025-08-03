@@ -295,7 +295,7 @@ abstract class AppLocalizations {
   /// No description provided for @homePageTitle.
   ///
   /// In en, this message translates to:
-  /// **'KidneyBuddy'**
+  /// **'PreventO'**
   String get homePageTitle;
 
   /// No description provided for @dietManagementCard.

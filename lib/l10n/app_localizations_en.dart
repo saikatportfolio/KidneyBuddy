@@ -119,7 +119,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not launch WhatsApp. Make sure it is installed.';
 
   @override
-  String get homePageTitle => 'KidneyBuddy';
+  String get homePageTitle => 'PreventO';
 
   @override
   String get dietManagementCard => 'Diet Management';

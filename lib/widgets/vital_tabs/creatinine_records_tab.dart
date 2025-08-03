@@ -187,8 +187,8 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
       final pdfBytes = await PdfGenerator.generateCreatineReport(widget.patientDetails!, _creatineReadings);
       
       String fileName = 'creatine_report.pdf';
-      if (widget.patientDetails != null && widget.patientDetails!.name != null) {
-        final patientName = widget.patientDetails!.name!.replaceAll(' ', '_');
+      if (widget.patientDetails != null) {
+        final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
         fileName = '${patientName}_creatine_report.pdf';
       }
       

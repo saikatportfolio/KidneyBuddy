@@ -4,7 +4,6 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/creatine.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
