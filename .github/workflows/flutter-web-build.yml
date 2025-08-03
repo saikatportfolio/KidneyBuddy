@@ -25,7 +25,7 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build web --release
+      - run: flutter build web --release --delete-conflicting-outputs
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
