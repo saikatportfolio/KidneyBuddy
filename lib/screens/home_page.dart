@@ -144,6 +144,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     logger.d('HomePage: build called');
     logger.i('HomePage: _videoUrl = $_videoUrl');
