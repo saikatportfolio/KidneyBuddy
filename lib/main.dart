@@ -92,7 +92,9 @@ class MyApp extends StatefulWidget {
 
   static void setLocale(BuildContext context, Locale newLocale) {
     MyAppState? state = context.findAncestorStateOfType<MyAppState>();
-    state?.setLocale(newLocale); // Use null-safe call
+    if (state != null) {
+      state.setLocale(newLocale);
+    }
   }
 }
 
