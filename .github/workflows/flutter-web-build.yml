@@ -21,7 +21,9 @@ jobs:
         run: git clone https://github.com/flutter/flutter.git -b stable
 
       - name: Add Flutter to path
-        run: echo "::add-path::${{ github.workspace }}/flutter/bin" && echo "::add-path::${{ github.workspace }}/flutter/dart-sdk/bin"
+        run: |
+          echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+          echo "${{ github.workspace }}/flutter/dart-sdk/bin" >> $GITHUB_PATH
 
       - name: Remove .gitmodules file
         run: rm .gitmodules
