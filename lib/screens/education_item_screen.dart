@@ -127,17 +127,34 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                           color: Colors.grey,
                         ),
                       )
-                    : Image.network(
-                        video.videoImageURL!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 50,
-                              color: Colors.grey,
-                            ),
-                          );
+                    : FutureBuilder<void>(
+                        future: precacheImage(NetworkImage(video.videoImageURL!), context),
+                        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                              child: Icon(
+                                Icons.broken_image,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                            );
+                          } else {
+                            return Image.network(
+                              video.videoImageURL!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            );
+                          }
                         },
                       ),
               ),
