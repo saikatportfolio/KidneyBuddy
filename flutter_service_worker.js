@@ -21,14 +21,14 @@ const RESOURCES = {"assets/AssetManifest.bin": "8cfe04b496c928288051b0878c02f40d
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/AssetManifest.json": "86ef60c9948fe490fc703efca5eb1c5d",
-"assets/fonts/MaterialIcons-Regular.otf": "ea99ddde4ab80e884dade058d25f8276",
+"assets/fonts/MaterialIcons-Regular.otf": "cacf7b81687d78000ac4c6f32ef7b51f",
 "assets/AssetManifest.bin.json": "fe37c49c35d08d19d2442d0927f5a271",
 "assets/NOTICES": "32dc035a6dc82c3cb9277fa211fb0e45",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
 "assets/packages/mixpanel_flutter/assets/mixpanel.js": "48a5241deca6bca875259d2b562d7081",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5",
 "manifest.json": "b19362383014fc8ebdd964dcfcb0c617",
-"flutter_bootstrap.js": "6106c41656f548dcda9f2512cd5b80a5",
+"flutter_bootstrap.js": "f58e89a82c0ad18e6e8e2d2e26a66f3a",
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "canvaskit/canvaskit.wasm": "7a3f4ae7d65fc1de6a6e7ddd3224bc93",
 "canvaskit/skwasm.js.symbols": "e72c79950c8a8483d826a7f0560573a1",
@@ -46,7 +46,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "8cfe04b496c928288051b0878c02f40d
 "icons/Icon-192.png": "94a93d6a62c727a2cd3470bb923d8024",
 "icons/Icon-maskable-512.png": "535019822474ec5a8d55849e624ca3a4",
 "icons/Icon-maskable-192.png": "5852bac58492f16f3178118a6d91f856",
-"main.dart.js": "2a0c6b32b715df3148abf91ffdcfa2c4"};
+"main.dart.js": "5749bfc503c09da9dbb3e3bd2a572e93"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
