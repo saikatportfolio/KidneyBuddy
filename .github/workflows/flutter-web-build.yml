@@ -35,9 +35,6 @@ jobs:
       - name: Flutter doctor
         run: flutter doctor -v
 
-      - name: Accept Android licenses
-        run: flutter doctor --android-licenses
-
       - run: flutter pub get
 
       - run: flutter build web --release --delete-conflicting-outputs
