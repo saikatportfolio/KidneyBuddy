@@ -29,40 +29,70 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Educational Categories'),
-      ),
-      body: FutureBuilder<List<EducationCategory>>(
-        future: _educationCategoriesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No categories available.'));
-          } else {
-            return GridView.builder(
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 1.0,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 16.0,
+              left: 16.0,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final category = snapshot.data![index];
-                return _buildFeatureItem(
-                  context,
-                  category.categoryName,
-                  category.categoryImage,
-                  null,
-                );
-              },
-            );
-          }
-        },
+            ),
+            Positioned(
+              top: 16.0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: const Text(
+                  'Understand CKD',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: FutureBuilder<List<EducationCategory>>(
+                future: _educationCategoriesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No categories available.'));
+                  } else {
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: 1.0,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final category = snapshot.data![index];
+                        return _buildFeatureItem(
+                          context,
+                          category.categoryName,
+                          category.categoryImage,
+                          null,
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
