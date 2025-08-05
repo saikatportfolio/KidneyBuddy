@@ -84,7 +84,10 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
                           context,
                           category.categoryName,
                           category.categoryImage,
-                          EducationItemScreen(categoryId: category.categoryId.toString()),
+                          EducationItemScreen(
+                            categoryId: category.categoryId.toString(),
+                            categoryName: category.categoryName,
+                          ),
                         );
                       },
                     );

@@ -6,11 +6,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EducationItemScreen extends StatefulWidget {
   final String categoryId;
+  final String categoryName;
 
-  const EducationItemScreen({Key? key, required this.categoryId}) : super(key: key);
+  const EducationItemScreen({Key? key, required this.categoryId, required this.categoryName}) : super(key: key);
 
   @override
-  _EducationItemScreenState createState() => _EducationItemScreenState();
+  State<EducationItemScreen> createState() => _EducationItemScreenState();
 }
 
 class _EducationItemScreenState extends State<EducationItemScreen> {
@@ -25,9 +26,6 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
   Future<List<EducationVideo>> _fetchEducationVideos() async {
     final supabaseService = SupabaseService();
     final videos = await supabaseService.getEducationVideos(int.parse(widget.categoryId));
-    for (var video in videos) {
-      print('Video Image URL in _fetchEducationVideos: ${video.videoImageURL}');
-    }
     return videos;
   }
 
@@ -35,41 +33,70 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Educational Videos'),
-      ),
-      body: FutureBuilder<List<EducationVideo>>(
-        future: _educationVideosFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No videos available.'));
-          } else {
-            return GridView.builder(
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 1.0,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned(
+              top: 16.0,
+              left: 16.0,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final video = snapshot.data![index];
-                return _buildVideoItem(context, video);
-              },
-            );
-          }
-        },
+            ),
+            Positioned(
+              top: 16.0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Text(
+                  widget.categoryName,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: FutureBuilder<List<EducationVideo>>(
+                future: _educationVideosFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No videos available.'));
+                  } else {
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 16.0,
+                        childAspectRatio: 1.0,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final video = snapshot.data![index];
+                        return _buildVideoItem(context, video);
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildVideoItem(BuildContext context, EducationVideo video) {
-    print('Video Image URL: ${video.videoImageURL}');
     return Card(
       elevation: 4.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
