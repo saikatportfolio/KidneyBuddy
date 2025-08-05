@@ -28,7 +28,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "8cfe04b496c928288051b0878c02f40d
 "assets/packages/mixpanel_flutter/assets/mixpanel.js": "48a5241deca6bca875259d2b562d7081",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5",
 "manifest.json": "b19362383014fc8ebdd964dcfcb0c617",
-"flutter_bootstrap.js": "9998325e8896bba150740d8e9d28c291",
+"flutter_bootstrap.js": "972f352c94c64655b2a2e364903d1a8f",
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "canvaskit/canvaskit.wasm": "7a3f4ae7d65fc1de6a6e7ddd3224bc93",
 "canvaskit/skwasm.js.symbols": "e72c79950c8a8483d826a7f0560573a1",
