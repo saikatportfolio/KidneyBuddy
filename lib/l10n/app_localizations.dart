@@ -559,7 +559,7 @@ abstract class AppLocalizations {
   /// No description provided for @authScreenNewTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your Partner in Kidney Health'**
+  /// **'Your Preventor in Kidney Healt'**
   String get authScreenNewTitle;
 
   /// No description provided for @authScreenNewDescription.
