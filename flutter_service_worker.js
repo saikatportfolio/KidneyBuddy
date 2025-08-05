@@ -27,7 +27,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "c2988dae649e9b4809e50de8a940503b
 "assets/packages/mixpanel_flutter/assets/mixpanel.js": "48a5241deca6bca875259d2b562d7081",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5",
 "manifest.json": "56128fc6ec7568b99d6fc24cfa34a218",
-"flutter_bootstrap.js": "675be07958993717e6109602b98a8d20",
+"flutter_bootstrap.js": "f164667cc8c78310345abc4393c0b2dc",
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "canvaskit/canvaskit.wasm": "7a3f4ae7d65fc1de6a6e7ddd3224bc93",
 "canvaskit/skwasm.js.symbols": "e72c79950c8a8483d826a7f0560573a1",
@@ -45,7 +45,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "c2988dae649e9b4809e50de8a940503b
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
-"main.dart.js": "f5d8c3ed738035572240dcf3120b1792"};
+"main.dart.js": "4dcc2fd1a148281e81215daf42b3ed6d"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
