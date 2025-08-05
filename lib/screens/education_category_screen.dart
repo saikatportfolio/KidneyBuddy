@@ -3,6 +3,7 @@ import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/models/education_category.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/screens/education_item_screen.dart';
 
 class EducationCategoryScreen extends StatefulWidget {
   const EducationCategoryScreen({Key? key}) : super(key: key);
@@ -83,7 +84,7 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
                           context,
                           category.categoryName,
                           category.categoryImage,
-                          null,
+                          EducationItemScreen(categoryId: category.categoryId.toString()),
                         );
                       },
                     );
