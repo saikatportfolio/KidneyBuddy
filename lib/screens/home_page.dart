@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   Creatine? _lastCreatineRecord;
   Weight? _lastWeightRecord;
   bool _isVideoPlaying = false;
+  bool _isThumbnailVisible = true;
 
   @override
   void initState() {
@@ -334,7 +335,15 @@ class _HomePageState extends State<HomePage> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              if (_videoPlayerController.value.isInitialized)
+                              if (_isThumbnailVisible)
+                                AspectRatio(
+                                  aspectRatio: 15 / 8,
+                                  child: Image.network(
+                                    'https://i.postimg.cc/kGYsSS1Y/Do-I-really-need-to-track-BP-creatinine-every-day.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              else if (_videoPlayerController.value.isInitialized)
                                 Column(
                                   children: [
                                     AspectRatio(
@@ -372,6 +381,7 @@ class _HomePageState extends State<HomePage> {
                                       logger.d('Video played');
                                       _videoPlayerController.play();
                                       _isVideoPlaying = true;
+                                      _isThumbnailVisible = false;
                                     }
                                   });
                                 },
