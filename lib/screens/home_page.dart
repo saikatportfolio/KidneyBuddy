@@ -500,27 +500,27 @@ class _HomePageState extends State<HomePage> {
                         'assets/images/your_meal.jpg', // Placeholder image
                         const YourMealsScreen(),
                       ),
-                      buildFeatureItem(
-                        context,
-                        'Nutritions Info',
-                        'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
-                        const FoodListPage(),
-                      ),
+                      // buildFeatureItem(
+                      //   context,
+                      //   'Nutritions Info',
+                      //   'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
+                      //   const FoodListPage(),
+                      // ),
                       buildFeatureItem(
                         context,
                         localizations.contactDieticianCard,
                         'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
-                      buildFeatureItem(
-                        context,
-                        'Educational Content',
-                        'assets/images/kidney_health.png', // Placeholder image
-                        EducationalContentScreen(
-                          videoUrl:
-                              'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4',
-                        ),
-                      ),
+                      // buildFeatureItem(
+                      //   context,
+                      //   'Educational Content',
+                      //   'assets/images/kidney_health.png', // Placeholder image
+                      //   EducationalContentScreen(
+                      //     videoUrl:
+                      //         'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4',
+                      //   ),
+                      // ),
                       buildFeatureItem(
                         context,
                         localizations.eGFRCalculatorCard,
