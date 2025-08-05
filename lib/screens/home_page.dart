@@ -516,7 +516,7 @@ class _HomePageState extends State<HomePage> {
                       buildFeatureItem(
                         context,
                         'Educational Content',
-                        'assets/images/kidney_health.png', // Placeholder image
+                        'assets/images/educate_ckd.png', // Placeholder image
                         const EducationCategoryScreen(),
                       ),
                       buildFeatureItem(

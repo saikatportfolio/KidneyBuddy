@@ -98,7 +98,7 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
               flex: 3,
               child: SizedBox(
                 width: double.infinity,
-                child: Image.asset(
+                child: Image.network(
                   imagePath,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
