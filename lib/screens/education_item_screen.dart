@@ -89,7 +89,7 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: SizedBox(
                 width: double.infinity,
                 child: video.videoImageURL == null
@@ -113,24 +113,6 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                           );
                         },
                       ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 8.0,
-                ),
-                child: Text(
-                  video.videoName,
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
               ),
             ),
           ],
