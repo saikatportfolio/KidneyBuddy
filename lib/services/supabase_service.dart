@@ -1,20 +1,22 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
-import 'package:myapp/models/dietician.dart'; // Import Dietician model
-import 'package:myapp/models/review.dart'; // Import Review model
-import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
-import 'package:myapp/models/creatine.dart'; // Import Creatine model
-import 'package:myapp/models/weight.dart'; // Import Weight model
-import 'package:google_sign_in/google_sign_in.dart'; // Import google_sign_in
+import 'package:myapp/models/dietician.dart';
+import 'package:myapp/models/review.dart';
+import 'package:myapp/models/blood_pressure.dart';
+import 'package:myapp/models/creatine.dart';
+import 'package:myapp/models/weight.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:typed_data';
 import 'package:mime/mime.dart';
-import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:myapp/models/user_file.dart';
-import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRestriction model
-import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:myapp/models/nutrition_restriction.dart';
+import 'package:myapp/utils/logger_config.dart';
 import 'package:uuid/uuid.dart';
-import 'package:myapp/config/app_config.dart'; // Import the new config file
+import 'package:myapp/config/app_config.dart';
+
+import 'package:myapp/models/education_category.dart';
 
 class SupabaseService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -42,8 +44,6 @@ class SupabaseService {
         OAuthProvider.google,
         redirectTo: AppConfig.googleAuthRedirectUrl, // Use global URL
       );
-      // For web, the navigation happens via redirect, so no direct AuthResponse is returned here.
-      // The auth state listener in main.dart will handle the session.
     } else {
       // Mobile implementation using google_sign_in
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -97,7 +97,6 @@ class SupabaseService {
       logger.i('Patient details upserted to Supabase: ${details.name} for user ${user.id}');
     } catch (e) {
       logger.e('Error upserting patient details to Supabase: $e');
-      // TODO: Implement retry mechanism or error logging
     }
   }
 
@@ -125,6 +124,24 @@ class SupabaseService {
     }
   }
 
+    Future<List<EducationCategory>> getEducationCategories() async {
+    try {
+      final response = await _supabase
+          .from('educationcategory')
+          .select('categoryId, categoryName, categoryImage');
+
+      if (response.isEmpty) {
+        logger.i('No education categories found in Supabase.');
+        return [];
+      }
+
+      return (response as List).map((map) => EducationCategory.fromJson(map)).toList();
+    } catch (e) {
+      logger.e('Error fetching education categories from Supabase: $e');
+      return [];
+    }
+  }
+
   // Feedback Operations
   Future<void> insertFeedback(FeedbackModel feedback) async {
     try {
@@ -133,7 +150,6 @@ class SupabaseService {
       logger.i('Feedback inserted to Supabase: ${feedback.feedbackText}');
     } catch (e) {
       logger.e('Error inserting feedback to Supabase: $e');
-      // TODO: Implement retry mechanism or error logging
     }
   }
 
@@ -143,7 +159,7 @@ class SupabaseService {
       final response = await _supabase
           .from('dieticians')
           .select('id, name, experience, specialty, image_url, whatsapp_number, education, available_day, available_hour, fees, languages');
-      logger.d('Supabase raw response for dieticians: $response'); // Debugging line
+      logger.d('Supabase raw response for dieticians: $response');
       
       if ((response.isEmpty)) {
         logger.i('No data or empty response from Supabase for dieticians.');
@@ -151,7 +167,7 @@ class SupabaseService {
       }
 
       final List<Dietician> dieticians = (response as List).map((map) => Dietician.fromMap(map)).toList();
-      logger.d('Parsed dieticians: $dieticians'); // Debugging line
+      logger.d('Parsed dieticians: $dieticians');
       return dieticians;
     } catch (e) {
       logger.e('Error fetching dieticians from Supabase: $e');
@@ -206,7 +222,6 @@ class SupabaseService {
       logger.i('Blood pressure reading inserted to Supabase: ${bp.systolic}/${bp.diastolic} for user ${user.id}');
     } catch (e) {
       logger.e('Error inserting blood pressure reading to Supabase: $e');
-      // TODO: Implement retry mechanism or error logging
     }
   }
 
@@ -227,7 +242,7 @@ class SupabaseService {
         query = query.gte('timestamp', startDate.toIso8601String());
       }
 
-      final response = await query.order('timestamp', ascending: false); // Order by newest first
+      final response = await query.order('timestamp', ascending: false);
 
       if (response.isEmpty) {
         logger.i('No blood pressure readings found for user ${user.id} with filter starting from $startDate.');
@@ -239,7 +254,7 @@ class SupabaseService {
       return readings;
     } catch (e) {
       logger.e('Error fetching blood pressure readings from Supabase: $e');
-      return []; // Return empty list on error
+      return [];
     }
   }
 
@@ -276,8 +291,6 @@ class SupabaseService {
         logger.w('insertCreatine: No authenticated user found. Cannot insert creatine reading.');
         return;
       }
-      // Do NOT set creatine.id here; let Supabase generate it.
-      // Ensure toMap() handles null id correctly for Supabase insertion.
       final data = {
         'user_id': user.id,
         'value': creatine.value,
@@ -472,8 +485,8 @@ class SupabaseService {
       final response = await _supabase
           .from('app_messages')
           .select('message_text')
-          .like('message_key', 'tip_%') // Assuming tips are keyed as 'tip_1', 'tip_2', etc.
-          .order('message_key', ascending: true); // Order to ensure consistent rotation
+          .like('message_key', 'tip_%')
+          .order('message_key', ascending: true);
 
       if (response.isEmpty) {
         logger.i('No tips found in Supabase.');

@@ -4,6 +4,7 @@ import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/settings_page.dart';
+import 'package:myapp/screens/education_category_screen.dart';
 import 'package:myapp/screens/educational_content_screen.dart';
 // Import NotificationPage
 import 'package:provider/provider.dart';
@@ -512,15 +513,12 @@ class _HomePageState extends State<HomePage> {
                         'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
-                      // buildFeatureItem(
-                      //   context,
-                      //   'Educational Content',
-                      //   'assets/images/kidney_health.png', // Placeholder image
-                      //   EducationalContentScreen(
-                      //     videoUrl:
-                      //         'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4',
-                      //   ),
-                      // ),
+                      buildFeatureItem(
+                        context,
+                        'Educational Content',
+                        'assets/images/kidney_health.png', // Placeholder image
+                        const EducationCategoryScreen(),
+                      ),
                       buildFeatureItem(
                         context,
                         localizations.eGFRCalculatorCard,
