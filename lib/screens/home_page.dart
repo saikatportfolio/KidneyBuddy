@@ -520,7 +520,7 @@ class _HomePageState extends State<HomePage> {
                       buildFeatureItem(
                         context,
                         localizations.contactDieticianCard,
-                        'assets/images/dietician.jpg', // Placeholder image
+                        'assets/images/kidney_health.png', // Placeholder image
                         const DieticianListPage(),
                       ),
                       buildFeatureItem(
