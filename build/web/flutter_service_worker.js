@@ -3,9 +3,9 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8",
-"assets/AssetManifest.bin.json": "b4230022c2a107e3cb12711cadab3674",
-"assets/AssetManifest.json": "b5ba72416dd77e5e194b4a5db89117cf",
+const RESOURCES = {"assets/AssetManifest.bin": "d4cb6737466a9ae2fb51041e41a26cb4",
+"assets/AssetManifest.bin.json": "89270767676322a1b1918fca85826806",
+"assets/AssetManifest.json": "8fe15d968158a1542805e095c6a2e1c3",
 "assets/assets/images/auth_image.png": "f6fe275419eda3244f6568e3c8add1d7",
 "assets/assets/images/dietician.jpg": "d49a2a2e3d8b1c3319b68ab7519adb96",
 "assets/assets/images/feedback.jpg": "7d11169619134299c2c0fd7056dec27e",
@@ -17,6 +17,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "assets/assets/images/onboarding2.png": "3aa483b9d5de32e793ff1d18ed4e56e1",
 "assets/assets/images/onboarding3.png": "058ef63cfec2cd226b5b8b37d5529335",
 "assets/assets/images/patient_image.png": "d879c79ad335ebb5e69ed66a8b193831",
+"assets/assets/images/practo_icon.png": "62ff4348830cf55748ab684c0d520468",
 "assets/assets/images/understand_ckd.jpg": "ccb85bb869e9c5be8fbbd670813b8177",
 "assets/assets/images/understand_ckd.png": "89ce8a3d2ba5dad34783f4e4ac3ba1a9",
 "assets/assets/images/vital.png": "6bc8522051b8b2b0d37903229395bce5",
@@ -38,14 +39,14 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "favicon.png": "a316aeb414a730b6c3b7943272d7aeb6",
 "flutter.js": "83d881c1dbb6d6bcd6b42e274605b69c",
-"flutter_bootstrap.js": "0ca0b2aa994eddc1ec3aaeb0988b1a77",
+"flutter_bootstrap.js": "c232af79935ff2fcb0c472ab8ac2f13d",
 "icons/Icon-192.png": "94a93d6a62c727a2cd3470bb923d8024",
 "icons/Icon-512.png": "cd1c0c21ddd11b3124d71d1a8088bffd",
 "icons/Icon-maskable-192.png": "5852bac58492f16f3178118a6d91f856",
 "icons/Icon-maskable-512.png": "535019822474ec5a8d55849e624ca3a4",
 "index.html": "29516485fc64a90e65f300b079bbb21e",
 "/": "29516485fc64a90e65f300b079bbb21e",
-"main.dart.js": "56a15b4d801083ef3f2e51a9617d3380",
+"main.dart.js": "8a646c21a8481bf686643db86ff946f4",
 "manifest.json": "0b9e7f07dbc0dd07b0d772bba71aa10d",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5"};
 // The application shell files that are downloaded before a service worker can

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/screens/onboarding_screen.dart'; // Import OnboardingScreen
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/auth_screen.dart'; // Import AuthScreen
+import 'package:myapp/screens/splash_screen.dart'; // Import SplashScreen
 // Import PatientDetailsPage
 import 'package:firebase_core/firebase_core.dart'; // Keep Firebase Core for Crashlytics/Analytics
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
@@ -25,30 +26,20 @@ late Mixpanel mixpanel; // Declare the Mixpanel instance
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   logger.d('main: WidgetsFlutterBinding initialized');
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  logger.d('main: Firebase initialized');
 
-  // Initialize Mixpanel
-  mixpanel = await Mixpanel.init(
-    "b2452b2a059dab674a0de04ea4ab3e94", // Replace with your actual Mixpanel Project Token
-    trackAutomaticEvents: true, // Set to true to track common events automatically
-  );
-  logger.d('main: Mixpanel initialized');
+  // Show splash screen while initializing
+  runApp(const MaterialApp(home: SplashScreen()));
 
-  // Initialize Supabase here, before any service tries to use it
-  await SupabaseService.initialize();
-  logger.d('main: Supabase initialized');
+  // Initialize services in parallel
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    SupabaseService.initialize(),
+  ]);
 
-  // Initialize Crashlytics
-  if (!kIsWeb) {
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  }
-  // Explicitly enable Crashlytics collection
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  logger.d('main: Firebase and Supabase initialized');
+
+  // Initialize non-essential services after the app starts
+  _initializeNonEssentialServices();
 
   // Load patient details conditionally on app startup
   PatientDetails? patientDetails;
@@ -74,7 +65,7 @@ void main() async {
             ), // Initialize with loaded data
             ChangeNotifierProvider(create: (_) => FeedbackProvider()),
           ],
-          child: MyApp(),
+          child: const MyApp(),
         ),
       );
     },
@@ -82,6 +73,26 @@ void main() async {
       FirebaseCrashlytics.instance.recordError(error, stack);
     },
   );
+}
+
+void _initializeNonEssentialServices() async {
+  // Initialize Mixpanel
+  mixpanel = await Mixpanel.init(
+    "b2452b2a059dab674a0de04ea4ab3e94", // Replace with your actual Mixpanel Project Token
+    trackAutomaticEvents: true, // Set to true to track common events automatically
+  );
+  logger.d('main: Mixpanel initialized');
+
+  // Initialize Crashlytics
+  if (!kIsWeb) {
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  }
+  // Explicitly enable Crashlytics collection
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 }
 
 class MyApp extends StatefulWidget {
@@ -110,6 +121,25 @@ class MyAppState extends State<MyApp> {
     logger.d('MyAppState: initState called');
     _initializeAppData(); // Call a new method for async initializations
     _setupAuthStateListener(); // Setup auth state listener
+    _loadPatientDetails(); // Load patient details asynchronously
+  }
+
+  Future<void> _loadPatientDetails() async {
+    final patientDetailsProvider =
+        Provider.of<PatientDetailsProvider>(context, listen: false);
+    PatientDetails? fetchedDetails;
+    if (kIsWeb) {
+      fetchedDetails = await SupabaseService().getPatientDetails();
+      logger.d(
+        'MyAppState: Fetched patient details from Supabase (Web): $fetchedDetails',
+      );
+    } else {
+      fetchedDetails = await DatabaseHelper().getPatientDetails();
+      logger.d(
+        'MyAppState: Fetched patient details from SQLite (Mobile): $fetchedDetails',
+      );
+    }
+    patientDetailsProvider.setPatientDetails(fetchedDetails);
   }
 
   Future<void> _initializeAppData() async {
