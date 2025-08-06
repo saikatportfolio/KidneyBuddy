@@ -156,7 +156,7 @@ width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () => _onIntroEnd(context),
 style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF16C2D5),
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                                         shape: RoundedRectangleBorder(
@@ -176,7 +176,7 @@ style: ElevatedButton.styleFrom(
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF16C2D5),
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(vertical: 15.0),
                                         shape: RoundedRectangleBorder(
