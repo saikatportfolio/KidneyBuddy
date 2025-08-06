@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                                 AspectRatio(
                                   aspectRatio: 15 / 8,
                                   child: Image.network(
-                                    'https://i.postimg.cc/kGYsSS1Y/Do-I-really-need-to-track-BP-creatinine-every-day.png',
+                                    'https://i.postimg.cc/mg5PHnfC/Do-I-really-need-to-track-BP-creatinine-every-day.png',
                                     fit: BoxFit.cover,
                                   ),
                                 )
