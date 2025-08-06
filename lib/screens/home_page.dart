@@ -520,13 +520,13 @@ class _HomePageState extends State<HomePage> {
                       buildFeatureItem(
                         context,
                         localizations.contactDieticianCard,
-                        'assets/images/kidney_health.png', // Placeholder image
+                        'assets/images/dietician.jpg', // Placeholder image
                         const DieticianListPage(),
                       ),
                       buildFeatureItem(
                         context,
                         'Understand CKD',
-                        'assets/images/understand_ckd.png', // Placeholder image
+                        'assets/images/kidney_health.png', // Placeholder image
                         const EducationCategoryScreen(),
                       ),
                       buildFeatureItem(
