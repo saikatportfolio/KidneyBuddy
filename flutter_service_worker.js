@@ -6,7 +6,7 @@ const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8",
 "assets/assets/images/google_logo.png": "36807175c6e8f9441a3d31f2882d0dcf",
 "assets/assets/images/nutrition_guide_ckd.jpeg": "82faf7792da5548d6cd941a1343fe0d9",
-"assets/assets/images/kidney_health.png": "edf43478b45e04ffc30e28705837c251",
+"assets/assets/images/kidney_health.png": "847eed6e74c80f6f9fdcd0e99cd9eb5c",
 "assets/assets/images/onboarding3.png": "058ef63cfec2cd226b5b8b37d5529335",
 "assets/assets/images/understand_ckd.png": "89ce8a3d2ba5dad34783f4e4ac3ba1a9",
 "assets/assets/images/patient_image.png": "d879c79ad335ebb5e69ed66a8b193831",
@@ -29,7 +29,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "assets/packages/mixpanel_flutter/assets/mixpanel.js": "48a5241deca6bca875259d2b562d7081",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5",
 "manifest.json": "b19362383014fc8ebdd964dcfcb0c617",
-"flutter_bootstrap.js": "ce14703deb37b6f95f7e23a4efa5e760",
+"flutter_bootstrap.js": "9677cb125419b9a125c7401fa0440822",
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "canvaskit/canvaskit.wasm": "7a3f4ae7d65fc1de6a6e7ddd3224bc93",
 "canvaskit/skwasm.js.symbols": "e72c79950c8a8483d826a7f0560573a1",
@@ -47,7 +47,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "icons/Icon-192.png": "94a93d6a62c727a2cd3470bb923d8024",
 "icons/Icon-maskable-512.png": "535019822474ec5a8d55849e624ca3a4",
 "icons/Icon-maskable-192.png": "5852bac58492f16f3178118a6d91f856",
-"main.dart.js": "d8491866f1c7efbb75ae7c31333b35c4"};
+"main.dart.js": "c4bc7b3fa9bd58b083434b2dcb36e13f"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
