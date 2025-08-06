@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8",
+const RESOURCES = {"assets/AssetManifest.bin": "d4cb6737466a9ae2fb51041e41a26cb4",
 "assets/assets/images/google_logo.png": "36807175c6e8f9441a3d31f2882d0dcf",
 "assets/assets/images/nutrition_guide_ckd.jpeg": "82faf7792da5548d6cd941a1343fe0d9",
 "assets/assets/images/kidney_health.png": "847eed6e74c80f6f9fdcd0e99cd9eb5c",
@@ -13,6 +13,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "assets/assets/images/feedback.jpg": "7d11169619134299c2c0fd7056dec27e",
 "assets/assets/images/understand_ckd.jpg": "ccb85bb869e9c5be8fbbd670813b8177",
 "assets/assets/images/auth_image.png": "f6fe275419eda3244f6568e3c8add1d7",
+"assets/assets/images/practo_icon.png": "62ff4348830cf55748ab684c0d520468",
 "assets/assets/images/gfr.png": "461fa54ac71c06657b83f24ee7adeed5",
 "assets/assets/images/onboarding1.png": "32075da5f17e1779b7fd5bab3eecf6a2",
 "assets/assets/images/dietician.jpg": "d49a2a2e3d8b1c3319b68ab7519adb96",
@@ -21,15 +22,15 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "assets/assets/images/your_meal.jpg": "cf86dd52f054eab1b03dcd33322201d2",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/AssetManifest.json": "b5ba72416dd77e5e194b4a5db89117cf",
+"assets/AssetManifest.json": "8fe15d968158a1542805e095c6a2e1c3",
 "assets/fonts/MaterialIcons-Regular.otf": "cacf7b81687d78000ac4c6f32ef7b51f",
-"assets/AssetManifest.bin.json": "b4230022c2a107e3cb12711cadab3674",
+"assets/AssetManifest.bin.json": "89270767676322a1b1918fca85826806",
 "assets/NOTICES": "32dc035a6dc82c3cb9277fa211fb0e45",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",
 "assets/packages/mixpanel_flutter/assets/mixpanel.js": "48a5241deca6bca875259d2b562d7081",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5",
 "manifest.json": "b19362383014fc8ebdd964dcfcb0c617",
-"flutter_bootstrap.js": "fcbbf210fe95229bae2e51c5ab373c4a",
+"flutter_bootstrap.js": "b02f0f974288af9f66f2e6aa2bdfdece",
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "canvaskit/canvaskit.wasm": "7a3f4ae7d65fc1de6a6e7ddd3224bc93",
 "canvaskit/skwasm.js.symbols": "e72c79950c8a8483d826a7f0560573a1",
@@ -47,7 +48,7 @@ const RESOURCES = {"assets/AssetManifest.bin": "d19f8c4148ff911be5b24893736464b8
 "icons/Icon-192.png": "94a93d6a62c727a2cd3470bb923d8024",
 "icons/Icon-maskable-512.png": "535019822474ec5a8d55849e624ca3a4",
 "icons/Icon-maskable-192.png": "5852bac58492f16f3178118a6d91f856",
-"main.dart.js": "56a15b4d801083ef3f2e51a9617d3380"};
+"main.dart.js": "8a646c21a8481bf686643db86ff946f4"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
