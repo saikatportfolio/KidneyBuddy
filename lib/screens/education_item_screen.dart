@@ -8,7 +8,7 @@ class EducationItemScreen extends StatefulWidget {
   final String categoryId;
   final String categoryName;
 
-  const EducationItemScreen({Key? key, required this.categoryId, required this.categoryName}) : super(key: key);
+  const EducationItemScreen({super.key, required this.categoryId, required this.categoryName});
 
   @override
   State<EducationItemScreen> createState() => _EducationItemScreenState();
@@ -128,7 +128,7 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                         ),
                       )
                     : FutureBuilder<void>(
-                        future: precacheImage(NetworkImage(video.videoImageURL!), context),
+                        future: precacheImage(NetworkImage(video.videoImageURL), context),
                         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: CircularProgressIndicator());
@@ -142,7 +142,7 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                             );
                           } else {
                             return Image.network(
-                              video.videoImageURL!,
+                              video.videoImageURL,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Center(

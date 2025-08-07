@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/models/education_category.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/education_item_screen.dart';
 
 class EducationCategoryScreen extends StatefulWidget {
-  const EducationCategoryScreen({Key? key}) : super(key: key);
+  const EducationCategoryScreen({super.key});
 
   @override
   _EducationCategoryScreenState createState() => _EducationCategoryScreenState();
