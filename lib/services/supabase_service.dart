@@ -495,7 +495,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching message by key "\$key" from Supabase: \$e');
+      print('Error fetching message by key "$key" from Supabase: $e');
       return null;
     }
   }

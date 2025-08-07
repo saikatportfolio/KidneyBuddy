@@ -5,7 +5,6 @@ import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/education_category_screen.dart';
-import 'package:myapp/screens/educational_content_screen.dart';
 // Import NotificationPage
 import 'package:provider/provider.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -29,13 +28,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _tipOfTheDay = 'Loading tip...';
   List<String> _allTips = [];
   bool _isLoadingContent = true;
   String? _googleName;
   String? _googlePhotoUrl;
-  String? _videoUrl =
-      'https://igjihyuxiejeilxglpni.supabase.co/storage/v1/object/sign/educational-content/BP%20%20Sugar%20control.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMjc4NGNjMy05NGQwLTQ1ZmUtODY2OC1iNjc1M2VlM2FiMjgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJlZHVjYXRpb25hbC1jb250ZW50L0JQICBTdWdhciBjb250cm9sLm1wNCIsImlhdCI6MTc1Mzk5NDgxOCwiZXhwIjoxNzg1NTMwODE4fQ.l2mXxl6urNl9zaRoVuE9wmNXo_a3rIq29mld97bRty4';
+  String? _videoUrl;
+  String? _videoThumbnailUrl;
   late VideoPlayerController _videoPlayerController;
 
   BloodPressure? _lastBpRecord;
@@ -51,11 +49,9 @@ class _HomePageState extends State<HomePage> {
     _loadDynamicContent();
     _loadGoogleNameAndPhoto();
     _fetchLastVitals(); // Fetch last vital records
-    _videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
-          ..initialize().then((_) {
-            setState(() {});
-          });
+
+    // Initialize with a dummy URL, will be updated in _loadDynamicContent
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(''));
 
     _videoPlayerController.addListener(() {
       if (_videoPlayerController.value.position ==
@@ -79,15 +75,13 @@ class _HomePageState extends State<HomePage> {
       );
       final tips = await supabaseService.getAllTips();
       final videoUrlData = await supabaseService.getMessageByKey('video_url');
+      final videoThumbnailUrlData =
+          await supabaseService.getMessageByKey('image_thumbnail');
 
       setState(() {
         _allTips = tips;
-        if (_allTips.isNotEmpty) {
-          _tipOfTheDay = _allTips[DateTime.now().day % _allTips.length];
-        } else {
-          _tipOfTheDay = 'No tips available at the moment.';
-        }
         _videoUrl = videoUrlData;
+        _videoThumbnailUrl = videoThumbnailUrlData;
       });
 
       if (_videoUrl != null) {
@@ -110,7 +104,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       logger.e('Error loading dynamic content: $e');
       setState(() {
-        _tipOfTheDay = 'Error loading tip.';
       });
     } finally {
       setState(() {
@@ -150,6 +143,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     logger.d('HomePage: build called');
     logger.i('HomePage: _videoUrl = $_videoUrl');
+    logger.i('HomePage: imageThumnail = $_videoThumbnailUrl');
     final localizations = AppLocalizations.of(context)!;
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context);
     final patientName =
@@ -338,10 +332,21 @@ class _HomePageState extends State<HomePage> {
                               if (_isThumbnailVisible)
                                 AspectRatio(
                                   aspectRatio: 15 / 8,
-                                  child: Image.network(
-                                    'https://i.postimg.cc/mg5PHnfC/Do-I-really-need-to-track-BP-creatinine-every-day.png',
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: _videoThumbnailUrl != null
+                                      ? Image.network(
+                                          _videoThumbnailUrl!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
+                                          color: Colors.grey[300],
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.image,
+                                              size: 50,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
                                 )
                               else if (_videoPlayerController.value.isInitialized)
                                 Column(
