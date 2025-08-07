@@ -25,17 +25,21 @@ final AnalyticsService _analyticsService = AnalyticsService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _analyticsService.logEvent('test_event', {'test_parameter': 'test_value'});
   logger.d('main: WidgetsFlutterBinding initialized');
 
   // Show splash screen while initializing
   runApp(const MaterialApp(home: SplashScreen()));
 
   // Initialize services in parallel
-  await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    SupabaseService.initialize(),
-  ]);
+  try {
+    await Future.wait([
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+      SupabaseService.initialize(),
+    ]);
+    logger.d('main: Firebase and Supabase initialized successfully');
+  } catch (e) {
+    logger.e('main: Error initializing Firebase or Supabase: $e');
+  }
 
   logger.d('main: Firebase and Supabase initialized');
 

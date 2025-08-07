@@ -19,4 +19,4 @@ class AppConfig {
 
   // Google Sign-In Web Client ID (for mobile)
   static const String googleSignInWebClientId = '998282656789-og31pr3bvcdi7b49p1emo5bsuc9s5t5m.apps.googleusercontent.com'; 
-}
+ }

@@ -1,16 +1,23 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 class AnalyticsService {
-  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  FirebaseAnalytics? _analytics;
 
   FirebaseAnalyticsObserver getAnalyticsObserver() =>
-      FirebaseAnalyticsObserver(analytics: _analytics);
+      FirebaseAnalyticsObserver(analytics: _analytics ?? FirebaseAnalytics.instance);
+
+  Future<FirebaseAnalytics> _getInstance() async {
+    _analytics ??= FirebaseAnalytics.instance;
+    return _analytics!;
+  }
 
   Future<void> logScreenView(String screenName) async {
-    await _analytics.setCurrentScreen(screenName: screenName);
+    final analytics = await _getInstance();
+    await analytics.setCurrentScreen(screenName: screenName);
   }
 
   Future<void> logEvent(String name, Map<String, Object> parameters) async {
-    await _analytics.logEvent(name: name, parameters: parameters);
+    final analytics = await _getInstance();
+    await analytics.logEvent(name: name, parameters: parameters);
   }
 }
