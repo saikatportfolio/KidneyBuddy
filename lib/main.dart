@@ -7,7 +7,6 @@ import 'package:myapp/screens/splash_screen.dart'; // Import SplashScreen
 import 'package:firebase_core/firebase_core.dart'; // Keep Firebase Core for Crashlytics/Analytics
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import Crashlytics
 import 'package:provider/provider.dart';
-import 'package:mixpanel_flutter/mixpanel_flutter.dart'; // Import Mixpanel
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/models/feedback_model.dart';
 import 'package:myapp/services/supabase_service.dart';
@@ -20,11 +19,13 @@ import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import 'firebase_options.dart'; // Import generated Firebase options
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:myapp/services/analytics_service.dart';
 
-late Mixpanel mixpanel; // Declare the Mixpanel instance
+final AnalyticsService _analyticsService = AnalyticsService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _analyticsService.logEvent('test_event', {'test_parameter': 'test_value'});
   logger.d('main: WidgetsFlutterBinding initialized');
 
   // Show splash screen while initializing
@@ -76,13 +77,6 @@ void main() async {
 }
 
 void _initializeNonEssentialServices() async {
-  // Initialize Mixpanel
-  mixpanel = await Mixpanel.init(
-    "b2452b2a059dab674a0de04ea4ab3e94", // Replace with your actual Mixpanel Project Token
-    trackAutomaticEvents: true, // Set to true to track common events automatically
-  );
-  logger.d('main: Mixpanel initialized');
-
   // Initialize Crashlytics
   if (!kIsWeb) {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -298,7 +292,7 @@ class MyAppState extends State<MyApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       home: homeScreen, // Directly set the home screen
       navigatorObservers: [
-        MixpanelNavigatorObserver(), // Add Mixpanel Navigator Observer
+        _analyticsService.getAnalyticsObserver(),
       ],
     );
   }
@@ -323,30 +317,3 @@ class MyAppState extends State<MyApp> {
     return MaterialColor(color.value, swatch);
   }
 } // End of MyAppState class
-
-// Custom NavigatorObserver for Mixpanel screen tracking
-class MixpanelNavigatorObserver extends NavigatorObserver {
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    super.didPush(route, previousRoute);
-    if (route.settings.name != null) {
-      mixpanel.track("Screen Viewed", properties: {"Screen Name": route.settings.name});
-    }
-  }
-
-  @override
-  void didReplace({Route? newRoute, Route? oldRoute}) {
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    if (newRoute?.settings.name != null) {
-      mixpanel.track("Screen Viewed", properties: {"Screen Name": newRoute?.settings.name});
-    }
-  }
-
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    if (route.settings.name != null) {
-      mixpanel.track("Screen Left", properties: {"Screen Name": route.settings.name});
-    }
-  }
-}
