@@ -78,7 +78,7 @@ class _AuthScreenState extends State<AuthScreen> {
           // Background Image Section
           Positioned.fill(
             child: Image.asset(
-              'assets/images/auth_image.jpg', // Using onboarding1.png as placeholder
+              'assets/images/auth_img.jpg', // Using onboarding1.png as placeholder
               fit: BoxFit.fill,
               errorBuilder: (context, error, stackTrace) {
                 return Container(color: Colors.grey, child: const Center(child: Icon(Icons.error, size: 100, color: Colors.white)));
