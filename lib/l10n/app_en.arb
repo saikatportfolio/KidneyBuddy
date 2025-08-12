@@ -76,7 +76,7 @@
   "loginSuccessMessage": "Logged in successfully!",
   "authErrorMessage": "Authentication Error: {error}",
   "signInWithGoogleButton": "Sign in with Google",
-  "authScreenNewTitle": "Your Preventor in Kidney Healt",
+  "authScreenNewTitle": "Your Partner in Protecting Kidney Health",
   "authScreenNewDescription": "Manage your CKD journey with personalized diet plans, vital tracking, and expert dietician support.",
   "pdfGenerationErrorNoPatientDetails": "Patient details not available for PDF report. Please update your profile.",
   "pdfGenerationErrorNoReadings": "No blood pressure readings available to generate a PDF report.",

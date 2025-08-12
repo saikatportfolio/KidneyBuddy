@@ -260,7 +260,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get signInWithGoogleButton => 'Google से साइन इन करें';
 
   @override
-  String get authScreenNewTitle => 'Your Preventor in Kidney Healt';
+  String get authScreenNewTitle => 'Your Partner in Protecting Kidney Health';
 
   @override
   String get authScreenNewDescription =>
