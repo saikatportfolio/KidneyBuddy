@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 
 class PatientDetailsPage extends StatefulWidget {
   final String? source;
@@ -26,10 +27,52 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   String? _ckdStage;
   String? _email;
 
+  String? _videoUrl;
+  String? _videoThumbnailUrl;
+  late VideoPlayerController _videoPlayerController;
+  bool _isVideoPlaying = false;
+  bool _isThumbnailVisible = true;
+
   @override
   void initState() {
     super.initState();
     _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
+    _loadVideoContent();
+  }
+
+  void _loadVideoContent() async {
+    try {
+      final supabaseService = SupabaseService();
+      final videoUrlData = await supabaseService.getMessageByKey('patinet_video_url');
+      final videoThumbnailUrlData =
+          await supabaseService.getMessageByKey('patinet_image_url');
+
+      setState(() {
+        _videoUrl = videoUrlData;
+        _videoThumbnailUrl = videoThumbnailUrlData;
+      });
+
+      if (_videoUrl != null) {
+        _videoPlayerController =
+            VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
+              ..initialize().then((_) {
+                setState(() {});
+              });
+
+        _videoPlayerController.addListener(() {
+          if (_videoPlayerController.value.position ==
+              _videoPlayerController.value.duration) {
+            setState(() {
+              _isVideoPlaying = false;
+            });
+          }
+        });
+      }
+    } catch (e) {
+      logger.e('Error loading video content: $e');
+      setState(() {
+      });
+    }
   }
 
   void _loadInitialData() async {
@@ -77,6 +120,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
     _nameController.dispose();
     _phoneController.dispose();
     super.dispose();
+    _videoPlayerController.dispose();
   }
 
   void _savePatientDetails() async {
@@ -163,11 +207,90 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      SizedBox(
-                        height: 150,
-                        child: Image.asset('assets/images/patient_image.png'),
+                    if (_videoUrl != null)
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        margin: const EdgeInsets.only(bottom: 15.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                if (_isThumbnailVisible)
+                                  AspectRatio(
+                                    aspectRatio: 15 / 8,
+                                    child: _videoThumbnailUrl != null
+                                        ? Image.network(
+                                            _videoThumbnailUrl!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            color: Colors.grey[300],
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                  )
+                                else if (_videoPlayerController.value.isInitialized)
+                                  Column(
+                                    children: [
+                                      AspectRatio(
+                                        aspectRatio: 15 / 8,
+                                        child: VideoPlayer(
+                                          _videoPlayerController,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 2.0,
+                                        ),
+                                        child: VideoProgressIndicator(
+                                          _videoPlayerController,
+                                          allowScrubbing: true,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                FloatingActionButton(
+                                  backgroundColor: Colors.blue.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_isVideoPlaying) {
+                                        _videoPlayerController.pause();
+                                        _isVideoPlaying = false;
+                                      } else {
+                                        _videoPlayerController.play();
+                                        _isVideoPlaying = true;
+                                        _isThumbnailVisible = false;
+                                      }
+                                    });
+                                  },
+                                  child: Icon(
+                                    _isVideoPlaying
+                                        ? Icons.pause
+                                        : Icons.play_circle_filled_rounded,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 24),
                       Card(
                         elevation: 4,
                         shape: RoundedRectangleBorder(
