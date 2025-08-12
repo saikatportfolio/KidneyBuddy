@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
         child: SizedBox(
           width: 200,
           height: 200,
-          child: Image.asset('assets/images/praacto_splash.png'),
+          child: Image.asset('assets/images/kidney_health.png'),
         ),
       ),
     );
