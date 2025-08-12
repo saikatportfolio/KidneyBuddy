@@ -143,7 +143,19 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                     'Patient Details',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(width: 48), // To balance the IconButton
+                  TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setBool('isSkipEnabled', true);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => VitalTrackingPage()),
+                      );
+                    },
+                    child: const Text(
+                      'SKIP',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
                 ],
               ),
               Expanded(

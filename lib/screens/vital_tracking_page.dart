@@ -12,6 +12,7 @@ import 'package:myapp/models/creatine.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:myapp/services/supabase_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VitalTrackingPage extends StatefulWidget {
   const VitalTrackingPage({super.key});
@@ -46,9 +47,12 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
   Future<void> _checkAuthAndPatientDetails() async {
     final supabase = Supabase.instance.client;
     final currentUser = supabase.auth.currentUser;
+    final prefs = await SharedPreferences.getInstance();
+    final bool isSkipEnabled = prefs.getBool('isSkipEnabled') ?? false;
 
     logger.d('VitalTrackingPage: _checkAuthAndPatientDetails called.');
     logger.d('VitalTrackingPage: currentUser: $currentUser');
+    logger.d('VitalTrackingPage: isSkipEnabled: $isSkipEnabled');
 
     if (currentUser == null) {
       logger.i('VitalTrackingPage: User not logged in. Navigating to AuthScreen.');
@@ -66,7 +70,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
     final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
     logger.d('VitalTrackingPage: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails}');
 
-    if (patientDetailsProvider.patientDetails == null) {
+    if (patientDetailsProvider.patientDetails == null && !isSkipEnabled) {
       logger.i('VitalTrackingPage: Patient details not found. Navigating to PatientDetailsPage.');
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
