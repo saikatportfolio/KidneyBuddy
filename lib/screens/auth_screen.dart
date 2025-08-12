@@ -73,23 +73,19 @@ class _AuthScreenState extends State<AuthScreen> {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          // Background Image Section
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/auth_im.jpg', // Using onboarding1.png as placeholder
-              fit: BoxFit.fill,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(color: Colors.grey, child: const Center(child: Icon(Icons.error, size: 100, color: Colors.white)));
-              },
-            ),
+          Image.asset(
+            'assets/images/auth_img.jpg', // Using onboarding1.png as placeholder
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(color: Colors.grey, child: const Center(child: Icon(Icons.error, size: 100, color: Colors.white)));
+            },
           ),
-          // Content Section (Bottom Half with rounded corners)
-          Align(
-            alignment: Alignment.bottomCenter,
+          Expanded(
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.5, // Adjust height as needed
               width: double.infinity,
               decoration: const BoxDecoration(
                 color: Colors.white,
