@@ -320,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
-                      margin: const EdgeInsets.only(bottom: 24.0),
+                      margin: const EdgeInsets.only(bottom: 15.0),
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: SizedBox(
@@ -416,16 +416,17 @@ class _HomePageState extends State<HomePage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    margin: const EdgeInsets.only(bottom: 24.0),
+                    margin: const EdgeInsets.only(bottom: 18.0),
                     color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: buildVitalSection(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                buildVitalSection(
                                   context,
                                   localizations.bpTab,
                                   Icons.monitor_heart,
@@ -435,10 +436,8 @@ class _HomePageState extends State<HomePage> {
                                   _lastBpRecord?.timestamp,
                                   localizations.noDataAvailableForBp,
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: buildVitalSection(
+                                const SizedBox(width: 16),
+                                buildVitalSection(
                                   context,
                                   localizations.creatinineTab,
                                   Icons.science,
@@ -448,19 +447,19 @@ class _HomePageState extends State<HomePage> {
                                   _lastCreatineRecord?.timestamp,
                                   localizations.noDataAvailableForCreatinine,
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          buildVitalSection(
-                            context,
-                            localizations.weight,
-                            Icons.scale,
-                            _lastWeightRecord != null
-                                ? '${_lastWeightRecord!.value} kg'
-                                : null,
-                            _lastWeightRecord?.timestamp,
-                            localizations.noDataAvailableForWeight,
+                                const SizedBox(width: 16),
+                                buildVitalSection(
+                                  context,
+                                  localizations.weight,
+                                  Icons.scale,
+                                  _lastWeightRecord != null
+                                      ? '${_lastWeightRecord!.value} kg'
+                                      : null,
+                                  _lastWeightRecord?.timestamp,
+                                  localizations.noDataAvailableForWeight,
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 24),
                           SizedBox(
@@ -564,6 +563,7 @@ class _HomePageState extends State<HomePage> {
     String noDataMessage,
   ) {
     return Container(
+      width: 135, // Set a fixed width for each vital section
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -579,7 +579,7 @@ class _HomePageState extends State<HomePage> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 13.0,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,
             ),
@@ -592,7 +592,7 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   value,
                   style: const TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 15.0,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
