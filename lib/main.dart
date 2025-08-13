@@ -69,6 +69,9 @@ void main() async {
               create: (_) => PatientDetailsProvider(patientDetails),
             ), // Initialize with loaded data
             ChangeNotifierProvider(create: (_) => FeedbackProvider()),
+            Provider<AnalyticsService>(
+              create: (_) => _analyticsService,
+            ),
           ],
           child: const MyApp(),
         ),

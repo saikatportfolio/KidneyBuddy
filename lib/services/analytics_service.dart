@@ -1,11 +1,13 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:js' as js;
+import 'package:myapp/utils/logger_config.dart';
 
 class AnalyticsService {
   FirebaseAnalytics? _analytics;
 
-  FirebaseAnalyticsObserver getAnalyticsObserver() =>
-      FirebaseAnalyticsObserver(analytics: _analytics ?? FirebaseAnalytics.instance);
+  FirebaseAnalyticsObserver getAnalyticsObserver() => FirebaseAnalyticsObserver(
+    analytics: _analytics ?? FirebaseAnalytics.instance,
+  );
 
   Future<FirebaseAnalytics> _getInstance() async {
     _analytics ??= FirebaseAnalytics.instance;
@@ -23,8 +25,14 @@ class AnalyticsService {
     pushToGTM(name, parameters);
   }
 
-  void pushToGTM(String eventName, Map<String, Object> eventData) {
-    var data = {'event': eventName, ...eventData};
-    js.context.callMethod('dataLayer.push', [data]);
+  void pushToGTM(String eventName, Map<String, Object> parameters) {
+    try {
+      final js.JsObject? dataLayer = js.context['dataLayer'];
+      final eventData = js.JsObject.jsify({'event': eventName, ...parameters});
+      dataLayer?.callMethod('push', [eventData]);
+      //js.context.callMethod('dataLayer.push', [data]);
+    } catch (e) {
+      logger.e('dataLayer not available: $e');
+    }
   }
 }

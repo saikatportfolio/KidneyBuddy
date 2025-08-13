@@ -227,22 +227,22 @@ class _HomePageState extends State<HomePage> {
                           // Notification Icon
                           // Container(
                           //   decoration: BoxDecoration(
-                          //     shape: BoxShape.circle,
-                          //     color: Colors.grey[200],
+                          //   shape: BoxShape.circle,
+                          //   color: Colors.grey[200],
                           //   ),
                           //   child: IconButton(
-                          //     icon: const Icon(
+                          //   icon: const Icon(
                           //       Icons.notifications_none,
                           //       size: 28.0,
-                          //     ),
-                          //     onPressed: () {
+                          //   ),
+                          //   onPressed: () {
                           //       Navigator.of(context).push(
                           //         MaterialPageRoute(
                           //           builder: (_) =>
                           //               const NotificationPage(),
                           //         ), // Navigate to NotificationPage
                           //       );
-                          //     },
+                          //   },
                           //   ),
                           // ),
                           const SizedBox(width: 10), // Spacing between icons
@@ -378,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                                   alpha: 0.5,
                                 ),
                                 onPressed: () {
-                                  Provider.of<AnalyticsService>(context, listen: false).pushToGTM(
+                                  AnalyticsService().pushToGTM(
                                       'video_play_pause_click', {
                                     'user_id': '12345', // Replace with actual user ID
                                     'video_url': _videoUrl ?? '',
