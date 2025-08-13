@@ -14,7 +14,7 @@ class AnalyticsService {
 
   Future<void> logScreenView(String screenName) async {
     final analytics = await _getInstance();
-    await analytics.setCurrentScreen(screenName: screenName);
+    await analytics.logScreenView(screenName: screenName);
   }
 
   Future<void> logEvent(String name, Map<String, Object> parameters) async {

@@ -7,6 +7,7 @@ import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/education_category_screen.dart';
 // Import NotificationPage
 import 'package:provider/provider.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/screens/egfr_calculator_screen.dart';
 import 'package:myapp/services/supabase_service.dart';
@@ -377,6 +378,12 @@ class _HomePageState extends State<HomePage> {
                                   alpha: 0.5,
                                 ),
                                 onPressed: () {
+                                  Provider.of<AnalyticsService>(context, listen: false).pushToGTM(
+                                      'video_play_pause_click', {
+                                    'user_id': '12345', // Replace with actual user ID
+                                    'video_url': _videoUrl ?? '',
+                                    'is_playing': _isVideoPlaying,
+                                  });
                                   setState(() {
                                     logger.d('Video paused');
                                     if (_isVideoPlaying) {
@@ -611,8 +618,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 14.0,
                 fontStyle: FontStyle.italic,
-                color: Colors.grey[600],
-              ),
+                color: Colors.grey[600]),
             ),
         ],
       ),
