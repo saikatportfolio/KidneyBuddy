@@ -24,9 +24,7 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   @override
   void initState() {
     super.initState();
-    AnalyticsService().pushToGTM('screen_view', {
-      'screen_name': 'dieticain_details_screen',
-    });
+    AnalyticsService().trackScreen('diatician detail page');
     logger.d('DieticianDetailsPage: initState called for dietician ID: ${widget.dietician.id}');
     _fetchReviews();
   }

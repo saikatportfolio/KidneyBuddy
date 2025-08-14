@@ -45,9 +45,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage>
   @override
   void initState() {
     super.initState();
-    AnalyticsService().pushToGTM('screen_view', {
-      'screen_name':  'vital_tracking_screen',
-    });
+    AnalyticsService().trackScreen('vital_tracking_screen');
     _checkAuthAndPatientDetails();
     _tabController = TabController(length: _categoryCards.length, vsync: this);
     _tabController.addListener(() {

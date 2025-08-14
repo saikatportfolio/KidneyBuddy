@@ -19,9 +19,7 @@ class _DieticianListPageState extends State<DieticianListPage> {
   @override
   void initState() {
     super.initState();
-    AnalyticsService().pushToGTM('screen_view', {
-      'screen_name': 'diatician list page',
-    });
+    AnalyticsService().trackScreen('diatician list page');
     _dieticiansFuture = SupabaseService().getDieticians();
   }
 

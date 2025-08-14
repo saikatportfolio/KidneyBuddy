@@ -37,9 +37,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   @override
   void initState() {
     super.initState();
-    AnalyticsService().pushToGTM('screen_view', {
-      'screen_name':  'patient_detsils_page',
-    });
+     AnalyticsService().trackScreen('patient_detsils_page');
     _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
     _loadVideoContent();
   }

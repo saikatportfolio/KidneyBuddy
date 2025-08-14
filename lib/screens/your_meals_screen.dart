@@ -53,9 +53,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
   @override
   void initState() {
     super.initState();
-        AnalyticsService().pushToGTM('screen_view', {
-      'screen_name':  'Your_meals_screen',
-    });
+    AnalyticsService().trackScreen('Your_meals_screen');
     _mealPlanFuture = SupabaseService().getMealPlan();
     _nutritionRestrictionsFuture = SupabaseService().getNutritionRestrictions();
   }

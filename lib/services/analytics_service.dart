@@ -38,6 +38,11 @@ class AnalyticsService {
     }
   }
 
+  void trackScreen(String screenName) {
+  logScreenView(screenName);
+  pushToGTM('screen_view', {'screen_name': screenName});
+}
+
   Future<void> setUserId(String userId) async {
     final analytics = await _getInstance();
     var bytes = utf8.encode(userId); // data being hashed

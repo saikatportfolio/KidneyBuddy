@@ -18,9 +18,7 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    AnalyticsService().pushToGTM('screen_view', {
-      'screen_name':  'Education_category_screen',
-    });
+    AnalyticsService().trackScreen('Education_category_screen');
     _educationCategoriesFuture = _fetchEducationCategories();
   }
 
