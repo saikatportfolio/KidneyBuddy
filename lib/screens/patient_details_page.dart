@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
+import 'package:myapp/services/analytics_service.dart';
 
 class PatientDetailsPage extends StatefulWidget {
   final String? source;
@@ -36,6 +37,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService().pushToGTM('screen_view', {
+      'screen_name':  'patient_detsils_page',
+    });
     _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
     _loadVideoContent();
   }

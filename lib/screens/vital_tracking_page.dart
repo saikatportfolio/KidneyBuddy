@@ -13,6 +13,7 @@ import 'package:myapp/services/database_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:myapp/services/supabase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:myapp/services/analytics_service.dart';
 
 class VitalTrackingPage extends StatefulWidget {
   const VitalTrackingPage({super.key});
@@ -21,20 +22,32 @@ class VitalTrackingPage extends StatefulWidget {
   State<VitalTrackingPage> createState() => _VitalTrackingPageState();
 }
 
-class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTickerProviderStateMixin {
+class _VitalTrackingPageState extends State<VitalTrackingPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedCategoryIndex = 0;
   final SupabaseService _supabaseService = SupabaseService();
 
   final List<Map<String, dynamic>> _categoryCards = [
     {'nameKey': 'bpTab', 'icon': Icons.monitor_heart, 'vitalType': 'BP'},
-    {'nameKey': 'creatinineTab', 'icon': Icons.science, 'vitalType': 'Creatinine'},
-    {'nameKey': 'weightTab', 'icon': Icons.monitor_weight, 'vitalType': 'Weight'},
+    {
+      'nameKey': 'creatinineTab',
+      'icon': Icons.science,
+      'vitalType': 'Creatinine',
+    },
+    {
+      'nameKey': 'weightTab',
+      'icon': Icons.monitor_weight,
+      'vitalType': 'Weight',
+    },
   ];
 
   @override
   void initState() {
     super.initState();
+    AnalyticsService().pushToGTM('screen_view', {
+      'screen_name':  'vital_tracking_screen',
+    });
     _checkAuthAndPatientDetails();
     _tabController = TabController(length: _categoryCards.length, vsync: this);
     _tabController.addListener(() {
@@ -55,28 +68,43 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
     logger.d('VitalTrackingPage: isSkipEnabled: $isSkipEnabled');
 
     if (currentUser == null) {
-      logger.i('VitalTrackingPage: User not logged in. Navigating to AuthScreen.');
+      logger.i(
+        'VitalTrackingPage: User not logged in. Navigating to AuthScreen.',
+      );
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const PatientDetailsPage(source: "vital_tracking",)),
+            MaterialPageRoute(
+              builder: (context) =>
+                  const PatientDetailsPage(source: "vital_tracking"),
+            ),
           );
         });
       }
       return;
     }
 
-    final patientDetailsProvider = Provider.of<PatientDetailsProvider>(context, listen: false);
-    logger.d('VitalTrackingPage: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails}');
+    final patientDetailsProvider = Provider.of<PatientDetailsProvider>(
+      context,
+      listen: false,
+    );
+    logger.d(
+      'VitalTrackingPage: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails}',
+    );
 
     if (patientDetailsProvider.patientDetails == null && !isSkipEnabled) {
-      logger.i('VitalTrackingPage: Patient details not found. Navigating to PatientDetailsPage.');
+      logger.i(
+        'VitalTrackingPage: Patient details not found. Navigating to PatientDetailsPage.',
+      );
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const PatientDetailsPage(source: "vital_tracking")),
+            MaterialPageRoute(
+              builder: (context) =>
+                  const PatientDetailsPage(source: "vital_tracking"),
+            ),
           );
         });
       }
@@ -86,38 +114,56 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
     if (!kIsWeb) {
       logger.d('VitalTrackingPage: On mobile, checking for BP data sync.');
       try {
-        final List<BloodPressure> supabaseBpReadings = await _supabaseService.getBloodPressureReadings();
-        final List<BloodPressure> localBpReadings = await DatabaseHelper().getBloodPressureReadings(currentUser.id);
+        final List<BloodPressure> supabaseBpReadings = await _supabaseService
+            .getBloodPressureReadings();
+        final List<BloodPressure> localBpReadings = await DatabaseHelper()
+            .getBloodPressureReadings(currentUser.id);
 
         if (supabaseBpReadings.length > localBpReadings.length) {
-          logger.i('VitalTrackingPage: Supabase has more BP readings than local SQLite. Syncing...');
+          logger.i(
+            'VitalTrackingPage: Supabase has more BP readings than local SQLite. Syncing...',
+          );
           await DatabaseHelper().clearBloodPressureReadings();
           for (var bp in supabaseBpReadings) {
             await DatabaseHelper().insertBloodPressure(bp);
           }
-          logger.i('VitalTrackingPage: BP readings synced from Supabase to SQLite.');
+          logger.i(
+            'VitalTrackingPage: BP readings synced from Supabase to SQLite.',
+          );
         } else {
-          logger.d('VitalTrackingPage: Local SQLite BP readings are up-to-date or newer. No sync needed.');
+          logger.d(
+            'VitalTrackingPage: Local SQLite BP readings are up-to-date or newer. No sync needed.',
+          );
         }
 
-        final List<Creatine> supabaseCreatineReadings = await _supabaseService.getCreatineReadings();
-        final List<Creatine> localCreatineReadings = await DatabaseHelper().getCreatineReadings(currentUser.id);
+        final List<Creatine> supabaseCreatineReadings = await _supabaseService
+            .getCreatineReadings();
+        final List<Creatine> localCreatineReadings = await DatabaseHelper()
+            .getCreatineReadings(currentUser.id);
 
         if (supabaseCreatineReadings.length > localCreatineReadings.length) {
-          logger.i('VitalTrackingPage: Supabase has more Creatine readings than local SQLite. Syncing...');
+          logger.i(
+            'VitalTrackingPage: Supabase has more Creatine readings than local SQLite. Syncing...',
+          );
           // await DatabaseHelper().clearCreatineReadings(); //TODO: implement this
           for (var cr in supabaseCreatineReadings) {
             await DatabaseHelper().insertCreatine(cr);
           }
-          logger.i('VitalTrackingPage: Creatine readings synced from Supabase to SQLite.');
+          logger.i(
+            'VitalTrackingPage: Creatine readings synced from Supabase to SQLite.',
+          );
         } else {
-          logger.d('VitalTrackingPage: Local SQLite Creatine readings are up-to-date or newer. No sync needed.');
+          logger.d(
+            'VitalTrackingPage: Local SQLite Creatine readings are up-to-date or newer. No sync needed.',
+          );
         }
       } catch (e) {
         logger.e('VitalTrackingPage: Error during data sync: $e');
       }
     }
-    logger.i('VitalTrackingPage: User logged in and patient details exist. Proceeding to VitalTrackingPage content.');
+    logger.i(
+      'VitalTrackingPage: User logged in and patient details exist. Proceeding to VitalTrackingPage content.',
+    );
   }
 
   @override
@@ -144,14 +190,18 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
                       IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () {
-                          Navigator.pop(context, true); // Pop with a result to indicate a potential change
+                          Navigator.pop(
+                            context,
+                            true,
+                          ); // Pop with a result to indicate a potential change
                         },
                       ),
                       Expanded(
                         child: Center(
                           child: Text(
                             localizations.vitalTrackingPageTitle,
-                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue.shade800,
                                   fontSize: 24.0,
@@ -190,7 +240,10 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
                               width: 2,
                             ),
                           ),
-                          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                            vertical: 10.0,
+                          ),
                           child: Container(
                             width: 100,
                             padding: const EdgeInsets.all(8.0),
@@ -204,7 +257,10 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  LocalizationHelper.translateKey(context, category['nameKey']),
+                                  LocalizationHelper.translateKey(
+                                    context,
+                                    category['nameKey'],
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -225,9 +281,12 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
                   child: TabBarView(
                     controller: _tabController,
                     children: _categoryCards.map((category) {
-                      final String? userId = Supabase.instance.client.auth.currentUser?.id;
+                      final String? userId =
+                          Supabase.instance.client.auth.currentUser?.id;
                       if (userId == null) {
-                        return Center(child: Text(localizations.userNotLoggedIn));
+                        return Center(
+                          child: Text(localizations.userNotLoggedIn),
+                        );
                       }
                       return VitalTrackingTab(
                         vitalType: category['vitalType'],

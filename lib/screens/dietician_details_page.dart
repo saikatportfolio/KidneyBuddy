@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatf
 import 'package:myapp/models/review.dart'; // Import Review model
 import 'package:myapp/services/supabase_service.dart'; // Import SupabaseService
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:myapp/services/analytics_service.dart';
 
 class DieticianDetailsPage extends StatefulWidget {
   final Dietician dietician;
@@ -23,6 +24,9 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService().pushToGTM('screen_view', {
+      'screen_name': 'dieticain_details_screen',
+    });
     logger.d('DieticianDetailsPage: initState called for dietician ID: ${widget.dietician.id}');
     _fetchReviews();
   }

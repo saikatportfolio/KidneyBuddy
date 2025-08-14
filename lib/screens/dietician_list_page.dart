@@ -4,6 +4,7 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:myapp/screens/dietician_details_page.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import the logger
+import 'package:myapp/services/analytics_service.dart';
 
 class DieticianListPage extends StatefulWidget {
   const DieticianListPage({super.key});
@@ -18,6 +19,9 @@ class _DieticianListPageState extends State<DieticianListPage> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService().pushToGTM('screen_view', {
+      'screen_name': 'diatician list page',
+    });
     _dieticiansFuture = SupabaseService().getDieticians();
   }
 

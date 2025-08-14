@@ -381,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () {
                                   AnalyticsService().pushToGTM(
                                       'video_play_pause_click', {
-                                    'user_id': _googleuserId ?? '', // Replace with actual user ID
+                                    'user': _googleuserId ?? '', // Replace with actual user ID
                                     'video_url': _videoUrl ?? '',
                                     'is_playing': _isVideoPlaying,
                                   });

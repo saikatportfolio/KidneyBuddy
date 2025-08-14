@@ -3,6 +3,7 @@ import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/education_category.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/education_item_screen.dart';
+import 'package:myapp/services/analytics_service.dart';
 
 class EducationCategoryScreen extends StatefulWidget {
   const EducationCategoryScreen({super.key});
@@ -17,6 +18,9 @@ class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService().pushToGTM('screen_view', {
+      'screen_name':  'Education_category_screen',
+    });
     _educationCategoriesFuture = _fetchEducationCategories();
   }
 
