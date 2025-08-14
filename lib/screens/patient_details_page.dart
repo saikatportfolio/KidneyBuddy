@@ -46,12 +46,12 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
     try {
       final supabaseService = SupabaseService();
       final videoUrlData = await supabaseService.getMessageByKey('patinet_video_url');
-      final videoThumbnailUrlData =
-          await supabaseService.getMessageByKey('patinet_image_url');
+      // final videoThumbnailUrlData =
+      //     await supabaseService.getMessageByKey('patinet_image_url');
 
       setState(() {
         _videoUrl = videoUrlData;
-        _videoThumbnailUrl = videoThumbnailUrlData;
+        _videoThumbnailUrl = 'assets/images/fill_your_details.png';
       });
 
       if (_videoUrl != null) {
@@ -227,7 +227,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                                   AspectRatio(
                                     aspectRatio: 15 / 8,
                                     child: _videoThumbnailUrl != null
-                                        ? Image.network(
+                                        ? Image.asset(
                                             _videoThumbnailUrl!,
                                             fit: BoxFit.cover,
                                           )

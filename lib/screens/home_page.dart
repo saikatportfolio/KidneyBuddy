@@ -76,12 +76,12 @@ class _HomePageState extends State<HomePage> {
       );
       final tips = await supabaseService.getAllTips();
       final videoUrlData = await supabaseService.getMessageByKey('video_url');
-      final videoThumbnailUrlData =
-          await supabaseService.getMessageByKey('image_thumbnail');
+      // final videoThumbnailUrlData =
+      //     await supabaseService.getMessageByKey('image_thumbnail');
 
       setState(() {
         _videoUrl = videoUrlData;
-        _videoThumbnailUrl = videoThumbnailUrlData;
+        _videoThumbnailUrl = 'assets/images/home_page_thumnail.png';
       });
 
       if (_videoUrl != null) {
@@ -334,12 +334,12 @@ class _HomePageState extends State<HomePage> {
                               if (_isThumbnailVisible)
                                 AspectRatio(
                                   aspectRatio: 15 / 8,
-                                  child: _videoThumbnailUrl != null
-                                      ? Image.network(
-                                          _videoThumbnailUrl!,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Container(
+                                   child: _videoThumbnailUrl != null
+                                       ? Image.asset(
+                                           _videoThumbnailUrl!,
+                                           fit: BoxFit.cover,
+                                         )
+                                       : Container(
                                           color: Colors.grey[300],
                                           child: const Center(
                                             child: Icon(

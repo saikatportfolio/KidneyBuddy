@@ -3,14 +3,16 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "f753ec0949ec5a4e1f32f561454b20d7",
-"assets/AssetManifest.bin.json": "aa62a0c010952ff5db8e32092ffc0837",
-"assets/AssetManifest.json": "c9abb57482fc64ea6da77d04c0be1035",
+const RESOURCES = {"assets/AssetManifest.bin": "a0f26ad8ea1851f027705868f6660c95",
+"assets/AssetManifest.bin.json": "2dfb0cc49d4c479693b556db0660986a",
+"assets/AssetManifest.json": "0f9bde8a9796fa83674e0ad74213d446",
 "assets/assets/images/auth_img.jpg": "53303c27a9276715a0b628c7df9b6759",
 "assets/assets/images/dietician.jpg": "d49a2a2e3d8b1c3319b68ab7519adb96",
 "assets/assets/images/feedback.jpg": "7d11169619134299c2c0fd7056dec27e",
+"assets/assets/images/fill_your_details.png": "085a5350f64660574e69a06da547039d",
 "assets/assets/images/gfr.png": "461fa54ac71c06657b83f24ee7adeed5",
 "assets/assets/images/google_logo.png": "36807175c6e8f9441a3d31f2882d0dcf",
+"assets/assets/images/home_page_thumnail.png": "61e456e44284d3463e27b8aab5b5d632",
 "assets/assets/images/kidney_health.png": "847eed6e74c80f6f9fdcd0e99cd9eb5c",
 "assets/assets/images/nutrition_guide_ckd.jpeg": "82faf7792da5548d6cd941a1343fe0d9",
 "assets/assets/images/onboarding1.png": "32075da5f17e1779b7fd5bab3eecf6a2",
@@ -39,14 +41,14 @@ const RESOURCES = {"assets/AssetManifest.bin": "f753ec0949ec5a4e1f32f561454b20d7
 "canvaskit/skwasm.wasm": "39dd80367a4e71582d234948adc521c0",
 "favicon.png": "a316aeb414a730b6c3b7943272d7aeb6",
 "flutter.js": "83d881c1dbb6d6bcd6b42e274605b69c",
-"flutter_bootstrap.js": "0d1168e86d55db6580a8a6b66ef92808",
+"flutter_bootstrap.js": "77930b3bcb77f06556d33fc1abc36d86",
 "icons/Icon-192.png": "94a93d6a62c727a2cd3470bb923d8024",
 "icons/Icon-512.png": "cd1c0c21ddd11b3124d71d1a8088bffd",
 "icons/Icon-maskable-192.png": "5852bac58492f16f3178118a6d91f856",
 "icons/Icon-maskable-512.png": "535019822474ec5a8d55849e624ca3a4",
 "index.html": "0f50b7d6f70af08026e87b6f0be12373",
 "/": "0f50b7d6f70af08026e87b6f0be12373",
-"main.dart.js": "0dafaae4e97c53cf331056f848c9142b",
+"main.dart.js": "2e22b170603e5d05f8a886d096bc35f8",
 "manifest.json": "131c95023c1f1c17f19caadbcfea2379",
 "version.json": "389a6e6e6f34312743ca5f36467c84b5"};
 // The application shell files that are downloaded before a service worker can
