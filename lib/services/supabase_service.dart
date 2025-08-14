@@ -107,16 +107,16 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('upsertPatientDetails: No authenticated user found. Cannot upsert patient details.');
+        logger.i('upsertPatientDetails: No authenticated user found. Cannot upsert patient details.');
         return;
       }
       details.userId = user.id; // Assign the current user's ID
       final data = details.toMap();
       // Supabase will automatically handle insert/update based on primary key
       await _supabase.from('patient_details').upsert(data);
-      print('Patient details upserted to Supabase: \${details.name} for user \${user.id}');
+      logger.i('Patient details upserted to Supabase: ${details.name} for user ${user.id}');
     } catch (e) {
-      print('Error upserting patient details to Supabase: \$e');
+      logger.e('Error upserting patient details to Supabase: $e');
     }
   }
 

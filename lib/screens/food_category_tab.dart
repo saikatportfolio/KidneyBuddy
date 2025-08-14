@@ -26,7 +26,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
   void _loadFoodItems() {
     final patientDetails = Provider.of<PatientDetailsProvider>(context, listen: false).patientDetails;
     if (patientDetails != null) {
-      _foodItemsFuture = FoodRecommendationService().getRecommendedFoods(patientDetails.ckdStage).then((allFoods) {
+      _foodItemsFuture = FoodRecommendationService().getRecommendedFoods(patientDetails.ckdStage ?? '').then((allFoods) {
         if (widget.categories.contains('All')) {
           return allFoods; // If 'All' category is requested, return all foods
         } else {

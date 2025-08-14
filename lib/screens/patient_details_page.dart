@@ -23,9 +23,12 @@ class PatientDetailsPage extends StatefulWidget {
 
 class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final _formKey = GlobalKey<FormState>();
+  int _currentStep = 1;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
   String? _ckdStage;
+  String? _gender;
   String? _email;
 
   String? _videoUrl;
@@ -34,10 +37,115 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   bool _isVideoPlaying = false;
   bool _isThumbnailVisible = true;
 
+  Widget _buildStepOne() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          controller: _nameController,
+          decoration: const InputDecoration(labelText: 'Name'),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your name';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _phoneController,
+          decoration: const InputDecoration(labelText: 'Phone Number'),
+          keyboardType: TextInputType.phone,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your phone number';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: _ckdStage,
+          decoration: const InputDecoration(labelText: 'CKD Stage'),
+          items: const <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _ckdStage = newValue;
+            });
+          },
+        ),
+        const SizedBox(height: 32),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              setState(() {
+                _currentStep = 2;
+              });
+            }
+          },
+          child: const Text('Next'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepTwo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          controller: _ageController,
+          decoration: const InputDecoration(labelText: 'Age'),
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter your age';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: _gender,
+          decoration: const InputDecoration(labelText: 'Gender'),
+          items: const <String>['Male', 'Female', 'Other']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _gender = newValue;
+            });
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select your gender';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 32),
+        ElevatedButton(
+          onPressed: _savePatientDetails,
+          child: const Text('Submit'),
+        ),
+      ],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-     AnalyticsService().trackScreen('patient_detsils_page');
+    AnalyticsService().trackScreen('patient_detsils_page');
     _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
     _loadVideoContent();
   }
@@ -72,8 +180,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       }
     } catch (e) {
       logger.e('Error loading video content: $e');
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
@@ -131,14 +238,16 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       final existingDetails = Provider.of<PatientDetailsProvider>(context, listen: false).patientDetails;
 
       final patientDetails = PatientDetails(
-        id: existingDetails?.id ?? const Uuid().v4(), // Use existing ID or generate new UUID
-        userId: existingDetails?.userId, // Preserve existing userId if available
+        id: existingDetails?.id ?? const Uuid().v4(),
+        userId: existingDetails?.userId,
         name: _nameController.text,
         phoneNumber: _phoneController.text,
         weight: existingDetails?.weight ?? 0.0,
         height: existingDetails?.height ?? 0.0,
-        ckdStage: _ckdStage!,
+        ckdStage: _ckdStage,
+        gender: _gender,
         email: _email,
+        age: int.tryParse(_ageController.text) ?? 0,
       );
 
       // Conditional Save Logic
@@ -152,7 +261,6 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       await SupabaseService().upsertPatientDetails(patientDetails);
 
       // Update provider (using the local patientDetails object)
-      // Ensure context is still valid before updating provider and navigating
       if (!mounted) return;
       Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
 
@@ -209,90 +317,88 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                    if (_videoUrl != null)
-                      Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        margin: const EdgeInsets.only(bottom: 15.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                if (_isThumbnailVisible)
-                                  AspectRatio(
-                                    aspectRatio: 15 / 8,
-                                    child: _videoThumbnailUrl != null
-                                        ? Image.asset(
-                                            _videoThumbnailUrl!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            color: Colors.grey[300],
-                                            child: const Center(
-                                              child: Icon(
-                                                Icons.image,
-                                                size: 50,
-                                                color: Colors.grey,
+                      if (_videoUrl != null)
+                        Card(
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          margin: const EdgeInsets.only(bottom: 15.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  if (_isThumbnailVisible)
+                                    AspectRatio(
+                                      aspectRatio: 15 / 8,
+                                      child: _videoThumbnailUrl != null
+                                          ? Image.asset(
+                                              _videoThumbnailUrl!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Container(
+                                              color: Colors.grey[300],
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.image,
+                                                  size: 50,
+                                                  color: Colors.grey,
+                                                ),
                                               ),
                                             ),
+                                    )
+                                  else if (_videoPlayerController.value.isInitialized)
+                                    Column(
+                                      children: [
+                                        AspectRatio(
+                                          aspectRatio: 15 / 8,
+                                          child: VideoPlayer(
+                                            _videoPlayerController,
                                           ),
-                                  )
-                                else if (_videoPlayerController.value.isInitialized)
-                                  Column(
-                                    children: [
-                                      AspectRatio(
-                                        aspectRatio: 15 / 8,
-                                        child: VideoPlayer(
-                                          _videoPlayerController,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 2.0,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 2.0,
+                                          ),
+                                          child: VideoProgressIndicator(
+                                            _videoPlayerController,
+                                            allowScrubbing: true,
+                                          ),
                                         ),
-                                        child: VideoProgressIndicator(
-                                          _videoPlayerController,
-                                          allowScrubbing: true,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                else
-                                  const Center(
-                                    child: CircularProgressIndicator(),
+                                      ],
+                                    )
+                                  else
+                                    const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  FloatingActionButton(
+                                    backgroundColor: Colors.blue.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (_isVideoPlaying) {
+                                          _videoPlayerController.pause();
+                                          _isVideoPlaying = false;
+                                        } else {
+                                          _videoPlayerController.play();
+                                          _isVideoPlaying = true;
+                                          _isThumbnailVisible = false;
+                                        }
+                                      });
+                                    },
+                                    child: Icon(
+                                      _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                                    ),
                                   ),
-                                FloatingActionButton(
-                                  backgroundColor: Colors.blue.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_isVideoPlaying) {
-                                        _videoPlayerController.pause();
-                                        _isVideoPlaying = false;
-                                      } else {
-                                        _videoPlayerController.play();
-                                        _isVideoPlaying = true;
-                                        _isThumbnailVisible = false;
-                                      }
-                                    });
-                                  },
-                                  child: Icon(
-                                    _isVideoPlaying
-                                        ? Icons.pause
-                                        : Icons.play_circle_filled_rounded,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       Card(
                         elevation: 4,
                         shape: RoundedRectangleBorder(
@@ -300,69 +406,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TextFormField(
-                                controller: _nameController,
-                                decoration:
-                                    const InputDecoration(labelText: 'Name'),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _phoneController,
-                                decoration: const InputDecoration(
-                                    labelText: 'Phone Number'),
-                                keyboardType: TextInputType.phone,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your phone number';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              DropdownButtonFormField<String>(
-                                value: _ckdStage,
-                                decoration: const InputDecoration(
-                                    labelText: 'CKD Stage'),
-                                items: <String>[
-                                  'Stage 1',
-                                  'Stage 2',
-                                  'Stage 3',
-                                  'Stage 4',
-                                  'Stage 5'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _ckdStage = newValue;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please select your CKD stage';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 32),
-                              ElevatedButton(
-                                onPressed: _savePatientDetails,
-                                child: const Text('Submit'),
-                              ),
-                            ],
-                          ),
+                          child: _currentStep == 1 ? _buildStepOne() : _buildStepTwo(),
                         ),
                       ),
                     ],

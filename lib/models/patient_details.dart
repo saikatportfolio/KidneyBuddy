@@ -8,7 +8,9 @@ class PatientDetails {
   String phoneNumber;
   double? weight;
   double? height;
-  String ckdStage;
+  String? ckdStage;
+  String? gender;
+  int? age;
 
   PatientDetails({
     this.id,
@@ -18,7 +20,9 @@ class PatientDetails {
     required this.phoneNumber,
     this.weight,
     this.height,
-    required this.ckdStage,
+    this.ckdStage,
+    this.gender,
+    this.age,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +35,8 @@ class PatientDetails {
       'weight': weight,
       'height': height,
       'ckd_stage': ckdStage,
+      'gender': gender,
+      'age': age,
     };
   }
 
@@ -43,7 +49,9 @@ class PatientDetails {
       phoneNumber: map['phone_number'],
       weight: map['weight'],
       height: map['height'],
-      ckdStage: map['ckd_stage'],
+      ckdStage: map['ckd_stage'] as String?,
+      gender: map['gender'] as String?,
+      age: map['age'] as int?,
     );
   }
 }
