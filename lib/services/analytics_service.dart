@@ -1,6 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:js' as js;
 import 'package:myapp/utils/logger_config.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class AnalyticsService {
   FirebaseAnalytics? _analytics;
@@ -34,5 +36,12 @@ class AnalyticsService {
     } catch (e) {
       logger.e('dataLayer not available: $e');
     }
+  }
+
+  Future<void> setUserId(String userId) async {
+    final analytics = await _getInstance();
+    var bytes = utf8.encode(userId); // data being hashed
+    var digest = sha256.convert(bytes);
+    await analytics.setUserId(id: digest.toString());
   }
 }

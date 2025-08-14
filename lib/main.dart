@@ -205,6 +205,11 @@ class MyAppState extends State<MyApp> {
             if (photoUrl != null) {
               await prefs.setString('google_user_photo_url', photoUrl);
             }
+            // Call setUserId method in AnalyticsService
+            final userId = currentUser.id;
+            if (userId != null) {
+              await _analyticsService.setUserId(userId);
+            }
           }
           PatientDetails? fetchedDetails;
           if (kIsWeb) {
