@@ -29,10 +29,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> _allTips = [];
   bool _isLoadingContent = true;
   String? _googleName;
   String? _googlePhotoUrl;
+  String? _googleuserId;
   String? _videoUrl;
   String? _videoThumbnailUrl;
   late VideoPlayerController _videoPlayerController;
@@ -80,7 +80,6 @@ class _HomePageState extends State<HomePage> {
           await supabaseService.getMessageByKey('image_thumbnail');
 
       setState(() {
-        _allTips = tips;
         _videoUrl = videoUrlData;
         _videoThumbnailUrl = videoThumbnailUrlData;
       });
@@ -135,8 +134,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _googleName = prefs.getString('google_user_name');
       _googlePhotoUrl = prefs.getString('google_user_photo_url');
+      _googleuserId = prefs.getString('google_user_id');
       logger.i('Home page _googleName $_googleName');
       logger.i('Home page _googlePhotoUrl $_googlePhotoUrl');
+      logger.i('Home page _googleUserId $_googleuserId');
     });
   }
 
@@ -380,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () {
                                   AnalyticsService().pushToGTM(
                                       'video_play_pause_click', {
-                                    'user_id': '12345', // Replace with actual user ID
+                                    'user_id': _googleuserId ?? '', // Replace with actual user ID
                                     'video_url': _videoUrl ?? '',
                                     'is_playing': _isVideoPlaying,
                                   });
