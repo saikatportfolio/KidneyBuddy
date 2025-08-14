@@ -44,18 +44,15 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         TextFormField(
           controller: _nameController,
           decoration: const InputDecoration(labelText: 'Name'),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your name';
-            }
-            return null;
-          },
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _phoneController,
           decoration: const InputDecoration(labelText: 'Phone Number'),
           keyboardType: TextInputType.phone,
+          onChanged: (value) {
+            _formKey.currentState?.validate();
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your phone number';
@@ -103,6 +100,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
           controller: _ageController,
           decoration: const InputDecoration(labelText: 'Age'),
           keyboardType: TextInputType.number,
+          onChanged: (value) {
+            _formKey.currentState?.validate();
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your age';
@@ -111,32 +111,46 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
           },
         ),
         const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: _gender,
-          decoration: const InputDecoration(labelText: 'Gender'),
-          items: const <String>['Male', 'Female', 'Other']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _gender = newValue;
-            });
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please select your gender';
-            }
-            return null;
-          },
-        ),
+          DropdownButtonFormField<String>(
+            value: _gender,
+            decoration: const InputDecoration(labelText: 'Gender'),
+            items: const <String>['Male', 'Female', 'Other']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _gender = newValue;
+                _formKey.currentState?.validate(); // Trigger validation on change
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select your gender';
+              }
+              return null;
+            },
+          ),
         const SizedBox(height: 32),
-        ElevatedButton(
-          onPressed: _savePatientDetails,
-          child: const Text('Submit'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _currentStep = 1;
+                });
+              },
+              child: const Text('Back'),
+            ),
+            ElevatedButton(
+              onPressed: _savePatientDetails,
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ],
     );
@@ -145,6 +159,12 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   @override
   void initState() {
     super.initState();
+    _phoneController.addListener(() {
+      setState(() {});
+    });
+    _ageController.addListener(() {
+      setState(() {});
+    });
     AnalyticsService().trackScreen('patient_detsils_page');
     _loadInitialData(); // New method to handle loading from SharedPreferences and existing details
     _loadVideoContent();
@@ -399,15 +419,31 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                             ),
                           ),
                         ),
-                      Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: _currentStep == 1 ? _buildStepOne() : _buildStepTwo(),
-                        ),
+                      Stack(
+                        children: [
+                          Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: _currentStep == 1 ? _buildStepOne() : _buildStepTwo(),
+                            ),
+                          ),
+                          Positioned(
+                            top: 10,
+                            right: 20,
+                            child: Text(
+                              'Step $_currentStep/2',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
