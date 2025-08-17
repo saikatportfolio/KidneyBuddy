@@ -4,6 +4,7 @@ import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -38,6 +39,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   bool _isThumbnailVisible = true;
 
   Widget _buildStepOne() {
+    AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {AnalyticsEventNames.type: 'step1 called'});
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -64,13 +66,19 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         DropdownButtonFormField<String>(
           value: _ckdStage,
           decoration: const InputDecoration(labelText: 'CKD Stage'),
-          items: const <String>['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
+          items:
+              const <String>[
+                'Stage 1',
+                'Stage 2',
+                'Stage 3',
+                'Stage 4',
+                'Stage 5',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
           onChanged: (String? newValue) {
             setState(() {
               _ckdStage = newValue;
@@ -93,6 +101,8 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   }
 
   Widget _buildStepTwo() {
+    logger.i('"Navigated to _buildStepTwo()');
+    AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {AnalyticsEventNames.type: 'step2 called'});
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -111,29 +121,30 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
           },
         ),
         const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _gender,
-            decoration: const InputDecoration(labelText: 'Gender'),
-            items: const <String>['Male', 'Female', 'Other']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _gender = newValue;
-                _formKey.currentState?.validate(); // Trigger validation on change
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please select your gender';
-              }
-              return null;
-            },
-          ),
+        DropdownButtonFormField<String>(
+          value: _gender,
+          decoration: const InputDecoration(labelText: 'Gender'),
+          items: const <String>['Male', 'Female', 'Other']
+              .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              })
+              .toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _gender = newValue;
+              _formKey.currentState?.validate(); // Trigger validation on change
+            });
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select your gender';
+            }
+            return null;
+          },
+        ),
         const SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -173,7 +184,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   void _loadVideoContent() async {
     try {
       final supabaseService = SupabaseService();
-      final videoUrlData = await supabaseService.getMessageByKey('patinet_video_url');
+      final videoUrlData = await supabaseService.getMessageByKey(
+        'patinet_video_url',
+      );
       // final videoThumbnailUrlData =
       //     await supabaseService.getMessageByKey('patinet_image_url');
 
@@ -240,7 +253,10 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       });
       // Update provider with loaded details
       if (!mounted) return;
-      Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(loadedDetails);
+      Provider.of<PatientDetailsProvider>(
+        context,
+        listen: false,
+      ).setPatientDetails(loadedDetails);
     }
   }
 
@@ -254,8 +270,13 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
 
   void _savePatientDetails() async {
     if (_formKey.currentState!.validate()) {
+      logger.i('Save patient details called');
+      AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {AnalyticsEventNames.type: 'save details'});
       // Get existing patient details from provider if available
-      final existingDetails = Provider.of<PatientDetailsProvider>(context, listen: false).patientDetails;
+      final existingDetails = Provider.of<PatientDetailsProvider>(
+        context,
+        listen: false,
+      ).patientDetails;
 
       final patientDetails = PatientDetails(
         id: existingDetails?.id ?? const Uuid().v4(),
@@ -282,7 +303,10 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
 
       // Update provider (using the local patientDetails object)
       if (!mounted) return;
-      Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(patientDetails);
+      Provider.of<PatientDetailsProvider>(
+        context,
+        listen: false,
+      ).setPatientDetails(patientDetails);
 
       // Navigate to correct page based on source
       if (!mounted) return;
@@ -370,7 +394,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                                               ),
                                             ),
                                     )
-                                  else if (_videoPlayerController.value.isInitialized)
+                                  else if (_videoPlayerController
+                                      .value
+                                      .isInitialized)
                                     Column(
                                       children: [
                                         AspectRatio(
@@ -411,7 +437,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                                       });
                                     },
                                     child: Icon(
-                                      _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                                      _isVideoPlaying
+                                          ? Icons.pause
+                                          : Icons.play_circle_filled_rounded,
                                     ),
                                   ),
                                 ],
@@ -428,7 +456,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: _currentStep == 1 ? _buildStepOne() : _buildStepTwo(),
+                              child: _currentStep == 1
+                                  ? _buildStepOne()
+                                  : _buildStepTwo(),
                             ),
                           ),
                           Positioned(

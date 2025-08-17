@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 import 'dart:js' as js;
 import 'package:myapp/utils/logger_config.dart';
 import 'package:crypto/crypto.dart';
@@ -40,7 +41,7 @@ class AnalyticsService {
 
   void trackScreen(String screenName) {
   logScreenView(screenName);
-  pushToGTM('screen_view', {'screen_name': screenName});
+  pushToGTM(AnalyticsEventNames.screenView, {'screen_name': screenName});
 }
 
   Future<void> setUserId(String userId) async {

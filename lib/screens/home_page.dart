@@ -20,6 +20,7 @@ import 'package:myapp/models/creatine.dart'; // Import Creatine model
 import 'package:myapp/models/weight.dart'; // Import Weight model
 import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:video_player/video_player.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -380,10 +381,10 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 onPressed: () {
                                   AnalyticsService().pushToGTM(
-                                      'video_play_pause_click', {
+                                      AnalyticsEventNames.buttonClick, {
                                     'user': _googleuserId ?? '', // Replace with actual user ID
                                     'video_url': _videoUrl ?? '',
-                                    'is_playing': _isVideoPlaying,
+                                    AnalyticsEventNames.buttonClickType : 'Home_Video_click'
                                   });
                                   setState(() {
                                     logger.d('Video paused');
