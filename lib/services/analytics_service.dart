@@ -41,7 +41,7 @@ class AnalyticsService {
 
   void trackScreen(String screenName) {
   logScreenView(screenName);
-  pushToGTM(AnalyticsEventNames.screenView, {'screen_name': screenName});
+  pushToGTM(AnalyticsEventNames.screenView, {AnalyticsEventNames.screenName: screenName});
 }
 
   Future<void> setUserId(String userId) async {
