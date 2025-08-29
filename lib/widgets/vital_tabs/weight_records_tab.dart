@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/weight.dart';
 import 'package:myapp/models/patient_details.dart';
+import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/widgets/add_weight_dialog.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import logger
@@ -74,7 +76,9 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
     });
     try {
       final startDate = _calculateStartDate(_selectedFilterDuration);
-      List<Weight> fetchedReadings = await _supabaseService.getWeightReadings(startDate: startDate);
+      List<Weight> fetchedReadings = await _supabaseService.getWeightReadings(
+        startDate: startDate,
+      );
       setState(() {
         _weightReadings = fetchedReadings;
       });
@@ -171,7 +175,9 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
     if (widget.patientDetails == null) {
       logger.w('Patient details not available for PDF generation.');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.pdfGenerationErrorNoPatientDetails)),
+        SnackBar(
+          content: Text(localizations.pdfGenerationErrorNoPatientDetails),
+        ),
       );
       return;
     }
@@ -184,33 +190,36 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
         );
         return;
       }
-      final pdfBytes = await PdfGenerator.generateWeightReport(widget.patientDetails!, _weightReadings);
-      
+      final pdfBytes = await PdfGenerator.generateWeightReport(
+        widget.patientDetails!,
+        _weightReadings,
+      );
+
       String fileName = 'weight_report.pdf';
       if (widget.patientDetails != null) {
         final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
         fileName = '${patientName}_weight_report.pdf';
       }
-      
+
       await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
-      logger.e('Error generating or sharing PDF for Weight: $e', error: e, stackTrace: stack);
+      logger.e(
+        'Error generating or sharing PDF for Weight: $e',
+        error: e,
+        stackTrace: stack,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
-        );
+        SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
+      );
     }
   }
 
-    Widget _buildLegendItem(Color color, String label) {
+  Widget _buildLegendItem(Color color, String label) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: 16,
-          height: 16,
-          color: color,
-        ),
+        Container(width: 16, height: 16, color: color),
         const SizedBox(width: 8),
         Text(label),
       ],
@@ -219,9 +228,9 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
 
   void _showWeightTrendChart(AppLocalizations localizations) {
     if (_weightReadings.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.noDataAvailable)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(localizations.noDataAvailable)));
       return;
     }
 
@@ -255,7 +264,8 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                         sideTitles: SideTitles(
                           showTitles: true,
                           reservedSize: 40, // Adjusted reserved size
-                          interval: 20, // Increased interval to show fewer labels
+                          interval:
+                              20, // Increased interval to show fewer labels
                           getTitlesWidget: (double value, TitleMeta meta) {
                             return Text(
                               '${value.toStringAsFixed(0)} kg', // Added 'kg' and removed decimal for whole numbers
@@ -274,13 +284,13 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                           interval: 1,
                           getTitlesWidget: (double value, TitleMeta meta) {
                             final index = value.toInt();
-                            if (index >= 0 &&
-                                index < sortedReadings.length) {
+                            if (index >= 0 && index < sortedReadings.length) {
                               if (index % 3 == 0 ||
                                   index == sortedReadings.length - 1) {
                                 return Text(
-                                  DateFormat('dd MMM')
-                                      .format(sortedReadings[index].timestamp),
+                                  DateFormat(
+                                    'dd MMM',
+                                  ).format(sortedReadings[index].timestamp),
                                   style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.black,
@@ -293,9 +303,11 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                         ),
                       ),
                       topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                       rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                     borderData: FlBorderData(show: true),
                     minY: 0,
@@ -329,8 +341,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: _buildLegendItem(
-                    Colors.blue, localizations.weight),
+                child: _buildLegendItem(Colors.blue, localizations.weight),
               ),
             ],
           ),
@@ -358,23 +369,37 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       mainContent = Center(child: Text(localizations.noDataAvailable));
     } else {
       final groupedCrData = _groupWeightReadingsByDate(_weightReadings);
-      final sortedDates = groupedCrData.keys.toList()..sort((a, b) => b.compareTo(a));
+      final sortedDates = groupedCrData.keys.toList()
+        ..sort((a, b) => b.compareTo(a));
 
       mainContent = ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0), // Add padding to the bottom
+        padding: const EdgeInsets.fromLTRB(
+          16.0,
+          16.0,
+          16.0,
+          60.0,
+        ), // Add padding to the bottom
         itemCount: sortedDates.length,
         itemBuilder: (context, groupIndex) {
           final date = sortedDates[groupIndex];
-          final readingsForDate = groupedCrData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          final readingsForDate = groupedCrData[date]!
+            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 0.0,
+                ),
                 child: Text(
                   DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
                 ),
               ),
               ListView.builder(
@@ -386,8 +411,13 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                   return Card(
                     elevation: 6,
                     shadowColor: Colors.blue.shade200.withAlpha(179),
-                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
                     child: InkWell(
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -398,29 +428,53 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  DateFormat('hh:mm a').format(reading.timestamp),
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                                  DateFormat(
+                                    'hh:mm a',
+                                  ).format(reading.timestamp),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700,
+                                      ),
                                 ),
                                 Expanded(
                                   child: Center(
                                     child: Text(
                                       '${reading.value.toStringAsFixed(2)} kg',
-                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue.shade700,
+                                          ),
                                     ),
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.black),
-                                  onPressed: () => _confirmAndDeleteWeightReading(reading, localizations),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () =>
+                                      _confirmAndDeleteWeightReading(
+                                        reading,
+                                        localizations,
+                                      ),
                                 ),
                               ],
                             ),
-                            if (reading.comment != null && reading.comment!.isNotEmpty)
+                            if (reading.comment != null &&
+                                reading.comment!.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                   'Comment: ${reading.comment}',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey.shade700),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey.shade700,
+                                      ),
                                 ),
                               ),
                           ],
@@ -444,19 +498,42 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () => _generatePdfReport(localizations),
+                onPressed: () => () {
+                  _generatePdfReport(localizations);
+                  AnalyticsService()
+                      .pushToGTM(AnalyticsEventNames.buttonClick, {
+                        AnalyticsEventNames.buttonClickType:
+                            'export_weight_pdf_click',
+                      });
+                },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
               ),
               const SizedBox(width: 8),
-                            TextButton.icon(
-                onPressed: () => _showWeightTrendChart(localizations),
+              TextButton.icon(
+                onPressed: () => () {
+                  _showWeightTrendChart(localizations);
+                  AnalyticsService()
+                      .pushToGTM(AnalyticsEventNames.buttonClick, {
+                        AnalyticsEventNames.buttonClickType:
+                            'view_weight_trend_click',
+                      });
+                },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
               ),
               const SizedBox(width: 8),
               IconButton(
-                onPressed: () => _showFilterOptions(localizations),
+                onPressed: () => () {
+                  _showFilterOptions(localizations);
+                  AnalyticsService().pushToGTM(
+                    AnalyticsEventNames.buttonClick,
+                    {
+                      AnalyticsEventNames.buttonClickType:
+                          'filter_weight_click',
+                    },
+                  );
+                },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,
               ),
@@ -493,7 +570,10 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
     );
   }
 
-  Future<void> _confirmAndDeleteWeightReading(Weight reading, AppLocalizations localizations) async {
+  Future<void> _confirmAndDeleteWeightReading(
+    Weight reading,
+    AppLocalizations localizations,
+  ) async {
     final bool? confirmDelete = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -525,7 +605,11 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       } catch (e) {
         logger.e('Error deleting Weight reading: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localizations.errorDeletingWeightReading(e.toString()))),
+          SnackBar(
+            content: Text(
+              localizations.errorDeletingWeightReading(e.toString()),
+            ),
+          ),
         );
       }
     }

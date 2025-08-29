@@ -10,6 +10,8 @@ import 'package:flutter/foundation.dart' show kIsWeb; // Import kIsWeb
 // Import VitalTrackingPage
 import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:numberpicker/numberpicker.dart'; // Import numberpicker
+import 'package:myapp/utils/analytics_event_names.dart';
+import 'package:myapp/services/analytics_service.dart';
 
 class AddBpPage extends StatefulWidget {
   const AddBpPage({super.key});
@@ -92,7 +94,11 @@ class _AddBpPageState extends State<AddBpPage> {
 
     if (_selectedDate == null || _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocalizationHelper.translateKey(context, 'selectDateAndTimeError'))),
+        SnackBar(
+          content: Text(
+            LocalizationHelper.translateKey(context, 'selectDateAndTimeError'),
+          ),
+        ),
       );
       return;
     }
@@ -117,41 +123,58 @@ class _AddBpPageState extends State<AddBpPage> {
 
     try {
       final currentUser = Supabase.instance.client.auth.currentUser;
-      logger.d('AddBpPage: Current user before saving BP: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
+      logger.d(
+        'AddBpPage: Current user before saving BP: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}',
+      );
 
-        // Save to SQLite for mobile
-        if (!kIsWeb) {
-          await DatabaseHelper().insertBloodPressure(bloodPressure);
-          logger.i('AddBpPage: BP saved to SQLite: ${bloodPressure.systolic}/${bloodPressure.diastolic}');
-        }
-        
-        // Always sync to Supabase
-        await SupabaseService().insertBloodPressure(bloodPressure);
-        logger.i('AddBpPage: BP saved to Supabase: ${bloodPressure.systolic}/${bloodPressure.diastolic}');
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocalizationHelper.translateKey(context, 'BP Saved Successfully'))),
+      // Save to SQLite for mobile
+      if (!kIsWeb) {
+        await DatabaseHelper().insertBloodPressure(bloodPressure);
+        logger.i(
+          'AddBpPage: BP saved to SQLite: ${bloodPressure.systolic}/${bloodPressure.diastolic}',
         );
+      }
 
-        // Clear fields after successful save
-        _commentController.clear();
-        setState(() {
-          _selectedDate = DateTime.now();
-          _selectedTime = TimeOfDay.now();
-          _updateDateAndTimeControllers();
-          _currentSystolicValue = 120; // Reset to default
-          _currentDiastolicValue = 80; // Reset to default
-        });
+      // Always sync to Supabase
+      await SupabaseService().insertBloodPressure(bloodPressure);
+      logger.i(
+        'AddBpPage: BP saved to Supabase: ${bloodPressure.systolic}/${bloodPressure.diastolic}',
+      );
 
-        // Pop back to the previous screen (VitalTrackingPage) with a result indicating success
-        if (mounted) {
-          Navigator.of(context).pop(true); // Pass true to indicate success
-        }
-      } catch (e) {
-        logger.e('Error saving BP: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocalizationHelper.translateKey(context, 'bpSaveError').replaceFirst('{error}', e.toString()))),
-        );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            LocalizationHelper.translateKey(context, 'BP Saved Successfully'),
+          ),
+        ),
+      );
+
+      // Clear fields after successful save
+      _commentController.clear();
+      setState(() {
+        _selectedDate = DateTime.now();
+        _selectedTime = TimeOfDay.now();
+        _updateDateAndTimeControllers();
+        _currentSystolicValue = 120; // Reset to default
+        _currentDiastolicValue = 80; // Reset to default
+      });
+
+      // Pop back to the previous screen (VitalTrackingPage) with a result indicating success
+      if (mounted) {
+        Navigator.of(context).pop(true); // Pass true to indicate success
+      }
+    } catch (e) {
+      logger.e('Error saving BP: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            LocalizationHelper.translateKey(
+              context,
+              'bpSaveError',
+            ).replaceFirst('{error}', e.toString()),
+          ),
+        ),
+      );
     }
   }
 
@@ -186,7 +209,10 @@ class _AddBpPageState extends State<AddBpPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _buildNumberPickerColumn(
-                            label: LocalizationHelper.translateKey(context, 'SYS'),
+                            label: LocalizationHelper.translateKey(
+                              context,
+                              'SYS',
+                            ),
                             value: _currentSystolicValue,
                             minValue: 70,
                             maxValue: 180,
@@ -194,7 +220,10 @@ class _AddBpPageState extends State<AddBpPage> {
                                 setState(() => _currentSystolicValue = value),
                           ),
                           _buildNumberPickerColumn(
-                            label: LocalizationHelper.translateKey(context, 'DIA'),
+                            label: LocalizationHelper.translateKey(
+                              context,
+                              'DIA',
+                            ),
                             value: _currentDiastolicValue,
                             minValue: 40,
                             maxValue: 120,
@@ -205,9 +234,14 @@ class _AddBpPageState extends State<AddBpPage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        LocalizationHelper.translateKey(context, 'Add Your Comment'),
+                        LocalizationHelper.translateKey(
+                          context,
+                          'Add Your Comment',
+                        ),
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       TextFormField(
@@ -217,7 +251,9 @@ class _AddBpPageState extends State<AddBpPage> {
                         minLines: 3,
                         decoration: InputDecoration(
                           labelText: LocalizationHelper.translateKey(
-                              context, 'Add Your Comment'),
+                            context,
+                            'Add Your Comment',
+                          ),
                           hintText: 'Add any relevant comments...',
                           border: const OutlineInputBorder(),
                           prefixIcon: const Icon(Icons.comment),
@@ -232,7 +268,9 @@ class _AddBpPageState extends State<AddBpPage> {
                               readOnly: true,
                               decoration: InputDecoration(
                                 labelText: LocalizationHelper.translateKey(
-                                    context, 'Select date'),
+                                  context,
+                                  'Select date',
+                                ),
                                 border: const OutlineInputBorder(),
                                 prefixIcon: const Icon(Icons.calendar_today),
                               ),
@@ -246,7 +284,9 @@ class _AddBpPageState extends State<AddBpPage> {
                               readOnly: true,
                               decoration: InputDecoration(
                                 labelText: LocalizationHelper.translateKey(
-                                    context, 'Select Time'),
+                                  context,
+                                  'Select Time',
+                                ),
                                 border: const OutlineInputBorder(),
                                 prefixIcon: const Icon(Icons.access_time),
                               ),
@@ -259,7 +299,14 @@ class _AddBpPageState extends State<AddBpPage> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _saveBloodPressure,
+                          onPressed: () {
+                            AnalyticsService()
+                                .pushToGTM(AnalyticsEventNames.buttonClick, {
+                                  AnalyticsEventNames.buttonClickType:
+                                      'save_bp_click',
+                                });
+                            _saveBloodPressure();
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
@@ -302,7 +349,11 @@ class _AddBpPageState extends State<AddBpPage> {
           maxValue: maxValue,
           onChanged: onChanged,
           textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
-          selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+          selectedTextStyle: const TextStyle(
+            color: Colors.black,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
           decoration: BoxDecoration(
             border: Border.symmetric(
               horizontal: BorderSide(color: Colors.grey[300]!),

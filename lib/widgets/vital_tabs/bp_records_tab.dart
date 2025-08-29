@@ -4,7 +4,9 @@ import 'package:myapp/screens/add_bp_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/blood_pressure.dart';
 import 'package:myapp/models/patient_details.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/utils/logger_config.dart'; // Import logger
 import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
 import 'package:intl/intl.dart'; // Import for DateFormat
@@ -74,7 +76,8 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
     });
     try {
       final startDate = _calculateStartDate(_selectedFilterDuration);
-      List<BloodPressure> fetchedReadings = await _supabaseService.getBloodPressureReadings(startDate: startDate);
+      List<BloodPressure> fetchedReadings = await _supabaseService
+          .getBloodPressureReadings(startDate: startDate);
       setState(() {
         _bloodPressureReadings = fetchedReadings;
       });
@@ -154,7 +157,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
   }
 
   // Helper to group BP readings by date
-  Map<String, List<BloodPressure>> _groupBpReadingsByDate(List<BloodPressure> readings) {
+  Map<String, List<BloodPressure>> _groupBpReadingsByDate(
+    List<BloodPressure> readings,
+  ) {
     final Map<String, List<BloodPressure>> grouped = {};
     for (var bp in readings) {
       final dateKey = DateFormat('yyyy-MM-dd').format(bp.timestamp);
@@ -172,7 +177,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
     if (widget.patientDetails == null) {
       logger.w('Patient details not available for PDF generation.');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.pdfGenerationErrorNoPatientDetails)),
+        SnackBar(
+          content: Text(localizations.pdfGenerationErrorNoPatientDetails),
+        ),
       );
       return;
     }
@@ -185,7 +192,10 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         );
         return;
       }
-      final pdfBytes = await PdfGenerator.generateBpReport(widget.patientDetails!, _bloodPressureReadings);
+      final pdfBytes = await PdfGenerator.generateBpReport(
+        widget.patientDetails!,
+        _bloodPressureReadings,
+      );
 
       String fileName = 'BP_report.pdf';
       if (widget.patientDetails != null) {
@@ -195,7 +205,11 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
       await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
-      logger.e('Error generating or sharing PDF for BP: $e', error: e, stackTrace: stack);
+      logger.e(
+        'Error generating or sharing PDF for BP: $e',
+        error: e,
+        stackTrace: stack,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
       );
@@ -204,9 +218,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
 
   void _showTrendChart(AppLocalizations localizations) {
     if (_bloodPressureReadings.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.noDataAvailable)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(localizations.noDataAvailable)));
       return;
     }
 
@@ -218,8 +232,12 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
     final diastolicSpots = <FlSpot>[];
 
     for (int i = 0; i < sortedReadings.length; i++) {
-      systolicSpots.add(FlSpot(i.toDouble(), sortedReadings[i].systolic.toDouble()));
-      diastolicSpots.add(FlSpot(i.toDouble(), sortedReadings[i].diastolic.toDouble()));
+      systolicSpots.add(
+        FlSpot(i.toDouble(), sortedReadings[i].systolic.toDouble()),
+      );
+      diastolicSpots.add(
+        FlSpot(i.toDouble(), sortedReadings[i].diastolic.toDouble()),
+      );
     }
 
     showDialog(
@@ -263,8 +281,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                               if (index % 3 == 0 ||
                                   index == sortedReadings.length - 1) {
                                 return Text(
-                                  DateFormat('dd MMM')
-                                      .format(sortedReadings[index].timestamp),
+                                  DateFormat(
+                                    'dd MMM',
+                                  ).format(sortedReadings[index].timestamp),
                                   style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.black,
@@ -276,12 +295,17 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                           },
                         ),
                       ),
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                     borderData: FlBorderData(show: true),
                     minY: 0,
-                    maxY: 450, // Increased maxY to accommodate higher systolic readings
+                    maxY:
+                        450, // Increased maxY to accommodate higher systolic readings
                     lineBarsData: [
                       LineChartBarData(
                         spots: systolicSpots,
@@ -345,11 +369,7 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
   Widget _buildLegendItem(Color color, String label) {
     return Row(
       children: [
-        Container(
-          width: 16,
-          height: 16,
-          color: color,
-        ),
+        Container(width: 16, height: 16, color: color),
         const SizedBox(width: 8),
         Text(label),
       ],
@@ -370,23 +390,37 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
       mainContent = Center(child: Text(localizations.noDataAvailable));
     } else {
       final groupedBpData = _groupBpReadingsByDate(_bloodPressureReadings);
-      final sortedDates = groupedBpData.keys.toList()..sort((a, b) => b.compareTo(a));
+      final sortedDates = groupedBpData.keys.toList()
+        ..sort((a, b) => b.compareTo(a));
 
       mainContent = ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0), // Add padding to the bottom
+        padding: const EdgeInsets.fromLTRB(
+          16.0,
+          16.0,
+          16.0,
+          60.0,
+        ), // Add padding to the bottom
         itemCount: sortedDates.length,
         itemBuilder: (context, groupIndex) {
           final date = sortedDates[groupIndex];
-          final readingsForDate = groupedBpData[date]!..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          final readingsForDate = groupedBpData[date]!
+            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 0.0,
+                ),
                 child: Text(
                   DateFormat('MMM dd, yyyy').format(DateTime.parse(date)),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue.shade900),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
                 ),
               ),
               ListView.builder(
@@ -398,8 +432,13 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                   return Card(
                     elevation: 6,
                     shadowColor: Colors.blue.shade200.withAlpha(179),
-                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
                     child: InkWell(
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -410,29 +449,52 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  DateFormat('hh:mm a').format(reading.timestamp),
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade800),
+                                  DateFormat(
+                                    'hh:mm a',
+                                  ).format(reading.timestamp),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade800,
+                                      ),
                                 ),
                                 Expanded(
                                   child: Center(
                                     child: Text(
                                       '${reading.systolic}/${reading.diastolic} mmHg',
-                                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue.shade700,
+                                          ),
                                     ),
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.black),
-                                  onPressed: () => _confirmAndDeleteBpReading(reading, localizations),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () => _confirmAndDeleteBpReading(
+                                    reading,
+                                    localizations,
+                                  ),
                                 ),
                               ],
                             ),
-                            if (reading.comment != null && reading.comment!.isNotEmpty)
+                            if (reading.comment != null &&
+                                reading.comment!.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                   'Comment: ${reading.comment}',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey.shade700),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey.shade700,
+                                      ),
                                 ),
                               ),
                           ],
@@ -456,19 +518,44 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () => _generatePdfReport(localizations),
+                onPressed: () => () {
+                  AnalyticsService().pushToGTM(
+                    AnalyticsEventNames.buttonClick,
+                    {
+                      AnalyticsEventNames.buttonClickType:
+                          'export_bp_pdf_click',
+                    },
+                  );
+                  _generatePdfReport(localizations);
+                },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () => _showTrendChart(localizations),
+                onPressed: () => () {
+                  AnalyticsService().pushToGTM(
+                    AnalyticsEventNames.buttonClick,
+                    {
+                      AnalyticsEventNames.buttonClickType: 'view_bp_trend_click',
+                    },
+                  );
+                  _showTrendChart(localizations);
+                },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
               ),
               const SizedBox(width: 8),
               IconButton(
-                onPressed: () => _showFilterOptions(localizations),
+                onPressed: () => () {
+                  AnalyticsService().pushToGTM(
+                    AnalyticsEventNames.buttonClick,
+                    {
+                      AnalyticsEventNames.buttonClickType: 'filter_bp_click',
+                    },
+                  );
+                  _showFilterOptions(localizations);
+                },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,
               ),
@@ -486,7 +573,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AddBpPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const AddBpPage(),
+                      ),
                     );
                     if (result == true) {
                       _fetchData(); // Refresh data if a new BP record was added
@@ -503,20 +592,29 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
     );
   }
 
-  Future<void> _confirmAndDeleteBpReading(BloodPressure reading, AppLocalizations localizations) async {
+  Future<void> _confirmAndDeleteBpReading(
+    BloodPressure reading,
+    AppLocalizations localizations,
+  ) async {
     final bool? confirmDelete = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(localizations.deleteConfirmationTitle), // Assuming you have this key
-          content: Text(localizations.deleteBpReadingConfirmation), // Assuming you have this key
+          title: Text(
+            localizations.deleteConfirmationTitle,
+          ), // Assuming you have this key
+          content: Text(
+            localizations.deleteBpReadingConfirmation,
+          ), // Assuming you have this key
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // User clicked "No"
+              onPressed: () =>
+                  Navigator.of(context).pop(false), // User clicked "No"
               child: Text(localizations.no), // Assuming you have this key
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // User clicked "Yes"
+              onPressed: () =>
+                  Navigator.of(context).pop(true), // User clicked "Yes"
               child: Text(localizations.yes), // Assuming you have this key
             ),
           ],
@@ -534,11 +632,12 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         setState(() {
           _bloodPressureReadings.removeWhere((bp) => bp.id == reading.id);
         });
-
       } catch (e) {
         logger.e('Error deleting BP reading: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(localizations.errorDeletingBpReading(e.toString()))), // Assuming you have this key
+          SnackBar(
+            content: Text(localizations.errorDeletingBpReading(e.toString())),
+          ), // Assuming you have this key
         );
       }
     }

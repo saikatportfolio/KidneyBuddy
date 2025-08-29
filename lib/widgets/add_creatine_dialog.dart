@@ -9,13 +9,19 @@ import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/utils/localization_helper.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddCreatineDialog extends StatefulWidget {
   final String userId;
   final Function refreshData;
 
-  const AddCreatineDialog({super.key, required this.userId, required this.refreshData});
+  const AddCreatineDialog({
+    super.key,
+    required this.userId,
+    required this.refreshData,
+  });
 
   @override
   State<AddCreatineDialog> createState() => _AddCreatineDialogState();
@@ -73,8 +79,10 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(LocalizationHelper.translateKey(
-                context, 'selectDateAndTimeError'))),
+          content: Text(
+            LocalizationHelper.translateKey(context, 'selectDateAndTimeError'),
+          ),
+        ),
       );
       return;
     }
@@ -100,20 +108,30 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
     try {
       final currentUser = Supabase.instance.client.auth.currentUser;
       logger.d(
-          'AddCreatineDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
+        'AddCreatineDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}',
+      );
 
       if (!kIsWeb) {
         await DatabaseHelper().insertCreatine(creatine);
-        logger.i('AddCreatineDialog: Creatine saved to SQLite: ${creatine.value}');
+        logger.i(
+          'AddCreatineDialog: Creatine saved to SQLite: ${creatine.value}',
+        );
       }
 
       await SupabaseService().insertCreatine(creatine);
-      logger.i('AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}');
+      logger.i(
+        'AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}',
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-                LocalizationHelper.translateKey(context, 'Creatine saved Successfully'))),
+          content: Text(
+            LocalizationHelper.translateKey(
+              context,
+              'Creatine saved Successfully',
+            ),
+          ),
+        ),
       );
 
       widget.refreshData();
@@ -122,9 +140,13 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       logger.e('Error saving Creatine: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(LocalizationHelper.translateKey(
-                    context, 'creatineSaveError')
-                .replaceFirst('{error}', e.toString()))),
+          content: Text(
+            LocalizationHelper.translateKey(
+              context,
+              'creatineSaveError',
+            ).replaceFirst('{error}', e.toString()),
+          ),
+        ),
       );
     }
   }
@@ -144,8 +166,10 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
               controller: _dateController,
               readOnly: true,
               decoration: InputDecoration(
-                labelText:
-                    LocalizationHelper.translateKey(context, 'select Date'),
+                labelText: LocalizationHelper.translateKey(
+                  context,
+                  'select Date',
+                ),
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.calendar_today),
               ),
@@ -160,7 +184,12 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
           child: Text(LocalizationHelper.translateKey(context, 'close')),
         ),
         ElevatedButton(
-          onPressed: _saveCreatine,
+          onPressed: () {
+             AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
+      AnalyticsEventNames.buttonClickType: 'save_creatine_click',
+    });
+            _saveCreatine();
+          },
           child: Text(LocalizationHelper.translateKey(context, 'save')),
         ),
       ],
@@ -182,7 +211,11 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
             decimalPlaces: 2,
             onChanged: (value) => setState(() => _currentCreatineValue = value),
             textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
-            selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+            selectedTextStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

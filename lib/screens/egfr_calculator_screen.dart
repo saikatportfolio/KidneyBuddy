@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For FilteringTextInputFormatter
 import 'dart:math'; // For pow, min, max
 import 'package:numberpicker/numberpicker.dart'; // For NumberPicker
+import 'package:myapp/utils/analytics_event_names.dart';
+import 'package:myapp/services/analytics_service.dart';
 
 class EgfrCalculatorScreen extends StatefulWidget {
   const EgfrCalculatorScreen({super.key});
@@ -11,9 +13,11 @@ class EgfrCalculatorScreen extends StatefulWidget {
 }
 
 class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
-  final TextEditingController _serumCreatinineController = TextEditingController();
+  final TextEditingController _serumCreatinineController =
+      TextEditingController();
   int _currentAge = 40; // Default age
-  String? _selectedGender = 'Male'; // Nullable to indicate no selection initially
+  String? _selectedGender =
+      'Male'; // Nullable to indicate no selection initially
   String? _egfrResult; // To store the calculated eGFR result
   String? _ckdStageInterpretation; // To store the CKD stage and interpretation
 
@@ -31,7 +35,8 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
     final maxRatio = max(scrMgDl / k, 1.0);
     final femaleFactor = sex == 'Female' ? 1.012 : 1.0;
 
-    final egfr = 142 *
+    final egfr =
+        142 *
         pow(minRatio, alpha) *
         pow(maxRatio, -1.2) *
         pow(0.9938, age) *
@@ -56,13 +61,17 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
     }
   }
 
-void _performCalculation() {
+  void _performCalculation() {
+    AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
+      AnalyticsEventNames.buttonClickType: 'calculate_egfr_click',
+    });
     final String scrText = _serumCreatinineController.text;
 
     if (scrText.isEmpty || _selectedGender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Please enter all values and select a gender.')),
+          content: Text('Please enter all values and select a gender.'),
+        ),
       );
       setState(() {
         _egfrResult = null; // Clear previous result if inputs are incomplete
@@ -76,7 +85,8 @@ void _performCalculation() {
       if (scr <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Serum Creatinine must be positive values.')),
+            content: Text('Serum Creatinine must be positive values.'),
+          ),
         );
         setState(() {
           _egfrResult = null;
@@ -88,13 +98,15 @@ void _performCalculation() {
 
       setState(() {
         _egfrResult = 'eGFR: ${egfr.toStringAsFixed(2)} mL/min/1.73 m²';
-        _ckdStageInterpretation =
-            _getCKDStageAndInterpretation(egfr); // Set the interpretation
+        _ckdStageInterpretation = _getCKDStageAndInterpretation(
+          egfr,
+        ); // Set the interpretation
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Invalid input. Please enter valid numbers.')),
+          content: Text('Invalid input. Please enter valid numbers.'),
+        ),
       );
       setState(() {
         _egfrResult = null;
@@ -147,9 +159,13 @@ void _performCalculation() {
                           labelText: 'Serum Creatinine Value (mg/dL)',
                           border: OutlineInputBorder(),
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')), // Allow numbers and up to 2 decimal places
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ), // Allow numbers and up to 2 decimal places
                         ],
                       ),
                     ),
@@ -166,7 +182,8 @@ void _performCalculation() {
                             value: _currentAge,
                             minValue: 1,
                             maxValue: 120,
-                            onChanged: (value) => setState(() => _currentAge = value),
+                            onChanged: (value) =>
+                                setState(() => _currentAge = value),
                             width: 100,
                           ),
                           const SizedBox(width: 8.0),
@@ -187,11 +204,19 @@ void _performCalculation() {
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _selectedGender == 'Male' ? Colors.lightBlue : Colors.grey[300],
-                                      foregroundColor: _selectedGender == 'Male' ? Colors.black : Colors.black,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      backgroundColor: _selectedGender == 'Male'
+                                          ? Colors.lightBlue
+                                          : Colors.grey[300],
+                                      foregroundColor: _selectedGender == 'Male'
+                                          ? Colors.black
+                                          : Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 15,
+                                      ),
                                       minimumSize: Size.zero,
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: const Text('Male'),
                                   ),
@@ -202,11 +227,21 @@ void _performCalculation() {
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _selectedGender == 'Female' ? Colors.lightBlue : Colors.grey[300],
-                                      foregroundColor: _selectedGender == 'Female' ? Colors.black : Colors.black,
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      backgroundColor:
+                                          _selectedGender == 'Female'
+                                          ? Colors.lightBlue
+                                          : Colors.grey[300],
+                                      foregroundColor:
+                                          _selectedGender == 'Female'
+                                          ? Colors.black
+                                          : Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 15,
+                                      ),
                                       minimumSize: Size.zero,
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     child: const Text('Female'),
                                   ),
@@ -220,43 +255,43 @@ void _performCalculation() {
                   ),
                   const SizedBox(height: 16.0),
 
-            // Calculate Button
-            ElevatedButton(
-              onPressed: _performCalculation,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                textStyle: const TextStyle(fontSize: 18.0),
-              ),
-              child: const Text('Calculate eGFR'),
-            ),
-            const SizedBox(height: 16.0),
-
-            // eGFR Result Display
-            if (_egfrResult != null)
-              Text(
-                _egfrResult!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            if (_ckdStageInterpretation != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  _ckdStageInterpretation!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
+                  // Calculate Button
+                  ElevatedButton(
+                    onPressed: _performCalculation,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      textStyle: const TextStyle(fontSize: 18.0),
+                    ),
+                    child: const Text('Calculate eGFR'),
                   ),
-                ),
+                  const SizedBox(height: 16.0),
+
+                  // eGFR Result Display
+                  if (_egfrResult != null)
+                    Text(
+                      _egfrResult!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  if (_ckdStageInterpretation != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        _ckdStageInterpretation!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-          ],
-        ),
             ),
           ),
         ],
@@ -264,7 +299,7 @@ void _performCalculation() {
     );
   }
 
-Widget _buildNumberPickerColumn({
+  Widget _buildNumberPickerColumn({
     required String label,
     required int value,
     required int minValue,
@@ -286,7 +321,11 @@ Widget _buildNumberPickerColumn({
             maxValue: maxValue,
             onChanged: onChanged,
             textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
-            selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+            selectedTextStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
             decoration: BoxDecoration(
               border: Border.symmetric(
                 horizontal: BorderSide(color: Colors.grey[300]!),

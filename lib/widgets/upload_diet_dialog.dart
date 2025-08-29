@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 
 class UploadDietDialog extends StatefulWidget {
   const UploadDietDialog({super.key});
@@ -31,6 +33,9 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
   }
 
   Future<void> _uploadFile() async {
+    AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
+      AnalyticsEventNames.buttonClickType: 'upload_diet_click',
+    });
     if (_fileBytes == null || _fileName == null) {
       return;
     }
@@ -51,7 +56,8 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
           return AlertDialog(
             title: const Text('Upload Successful!'),
             content: const Text(
-                "Thank you for sharing your diet plan. We're reviewing it now and will notify you as soon as your updated plan is ready in the app."),
+              "Thank you for sharing your diet plan. We're reviewing it now and will notify you as soon as your updated plan is ready in the app.",
+            ),
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
@@ -69,9 +75,9 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
       });
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading file: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error uploading file: $e')));
     } finally {
       setState(() {
         _isLoading = false;

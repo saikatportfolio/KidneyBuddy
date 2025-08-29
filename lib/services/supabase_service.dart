@@ -77,13 +77,13 @@ class SupabaseService {
           .eq('categoryId', categoryId);
 
       if (response.isEmpty) {
-        print('No education videos found for category ID: \$categoryId');
+        logger.i('No education videos found for category ID: $categoryId');
         return [];
       }
 
       return (response as List).map((map) => EducationVideo.fromJson(map)).toList();
     } catch (e) {
-      print('Error fetching education videos for category ID $categoryId from Supabase: $e');
+      logger.e('Error fetching education videos for category ID $categoryId from Supabase: $e');
       return [];
     }
   }
@@ -124,7 +124,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getPatientDetails: No authenticated user found. Cannot fetch patient details.');
+        logger.i('getPatientDetails: No authenticated user found. Cannot fetch patient details.');
         return null;
       }
 
@@ -151,13 +151,13 @@ class SupabaseService {
           .select('categoryId, categoryName, categoryImage');
 
       if (response.isEmpty) {
-        print('No education categories found in Supabase.');
+        logger.i('No education categories found in Supabase.');
         return [];
       }
 
       return (response as List).map((map) => EducationCategory.fromJson(map)).toList();
     } catch (e) {
-      print('Error fetching education categories from Supabase: \$e');
+      logger.e('Error fetching education categories from Supabase: $e');
       return [];
     }
   }
@@ -167,9 +167,9 @@ class SupabaseService {
     try {
       final data = feedback.toMap();
       await _supabase.from('feedback').insert(data);
-      print('Feedback inserted to Supabase: \${feedback.feedbackText}');
+      logger.i('Feedback inserted to Supabase: ${feedback.feedbackText}');
     } catch (e) {
-      print('Error inserting feedback to Supabase: \$e');
+      logger.e('Error inserting feedback to Supabase: $e');
     }
   }
 
@@ -179,18 +179,18 @@ class SupabaseService {
       final response = await _supabase
           .from('dieticians')
           .select('id, name, experience, specialty, image_url, whatsapp_number, education, available_day, available_hour, fees, languages');
-      print('Supabase raw response for dieticians: \$response');
+      logger.i('Supabase raw response for dieticians: $response');
       
       if ((response.isEmpty)) {
-        print('No data or empty response from Supabase for dieticians.');
+        logger.i('No data or empty response from Supabase for dieticians.');
         return [];
       }
 
       final List<Dietician> dieticians = (response as List).map((map) => Dietician.fromMap(map)).toList();
-      print('Parsed dieticians: \$dieticians');
+      logger.i('Parsed dieticians: $dieticians');
       return dieticians;
     } catch (e) {
-      print('Error fetching dieticians from Supabase: \$e');
+      logger.e('Error fetching dieticians from Supabase: $e');
       return []; // Return empty list on error
     }
   }
@@ -198,9 +198,9 @@ class SupabaseService {
   Future<void> deleteBloodPressureReading(String id) async {
     try {
       await _supabase.from('blood_pressure_readings').delete().eq('id', id);
-      print('Blood pressure reading with ID \$id deleted from Supabase.');
+      logger.i('Blood pressure reading with ID $id deleted from Supabase.');
     } catch (e) {
-      print('Error deleting blood pressure reading from Supabase: \$e');
+      logger.e('Error deleting blood pressure reading from Supabase: $e');
       rethrow;
     }
   }
@@ -215,15 +215,15 @@ class SupabaseService {
           .order('created_at', ascending: false); // Order by newest first
 
       if (response.isEmpty) {
-        print('No reviews found for dietician ID: \$dieticianId');
+        logger.i('No reviews found for dietician ID: $dieticianId');
         return [];
       }
 
       final List<Review> reviews = (response as List).map((map) => Review.fromMap(map)).toList();
-      print('Fetched reviews for dietician \$dieticianId: \$reviews');
+      logger.i('Fetched reviews for dietician $dieticianId: $reviews');
       return reviews;
     } catch (e) {
-      print('Error fetching reviews for dietician \$dieticianId from Supabase: \$e');
+      logger.e('Error fetching reviews for dietician $dieticianId from Supabase: $e');
       return []; // Return empty list on error
     }
   }
@@ -233,15 +233,15 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('insertBloodPressure: No authenticated user found. Cannot insert blood pressure reading.');
+        logger.i('insertBloodPressure: No authenticated user found. Cannot insert blood pressure reading.');
         return;
       }
       bp.userId = user.id; // Assign the current user's ID
       final data = bp.toMap();
       await _supabase.from('blood_pressure_readings').insert(data);
-      print('Blood pressure reading inserted to Supabase: \${bp.systolic}/\${bp.diastolic} for user \${user.id}');
+      logger.i('Blood pressure reading inserted to Supabase: ${bp.systolic}/${bp.diastolic} for user ${user.id}');
     } catch (e) {
-      print('Error inserting blood pressure reading to Supabase: \$e');
+      logger.e('Error inserting blood pressure reading to Supabase: $e');
     }
   }
 
@@ -249,7 +249,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getBloodPressureReadings: No authenticated user found. Cannot fetch blood pressure readings.');
+        logger.i('getBloodPressureReadings: No authenticated user found. Cannot fetch blood pressure readings.');
         return [];
       }
 
@@ -265,15 +265,15 @@ class SupabaseService {
       final response = await query.order('timestamp', ascending: false);
 
       if (response.isEmpty) {
-        print('No blood pressure readings found for user \${user.id} with filter starting from \$startDate.');
+        logger.i('No blood pressure readings found for user ${user.id} with filter starting from $startDate.');
         return [];
       }
 
       final List<BloodPressure> readings = (response as List).map((map) => BloodPressure.fromMap(map)).toList();
-      print('Fetched \${readings.length} blood pressure readings for user \${user.id} with filter starting from \$startDate.');
+      logger.i('Fetched ${readings.length} blood pressure readings for user ${user.id} with filter starting from $startDate.');
       return readings;
     } catch (e) {
-      print('Error fetching blood pressure readings from Supabase: \$e');
+      logger.e('Error fetching blood pressure readings from Supabase: $e');
       return [];
     }
   }
@@ -282,7 +282,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getLatestBloodPressureReading: No authenticated user found. Cannot fetch latest blood pressure reading.');
+        logger.i('getLatestBloodPressureReading: No authenticated user found. Cannot fetch latest blood pressure reading.');
         return null;
       }
 
@@ -298,7 +298,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching latest blood pressure reading from Supabase: \$e');
+      logger.e('Error fetching latest blood pressure reading from Supabase: $e');
       return null;
     }
   }
@@ -308,7 +308,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('insertCreatine: No authenticated user found. Cannot insert creatine reading.');
+        logger.i('insertCreatine: No authenticated user found. Cannot insert creatine reading.');
         return;
       }
       final data = {
@@ -318,9 +318,9 @@ class SupabaseService {
         'comment': creatine.comment,
       };
       await _supabase.from('creatine_readings').insert(data);
-      print('Creatine reading inserted to Supabase: \${creatine.value} for user \${user.id}');
+      logger.i('Creatine reading inserted to Supabase: ${creatine.value} for user ${user.id}');
     } catch (e) {
-      print('Error inserting creatine reading to Supabase: \$e');
+      logger.e('Error inserting creatine reading to Supabase: $e');
     }
   }
 
@@ -328,7 +328,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getCreatineReadings: No authenticated user found. Cannot fetch creatine readings.');
+        logger.i('getCreatineReadings: No authenticated user found. Cannot fetch creatine readings.');
         return [];
       }
 
@@ -344,15 +344,15 @@ class SupabaseService {
       final response = await query.order('timestamp', ascending: false);
 
       if (response.isEmpty) {
-        print('No creatine readings found for user \${user.id} with filter starting from \$startDate.');
+        logger.i('No creatine readings found for user ${user.id} with filter starting from $startDate.');
         return [];
       }
 
       final List<Creatine> readings = (response as List).map((map) => Creatine.fromMap(map)).toList();
-      print('Fetched \${readings.length} creatine readings for user \${user.id} with filter starting from \$startDate.');
+      logger.i('Fetched ${readings.length} creatine readings for user ${user.id} with filter starting from $startDate.');
       return readings;
     } catch (e) {
-      print('Error fetching creatine readings from Supabase: \$e');
+      logger.e('Error fetching creatine readings from Supabase: $e');
       return [];
     }
   }
@@ -361,7 +361,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getLatestCreatineReading: No authenticated user found. Cannot fetch latest creatine reading.');
+        logger.i('getLatestCreatineReading: No authenticated user found. Cannot fetch latest creatine reading.');
         return null;
       }
 
@@ -377,7 +377,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching latest creatine reading from Supabase: \$e');
+      logger.e('Error fetching latest creatine reading from Supabase: $e');
       return null;
     }
   }
@@ -385,9 +385,9 @@ class SupabaseService {
   Future<void> deleteCreatine(String id) async {
     try {
       await _supabase.from('creatine_readings').delete().eq('id', id);
-      print('Creatine reading with ID \$id deleted from Supabase.');
+      logger.i('Creatine reading with ID $id deleted from Supabase.');
     } catch (e) {
-      print('Error deleting creatine reading from Supabase: \$e');
+      logger.e('Error deleting creatine reading from Supabase: $e');
       rethrow;
     }
   }
@@ -397,7 +397,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('insertWeight: No authenticated user found. Cannot insert weight reading.');
+        logger.i('insertWeight: No authenticated user found. Cannot insert weight reading.');
         return;
       }
       final data = {
@@ -407,9 +407,9 @@ class SupabaseService {
         'comment': weight.comment,
       };
       await _supabase.from('weight_readings').insert(data);
-      print('Weight reading inserted to Supabase: \${weight.value} for user \${user.id}');
+      logger.i('Weight reading inserted to Supabase: ${weight.value} for user ${user.id}');
     } catch (e) {
-      print('Error inserting weight reading to Supabase: \$e');
+      logger.e('Error inserting weight reading to Supabase: $e');
     }
   }
 
@@ -417,7 +417,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getWeightReadings: No authenticated user found. Cannot fetch weight readings.');
+        logger.e('getWeightReadings: No authenticated user found. Cannot fetch weight readings.');
         return [];
       }
 
@@ -433,15 +433,15 @@ class SupabaseService {
       final response = await query.order('timestamp', ascending: false);
 
       if (response.isEmpty) {
-        print('No weight readings found for user \${user.id} with filter starting from \$startDate.');
+        logger.e('No weight readings found for user ${user.id} with filter starting from $startDate.');
         return [];
       }
 
       final List<Weight> readings = (response as List).map((map) => Weight.fromMap(map)).toList();
-      print('Fetched \${readings.length} weight readings for user \${user.id} with filter starting from \$startDate.');
+      logger.i('Fetched ${readings.length} weight readings for user ${user.id} with filter starting from $startDate.');
       return readings;
     } catch (e) {
-      print('Error fetching weight readings from Supabase: \$e');
+      logger.e('Error fetching weight readings from Supabase: $e');
       return [];
     }
   }
@@ -466,7 +466,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching latest weight reading from Supabase: \$e');
+      logger.e('Error fetching latest weight reading from Supabase: $e');
       return null;
     }
   }
@@ -474,9 +474,9 @@ class SupabaseService {
   Future<void> deleteWeight(String id) async {
     try {
       await _supabase.from('weight_readings').delete().eq('id', id);
-      print('Weight reading with ID \$id deleted from Supabase.');
+      logger.i('Weight reading with ID $id deleted from Supabase.');
     } catch (e) {
-      print('Error deleting weight reading from Supabase: \$e');
+      logger.e('Error deleting weight reading from Supabase: $e');
       rethrow;
     }
   }
@@ -495,7 +495,7 @@ class SupabaseService {
       }
       return null;
     } catch (e) {
-      print('Error fetching message by key "$key" from Supabase: $e');
+      logger.e('Error fetching message by key "$key" from Supabase: $e');
       return null;
     }
   }
@@ -509,13 +509,13 @@ class SupabaseService {
           .order('message_key', ascending: true);
 
       if (response.isEmpty) {
-        print('No tips found in Supabase.');
+        logger.i('No tips found in Supabase.');
         return [];
       }
 
       return (response as List).map((map) => map['message_text'] as String).toList();
     } catch (e) {
-      print('Error fetching all tips from Supabase: \$e');
+      logger.e('Error fetching all tips from Supabase: $e');
       return [];
     }
   }
@@ -525,7 +525,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getMealPlan: No authenticated user found. Cannot fetch meal plan.');
+        logger.i('getMealPlan: No authenticated user found. Cannot fetch meal plan.');
         return {};
       }
 
@@ -536,7 +536,7 @@ class SupabaseService {
           .limit(1);
 
       if (userMealPlanResponse.isEmpty) {
-        print('No meal plan found for user \${user.id}.');
+        logger.e('No meal plan found for user ${user.id}.');
         return {};
       }
 
@@ -567,7 +567,7 @@ class SupabaseService {
         'mealItemOptions': mealItemOptionsResponse,
       };
     } catch (e) {
-      print('Error fetching meal plan from Supabase: \$e');
+      logger.e('Error fetching meal plan from Supabase: $e');
       return {};
     }
   }
@@ -579,7 +579,7 @@ class SupabaseService {
       if (user == null) {
         throw AuthException('No authenticated user found. Cannot upload file.');
       }
-      final newFileName = '\${user.id}/\${DateTime.now().millisecondsSinceEpoch}_\$fileName';
+      final newFileName = '${user.id}/${DateTime.now().millisecondsSinceEpoch}_$fileName';
       final contentType = lookupMimeType(fileName);
       await _supabase.storage.from('user-files').uploadBinary(
             newFileName,
@@ -588,7 +588,7 @@ class SupabaseService {
           );
       return _supabase.storage.from('user-files').getPublicUrl(newFileName);
     } catch (e) {
-      print('Error uploading file to Supabase: \$e');
+      logger.e('Error uploading file to Supabase: $e');
       rethrow;
     }
   }
@@ -607,7 +607,7 @@ class SupabaseService {
       );
       await _supabase.from('userfiles').insert(userFile.toMap());
     } catch (e) {
-      print('Error inserting user file to Supabase: \$e');
+      logger.e('Error inserting user file to Supabase: $e');
       rethrow;
     }
   }
@@ -617,7 +617,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getNutritionRestrictions: No authenticated user found. Cannot fetch nutrition restrictions.');
+        logger.i('getNutritionRestrictions: No authenticated user found. Cannot fetch nutrition restrictions.');
         return [];
       }
 
@@ -628,17 +628,17 @@ class SupabaseService {
           .order('sequence', ascending: true);
 
       if (response.isEmpty) {
-        print('No nutrition restrictions found for user \${user.id}.');
+        logger.i('No nutrition restrictions found for user ${user.id}.');
         return [];
       }
 
       final List<NutritionRestriction> restrictions = (response as List)
           .map((map) => NutritionRestriction.fromMap(map))
           .toList();
-      print('Fetched \${restrictions.length} nutrition restrictions for user \${user.id}.');
+      logger.i('Fetched ${restrictions.length} nutrition restrictions for user ${user.id}.');
       return restrictions;
     } catch (e) {
-      print('Error fetching nutrition restrictions from Supabase: \$e');
+      logger.e('Error fetching nutrition restrictions from Supabase: $e');
       return [];
     }
   }

@@ -9,13 +9,19 @@ import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/utils/localization_helper.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddWeightDialog extends StatefulWidget {
   final String userId;
   final Function refreshData;
 
-  const AddWeightDialog({super.key, required this.userId, required this.refreshData});
+  const AddWeightDialog({
+    super.key,
+    required this.userId,
+    required this.refreshData,
+  });
 
   @override
   State<AddWeightDialog> createState() => _AddWeightDialogState();
@@ -73,8 +79,10 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(LocalizationHelper.translateKey(
-                context, 'selectDateAndTimeError'))),
+          content: Text(
+            LocalizationHelper.translateKey(context, 'selectDateAndTimeError'),
+          ),
+        ),
       );
       return;
     }
@@ -100,7 +108,8 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
     try {
       final currentUser = Supabase.instance.client.auth.currentUser;
       logger.d(
-          'AddWeightDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}');
+        'AddWeightDialog: Current user before saving: ${currentUser?.id != null ? 'Logged In (ID: ${currentUser!.id})' : 'Logged Out'}',
+      );
 
       if (!kIsWeb) {
         await DatabaseHelper().insertWeight(weight);
@@ -112,8 +121,13 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-                LocalizationHelper.translateKey(context, 'Weight saved successfully'))),
+          content: Text(
+            LocalizationHelper.translateKey(
+              context,
+              'Weight saved successfully',
+            ),
+          ),
+        ),
       );
 
       widget.refreshData();
@@ -122,9 +136,13 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
       logger.e('Error saving Weight: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(LocalizationHelper.translateKey(
-                    context, 'weightSaveError')
-                .replaceFirst('{error}', e.toString()))),
+          content: Text(
+            LocalizationHelper.translateKey(
+              context,
+              'weightSaveError',
+            ).replaceFirst('{error}', e.toString()),
+          ),
+        ),
       );
     }
   }
@@ -144,8 +162,10 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
               controller: _dateController,
               readOnly: true,
               decoration: InputDecoration(
-                labelText:
-                    LocalizationHelper.translateKey(context, 'select Date'),
+                labelText: LocalizationHelper.translateKey(
+                  context,
+                  'select Date',
+                ),
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.calendar_today),
               ),
@@ -160,7 +180,12 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
           child: Text(LocalizationHelper.translateKey(context, 'close')),
         ),
         ElevatedButton(
-          onPressed: _saveWeight,
+          onPressed: () {
+            AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
+              AnalyticsEventNames.buttonClickType: 'save_weight_click',
+            });
+            _saveWeight();
+          },
           child: Text(LocalizationHelper.translateKey(context, 'save')),
         ),
       ],
@@ -182,7 +207,11 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
             decimalPlaces: 1,
             onChanged: (value) => setState(() => _currentWeightValue = value),
             textStyle: TextStyle(color: Colors.grey[400], fontSize: 20),
-            selectedTextStyle: const TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+            selectedTextStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
