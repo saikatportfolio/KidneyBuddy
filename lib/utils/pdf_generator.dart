@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart'; // For date formatting
@@ -14,6 +16,10 @@ class PdfGenerator {
       PatientDetails? patientDetails, List<BloodPressure> bpReadings) async {
     final pdf = pw.Document();
 
+    // Load the image
+    final imageBytes = await rootBundle.load('assets/images/praacto_splash.png');
+    final image = pw.MemoryImage(imageBytes.buffer.asUint8List());
+
     // Sort readings by timestamp in descending order (newest first)
     bpReadings.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
@@ -25,14 +31,20 @@ class PdfGenerator {
           marginLeft: 36,
           marginRight: 36,
         ),
-        build: (pw.Context context) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Text('Blood Pressure Report',
+        header: (context) => pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('Blood Pressure Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-            ),
+              pw.Image(image, width: 50, height: 50),
+            ],
+          ),
+        ),
+        build: (pw.Context context) {
+          return [
             pw.SizedBox(height: 20),
 
             // Patient Details Section
@@ -147,6 +159,10 @@ class PdfGenerator {
       PatientDetails? patientDetails, List<Creatine> creatineReadings) async {
     final pdf = pw.Document();
 
+    // Load the image
+    final imageBytes = await rootBundle.load('assets/images/practo_icon.png');
+    final image = pw.MemoryImage(imageBytes.buffer.asUint8List());
+
     // Sort readings by timestamp in descending order (newest first)
     creatineReadings.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
@@ -158,14 +174,20 @@ class PdfGenerator {
           marginLeft: 36,
           marginRight: 36,
         ),
-        build: (pw.Context context) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Text('Creatinine Report',
+        header: (context) => pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('Creatinine Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-            ),
+              pw.Image(image, width: 50, height: 50),
+            ],
+          ),
+        ),
+        build: (pw.Context context) {
+          return [
             pw.SizedBox(height: 20),
 
             // Patient Details Section
@@ -278,6 +300,10 @@ class PdfGenerator {
       PatientDetails? patientDetails, List<Weight> weightReadings) async {
     final pdf = pw.Document();
 
+    // Load the image
+    final imageBytes = await rootBundle.load('assets/images/practo_icon.png');
+    final image = pw.MemoryImage(imageBytes.buffer.asUint8List());
+
     // Sort readings by timestamp in descending order (newest first)
     weightReadings.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
@@ -289,14 +315,20 @@ class PdfGenerator {
           marginLeft: 36,
           marginRight: 36,
         ),
-        build: (pw.Context context) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Text('Weight Report',
+        header: (context) => pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('Weight Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-            ),
+              pw.Image(image, width: 50, height: 50),
+            ],
+          ),
+        ),
+        build: (pw.Context context) {
+          return [
             pw.SizedBox(height: 20),
 
             // Patient Details Section
