@@ -55,10 +55,14 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } on AuthException catch (e) {
       logger.e('Google Auth Error: ${e.message}');
+      if(mounted){
       _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', e.message));
+    }
     } catch (e) {
       logger.e('Google General Error: $e');
+       if(mounted){
       _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', e.toString()));
+       }
     } finally {
       if (mounted) {
         setState(() {

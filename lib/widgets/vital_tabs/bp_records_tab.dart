@@ -34,15 +34,15 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
   final SupabaseService _supabaseService = SupabaseService();
   final AnomalyDetectionService _anomalyService = AnomalyDetectionService();
 
-  void _showAnomalyDialog(
-    BuildContext context,
-  ) {
+  void _showAnomalyDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Anomaly Detected'),
-          content: const Text('Potential anomaly detected in your blood pressure reading.'),
+          content: const Text(
+            'Potential anomaly detected in your blood pressure reading.',
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -234,9 +234,13 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         error: e,
         stackTrace: stack,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.pdfGenerationError(e.toString())),
+          ),
+        );
+      }
     }
   }
 
@@ -671,11 +675,13 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         });
       } catch (e) {
         logger.e('Error deleting BP reading: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations.errorDeletingBpReading(e.toString())),
-          ), // Assuming you have this key
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(localizations.errorDeletingBpReading(e.toString())),
+            ), // Assuming you have this key
+          );
+        }
       }
     }
   }

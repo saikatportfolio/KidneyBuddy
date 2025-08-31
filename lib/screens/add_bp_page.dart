@@ -141,14 +141,15 @@ class _AddBpPageState extends State<AddBpPage> {
       logger.i(
         'AddBpPage: BP saved to Supabase: ${bloodPressure.systolic}/${bloodPressure.diastolic}',
       );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            LocalizationHelper.translateKey(context, 'BP Saved Successfully'),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              LocalizationHelper.translateKey(context, 'BP Saved Successfully'),
+            ),
           ),
-        ),
-      );
+        );
+      }
 
       // Clear fields after successful save
       _commentController.clear();
@@ -178,16 +179,18 @@ class _AddBpPageState extends State<AddBpPage> {
       }
     } catch (e) {
       logger.e('Error saving BP: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            LocalizationHelper.translateKey(
-              context,
-              'bpSaveError',
-            ).replaceFirst('{error}', e.toString()),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              LocalizationHelper.translateKey(
+                context,
+                'bpSaveError',
+              ).replaceFirst('{error}', e.toString()),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -210,7 +213,9 @@ class _AddBpPageState extends State<AddBpPage> {
               const Text('Recommendations:'),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: recommendations.map((recommendation) => Text('- $recommendation')).toList(),
+                children: recommendations
+                    .map((recommendation) => Text('- $recommendation'))
+                    .toList(),
               ),
             ],
           ),

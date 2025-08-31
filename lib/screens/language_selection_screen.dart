@@ -48,10 +48,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
       // or to the next screen in the onboarding flow (e.g., PatientDetailsPage)
       // For now, let's just pop if it's a simple flow, or navigate to the next step.
       // Assuming we want to go back to the onboarding screen to continue.
+      if(mounted){
       Navigator.of(context).pop();
+      }
     } else {
+         if(mounted){
       // If coming from settings, just pop the screen
       Navigator.of(context).pop();
+         }
     }
   }
 

@@ -16,10 +16,10 @@ class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
 
   @override
-  _FeedbackPageState createState() => _FeedbackPageState();
+  FeedbackPageState createState() => FeedbackPageState();
 }
 
-class _FeedbackPageState extends State<FeedbackPage> {
+class FeedbackPageState extends State<FeedbackPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _feedbackController = TextEditingController();
   final TextEditingController _nameController =
@@ -125,10 +125,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
       // Always sync to Supabase
       await SupabaseService().insertFeedback(feedback);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Feedback submitted successfully!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Feedback submitted successfully!')),
+        );
+      }
 
       _feedbackController.clear();
       setState(() {
@@ -136,9 +137,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
       });
 
       // Navigate to Home Page
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => home_page.HomePage()),
-      );
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => home_page.HomePage()),
+        );
+      }
     }
   }
 

@@ -34,15 +34,15 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
   final SupabaseService _supabaseService = SupabaseService();
   final AnomalyDetectionService _anomalyService = AnomalyDetectionService();
 
-  void _showAnomalyDialog(
-    BuildContext context,
-  ) {
+  void _showAnomalyDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Anomaly Detected'),
-          content: const Text('Potential anomaly detected in your creatinine reading.'),
+          content: const Text(
+            'Potential anomaly detected in your creatinine reading.',
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -234,9 +234,11 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
         error: e,
         stackTrace: stack,
       );
+      if(mounted){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
       );
+      }
     }
   }
 
@@ -628,13 +630,15 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
         });
       } catch (e) {
         logger.e('Error deleting Creatine reading: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations.errorDeletingCreatineReading(e.toString()),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                localizations.errorDeletingCreatineReading(e.toString()),
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
   }

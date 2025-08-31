@@ -9,10 +9,10 @@ class EducationCategoryScreen extends StatefulWidget {
   const EducationCategoryScreen({super.key});
 
   @override
-  _EducationCategoryScreenState createState() => _EducationCategoryScreenState();
+  EducationCategoryScreenState createState() => EducationCategoryScreenState();
 }
 
-class _EducationCategoryScreenState extends State<EducationCategoryScreen> {
+class EducationCategoryScreenState extends State<EducationCategoryScreen> {
   late Future<List<EducationCategory>> _educationCategoriesFuture;
 
   @override

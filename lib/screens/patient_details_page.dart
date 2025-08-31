@@ -19,10 +19,10 @@ class PatientDetailsPage extends StatefulWidget {
   const PatientDetailsPage({super.key, this.source});
 
   @override
-  _PatientDetailsPageState createState() => _PatientDetailsPageState();
+  PatientDetailsPageState createState() => PatientDetailsPageState();
 }
 
-class _PatientDetailsPageState extends State<PatientDetailsPage> {
+class PatientDetailsPageState extends State<PatientDetailsPage> {
   final _formKey = GlobalKey<FormState>();
   int _currentStep = 1;
   final TextEditingController _nameController = TextEditingController();

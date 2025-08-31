@@ -207,11 +207,9 @@ class MyAppState extends State<MyApp> {
             }
             // Call setUserId method in AnalyticsService
             final userId = currentUser.id;
-            if (userId != null) {
-              await prefs.setString('google_user_id', userId);
-              await _analyticsService.setUserId(userId);
-            }
-          }
+            await prefs.setString('google_user_id', userId);
+            await _analyticsService.setUserId(userId);
+                    }
           PatientDetails? fetchedDetails;
           if (kIsWeb) {
             fetchedDetails = await SupabaseService().getPatientDetails();
