@@ -107,9 +107,11 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
           if (await canLaunchUrl(url)) {
             await launchUrl(url);
           } else {
+                  if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Could not launch \$url')),
             );
+                  }
           }
         },
         child: Column(
@@ -119,6 +121,7 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
               flex: 4,
               child: SizedBox(
                 width: double.infinity,
+                // ignore: unnecessary_null_comparison
                 child: video.videoImageURL == null
                     ? const Center(
                         child: Icon(

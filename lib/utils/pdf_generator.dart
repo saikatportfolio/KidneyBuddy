@@ -117,7 +117,7 @@ class PdfGenerator {
       final tableHeaders = ['Time', 'Systolic', 'Diastolic', 'Comment']; // Make headers non-constant
 
       dateSections.add(
-        pw.Table.fromTextArray(
+        pw.TableHelper.fromTextArray(
           headers: tableHeaders, // Use non-constant headers
           data: readingsForDate.map((bp) => [
             DateFormat('hh:mm a').format(bp.timestamp),
@@ -250,7 +250,7 @@ class PdfGenerator {
       final tableHeaders = ['Time', 'Value (mg/dL)', 'Comment']; // Make headers non-constant
 
       dateSections.add(
-        pw.Table.fromTextArray(
+        pw.TableHelper.fromTextArray(
           headers: tableHeaders, // Use non-constant headers
           data: readingsForDate.map((cr) => [
             DateFormat('hh:mm a').format(cr.timestamp),
@@ -381,7 +381,7 @@ class PdfGenerator {
       final tableHeaders = ['Time', 'Weight (kg)', 'Comment'];
 
       dateSections.add(
-        pw.Table.fromTextArray(
+        pw.TableHelper.fromTextArray(
           headers: tableHeaders,
           data: readingsForDate.map((wt) => [
             DateFormat('hh:mm a').format(wt.timestamp),

@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:numberpicker/numberpicker.dart'; // Import numberpicker
 import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/services/anomaly_detection_service.dart'; // Import AnomalyDetectionService
 
 class AddBpPage extends StatefulWidget {
   const AddBpPage({super.key});
@@ -160,6 +161,18 @@ class _AddBpPageState extends State<AddBpPage> {
       });
 
       // Pop back to the previous screen (VitalTrackingPage) with a result indicating success
+      // final anomalyService = AnomalyDetectionService();
+      // logger.i("anomalyService.detectVitalAnomaly call");
+      // final anomalyResult = await anomalyService.detectVitalAnomaly(bloodPressure: bloodPressure);
+
+      // if (anomalyResult['isAnomalous'] == true) {
+      //   _showAnomalyDialog(
+      //     context,
+      //     anomalyResult['explanation'],
+      //     anomalyResult['recommendations'],
+      //   );
+      // }
+
       if (mounted) {
         Navigator.of(context).pop(true); // Pass true to indicate success
       }
@@ -176,6 +189,40 @@ class _AddBpPageState extends State<AddBpPage> {
         ),
       );
     }
+  }
+
+  void _showAnomalyDialog(
+    BuildContext context,
+    String explanation,
+    List<String> recommendations,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Anomaly Detected'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(explanation),
+              const SizedBox(height: 8),
+              const Text('Recommendations:'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: recommendations.map((recommendation) => Text('- $recommendation')).toList(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

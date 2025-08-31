@@ -82,31 +82,32 @@ class _VitalTrackingPageState extends State<VitalTrackingPage>
       }
       return;
     }
-
-    final patientDetailsProvider = Provider.of<PatientDetailsProvider>(
-      context,
-      listen: false,
-    );
-    logger.d(
-      'VitalTrackingPage: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails}',
-    );
-
-    if (patientDetailsProvider.patientDetails == null && !isSkipEnabled) {
-      logger.i(
-        'VitalTrackingPage: Patient details not found. Navigating to PatientDetailsPage.',
+    if (mounted) {
+      final patientDetailsProvider = Provider.of<PatientDetailsProvider>(
+        context,
+        listen: false,
       );
-      if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  const PatientDetailsPage(source: "vital_tracking"),
-            ),
-          );
-        });
+      logger.d(
+        'VitalTrackingPage: patientDetailsProvider.patientDetails: ${patientDetailsProvider.patientDetails}',
+      );
+
+      if (patientDetailsProvider.patientDetails == null && !isSkipEnabled) {
+        logger.i(
+          'VitalTrackingPage: Patient details not found. Navigating to PatientDetailsPage.',
+        );
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const PatientDetailsPage(source: "vital_tracking"),
+              ),
+            );
+          });
+        }
+        return;
       }
-      return;
     }
 
     if (!kIsWeb) {

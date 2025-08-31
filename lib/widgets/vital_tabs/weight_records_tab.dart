@@ -209,9 +209,13 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
         error: e,
         stackTrace: stack,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.pdfGenerationError(e.toString())),
+          ),
+        );
+      }
     }
   }
 
@@ -498,7 +502,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
                   _generatePdfReport(localizations);
                   AnalyticsService()
                       .pushToGTM(AnalyticsEventNames.buttonClick, {
@@ -511,7 +515,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
                   _showWeightTrendChart(localizations);
                   AnalyticsService()
                       .pushToGTM(AnalyticsEventNames.buttonClick, {
@@ -524,7 +528,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                onPressed: () => () {
+                onPressed: () {
                   _showFilterOptions(localizations);
                   AnalyticsService().pushToGTM(
                     AnalyticsEventNames.buttonClick,
@@ -604,13 +608,15 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
         });
       } catch (e) {
         logger.e('Error deleting Weight reading: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations.errorDeletingWeightReading(e.toString()),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                localizations.errorDeletingWeightReading(e.toString()),
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
   }

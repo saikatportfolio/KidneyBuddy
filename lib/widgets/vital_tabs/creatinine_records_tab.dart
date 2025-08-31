@@ -12,6 +12,7 @@ import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
 import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:printing/printing.dart'; // Import printing for PDF sharing
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
+import 'package:myapp/services/anomaly_detection_service.dart';
 
 class CreatinineRecordsTab extends StatefulWidget {
   final String userId;
@@ -31,6 +32,29 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
   List<Creatine> _creatineReadings = [];
   bool _isLoading = true;
   final SupabaseService _supabaseService = SupabaseService();
+  final AnomalyDetectionService _anomalyService = AnomalyDetectionService();
+
+  void _showAnomalyDialog(
+    BuildContext context,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Anomaly Detected'),
+          content: const Text('Potential anomaly detected in your creatinine reading.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // Public method to refresh data
   void refreshData() {
@@ -498,7 +522,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
                   _generatePdfReport(localizations);
                   AnalyticsService()
                       .pushToGTM(AnalyticsEventNames.buttonClick, {
@@ -511,7 +535,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
                   _showTrendChart(localizations);
                   AnalyticsService()
                       .pushToGTM(AnalyticsEventNames.buttonClick, {
@@ -524,7 +548,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                onPressed: () => () {
+                onPressed: () {
                   _showFilterOptions(localizations);
                   AnalyticsService().pushToGTM(
                     AnalyticsEventNames.buttonClick,

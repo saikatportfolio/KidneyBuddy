@@ -450,7 +450,7 @@ class SupabaseService {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        print('getLatestWeightReading: No authenticated user found. Cannot fetch latest weight reading.');
+        logger.e('getLatestWeightReading: No authenticated user found. Cannot fetch latest weight reading.');
         return null;
       }
 

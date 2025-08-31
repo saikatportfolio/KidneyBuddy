@@ -11,6 +11,7 @@ import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/services/anomaly_detection_service.dart'; // Import AnomalyDetectionService
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddWeightDialog extends StatefulWidget {
@@ -118,7 +119,7 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
 
       await SupabaseService().insertWeight(weight);
       logger.i('AddWeightDialog: Weight saved to Supabase: ${weight.value}');
-
+      if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -129,22 +130,75 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
           ),
         ),
       );
+      }
 
       widget.refreshData();
-      Navigator.of(context).pop();
+
+      // final anomalyService = AnomalyDetectionService();
+      // final anomalyResult = await anomalyService.detectVitalAnomaly(weight: weight);
+
+      // if (anomalyResult['isAnomalous'] == true) {
+      //   _showAnomalyDialog(
+      //     context,
+      //     anomalyResult['explanation'],
+      //     anomalyResult['recommendations'],
+      //   );
+      // }
+
+      if (mounted) {
+        Navigator.of(context).pop(true);
+      }
     } catch (e) {
       logger.e('Error saving Weight: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            LocalizationHelper.translateKey(
-              context,
-              'weightSaveError',
-            ).replaceFirst('{error}', e.toString()),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              LocalizationHelper.translateKey(
+                context,
+                'weightSaveError',
+              ).replaceFirst('{error}', e.toString()),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
+  }
+
+  void _showAnomalyDialog(
+    BuildContext context,
+    String explanation,
+    List<String> recommendations,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Anomaly Detected'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(explanation),
+              const SizedBox(height: 8),
+              const Text('Recommendations:'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: recommendations
+                    .map((recommendation) => Text('- $recommendation'))
+                    .toList(),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

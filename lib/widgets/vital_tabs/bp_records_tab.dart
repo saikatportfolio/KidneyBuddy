@@ -12,6 +12,7 @@ import 'package:myapp/utils/pdf_generator.dart'; // Import PdfGenerator
 import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:printing/printing.dart'; // Import printing for PDF sharing
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
+import 'package:myapp/services/anomaly_detection_service.dart';
 
 class BpRecordsTab extends StatefulWidget {
   final String userId;
@@ -31,6 +32,29 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   bool _isLoading = true;
   final SupabaseService _supabaseService = SupabaseService();
+  final AnomalyDetectionService _anomalyService = AnomalyDetectionService();
+
+  void _showAnomalyDialog(
+    BuildContext context,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Anomaly Detected'),
+          content: const Text('Potential anomaly detected in your blood pressure reading.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // Public method to refresh data
   void refreshData() {
@@ -482,6 +506,20 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                                     localizations,
                                   ),
                                 ),
+                                // IconButton(
+                                //   icon: const Icon(Icons.warning, color: Colors.orange),
+                                //   onPressed: () async {
+                                //     final anomalyService = AnomalyDetectionService();
+                                //     final anomalyResult = await anomalyService.detectVitalAnomaly(bloodPressure: reading);
+                                //     if (anomalyResult['isAnomalous'] == true) {
+                                //       _showAnomalyDialog(context);
+                                //     } else {
+                                //       ScaffoldMessenger.of(context).showSnackBar(
+                                //         const SnackBar(content: Text('No anomaly detected.')),
+                                //       );
+                                //     }
+                                //   },
+                                // ),
                               ],
                             ),
                             if (reading.comment != null &&
@@ -518,7 +556,8 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
+                  _generatePdfReport(localizations);
                   AnalyticsService().pushToGTM(
                     AnalyticsEventNames.buttonClick,
                     {
@@ -526,35 +565,33 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                           'export_bp_pdf_click',
                     },
                   );
-                  _generatePdfReport(localizations);
                 },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () => () {
+                onPressed: () {
+                  _showTrendChart(localizations);
                   AnalyticsService().pushToGTM(
                     AnalyticsEventNames.buttonClick,
                     {
-                      AnalyticsEventNames.buttonClickType: 'view_bp_trend_click',
+                      AnalyticsEventNames.buttonClickType:
+                          'view_bp_trend_click',
                     },
                   );
-                  _showTrendChart(localizations);
                 },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
               ),
               const SizedBox(width: 8),
               IconButton(
-                onPressed: () => () {
+                onPressed: () {
+                  _showFilterOptions(localizations);
                   AnalyticsService().pushToGTM(
                     AnalyticsEventNames.buttonClick,
-                    {
-                      AnalyticsEventNames.buttonClickType: 'filter_bp_click',
-                    },
+                    {AnalyticsEventNames.buttonClickType: 'filter_bp_click'},
                   );
-                  _showFilterOptions(localizations);
                 },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,

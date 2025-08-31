@@ -28,9 +28,11 @@ class _DieticianListPageState extends State<DieticianListPage> {
     if (await canLaunchUrl(whatsappUri)) {
       await launchUrl(whatsappUri);
     } else {
+            if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not launch WhatsApp. Make sure it is installed.')),
       );
+            }
     }
   }
 
