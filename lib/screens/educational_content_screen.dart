@@ -14,6 +14,7 @@ class EducationalContentScreen extends StatefulWidget {
 class _EducationalContentScreenState extends State<EducationalContentScreen> {
   late VideoPlayerController _controller;
   bool _isVideoPlaying = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
       ..initialize().then((_) {
         setState(() {
           _isVideoPlaying = true;
+          _isLoading = false;
           _controller.play();
         });
       });
@@ -74,12 +76,15 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    if (_controller.value.isInitialized)
+                    if (_isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (_controller.value.isInitialized)
                       AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
                         child: VideoPlayer(_controller),
-                      ),
-                    //const Center(child: CircularProgressIndicator()),
+                      )
+                    else
+                      const Center(child: CircularProgressIndicator()),
                     FloatingActionButton(
                       backgroundColor: Colors.blue.withValues(alpha: 0.5),
                       onPressed: () {
