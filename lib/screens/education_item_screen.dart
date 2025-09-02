@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/education_video.dart';
 import 'package:myapp/services/supabase_service.dart';
+import 'package:myapp/screens/educational_content_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EducationItemScreen extends StatefulWidget {
@@ -103,14 +104,12 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () async {
-          final Uri url = Uri.parse(video.videoUrl);
-          if (await canLaunchUrl(url)) {
-            await launchUrl(url);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Could not launch \$url')),
-            );
-          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EducationalContentScreen(videoUrl: video.videoUrl, categoryName: widget.categoryName),
+            ),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +143,7 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                           } else {
                             return Image.network(
                               video.videoImageURL,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Center(
                                   child: Icon(
