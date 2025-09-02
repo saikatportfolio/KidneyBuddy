@@ -11,7 +11,7 @@ import 'package:myapp/utils/logger_config.dart';
 import 'package:myapp/utils/localization_helper.dart';
 import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
-import 'package:myapp/services/anomaly_detection_service.dart'; // Import AnomalyDetectionService
+// Import AnomalyDetectionService
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AddCreatineDialog extends StatefulWidget {

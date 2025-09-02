@@ -107,11 +107,9 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
           if (await canLaunchUrl(url)) {
             await launchUrl(url);
           } else {
-                  if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Could not launch \$url')),
             );
-                  }
           }
         },
         child: Column(

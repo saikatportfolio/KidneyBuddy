@@ -188,6 +188,7 @@ class MyAppState extends State<MyApp> {
             return;
           }
           if (mounted) {
+            AnalyticsService().logEvent('google_sign_in_succcessfull', {});
             final name = currentUser.userMetadata?['full_name'] as String?;
             final email = currentUser.email;
             final photoUrl = currentUser.userMetadata?['picture'] as String?; // Common key for Google profile picture

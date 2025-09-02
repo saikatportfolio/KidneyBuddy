@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/utils/localization_helper.dart';
@@ -19,9 +20,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void _showSnackBar(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _signInWithGoogle() async {
@@ -39,30 +40,45 @@ class _AuthScreenState extends State<AuthScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const PatientDetailsPage(), // No longer passing name/email directly
+                builder: (context) =>
+                    const PatientDetailsPage(), // No longer passing name/email directly
               ),
             );
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const home_page.HomePage()),
+              MaterialPageRoute(
+                builder: (context) => const home_page.HomePage(),
+              ),
             );
           }
-          _showSnackBar(LocalizationHelper.translateKey(context, 'loginSuccessMessage'));
+          _showSnackBar(
+            LocalizationHelper.translateKey(context, 'loginSuccessMessage'),
+          );
         }
       } else if (mounted) {
-       // _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', 'Sign-in failed.'));
+        // _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', 'Sign-in failed.'));
       }
     } on AuthException catch (e) {
       logger.e('Google Auth Error: ${e.message}');
-      if(mounted){
-      _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', e.message));
-    }
+      if (mounted) {
+        _showSnackBar(
+          LocalizationHelper.translateKey(
+            context,
+            'authErrorMessage',
+          ).replaceFirst('{error}', e.message),
+        );
+      }
     } catch (e) {
       logger.e('Google General Error: $e');
-       if(mounted){
-      _showSnackBar(LocalizationHelper.translateKey(context, 'authErrorMessage').replaceFirst('{error}', e.toString()));
-       }
+      if (mounted) {
+        _showSnackBar(
+          LocalizationHelper.translateKey(
+            context,
+            'authErrorMessage',
+          ).replaceFirst('{error}', e.toString()),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -85,7 +101,12 @@ class _AuthScreenState extends State<AuthScreen> {
             width: double.infinity,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              return Container(color: Colors.grey, child: const Center(child: Icon(Icons.error, size: 100, color: Colors.white)));
+              return Container(
+                color: Colors.grey,
+                child: const Center(
+                  child: Icon(Icons.error, size: 100, color: Colors.white),
+                ),
+              );
             },
           ),
           Expanded(
@@ -99,9 +120,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0,
+                  vertical: 40.0,
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start, // Align content to start
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Align content to start
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
@@ -116,10 +141,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: 15),
                     Text(
                       localizations.authScreenNewDescription,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40), // Increased spacing
@@ -129,7 +151,10 @@ class _AuthScreenState extends State<AuthScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: _signInWithGoogle,
+                          onPressed: (){
+                            AnalyticsService().logEvent('google_sign_in_click', {});
+                            _signInWithGoogle();
+                          },
                           icon: Image.asset(
                             'assets/images/google_logo.png',
                             height: 24.0,
@@ -145,7 +170,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            side: BorderSide(color: Theme.of(context).colorScheme.primary), // Primary color border
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                            ), // Primary color border
                           ),
                         ),
                       ),

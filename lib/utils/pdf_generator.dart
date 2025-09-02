@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
@@ -39,7 +38,7 @@ class PdfGenerator {
               pw.Text('Blood Pressure Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.Image(image, width: 50, height: 50),
+              pw.Image(image, width: 70, height: 70),
             ],
           ),
         ),

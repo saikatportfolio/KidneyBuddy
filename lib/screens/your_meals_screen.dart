@@ -7,6 +7,7 @@ import 'package:myapp/models/nutrition_restriction.dart'; // Import NutritionRes
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/widgets/upload_diet_dialog.dart'; // Import the new dialog widget
 import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/utils/logger_config.dart';
 
 class YourMealsScreen extends StatefulWidget {
   const YourMealsScreen({super.key});
@@ -391,6 +392,8 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
+              logger.d('Event triggered: diet_chart_upload_dialog_opened');
+              AnalyticsService().logEvent('diet_chart_upload_dialog_opened', {});
               return const UploadDietDialog();
             },
           );

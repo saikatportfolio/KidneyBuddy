@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/education_category_screen.dart';
 // Import NotificationPage
@@ -72,10 +71,7 @@ class _HomePageState extends State<HomePage> {
     });
     try {
       final supabaseService = SupabaseService();
-      final welcomeMsg = await supabaseService.getMessageByKey(
-        'welcome_message',
-      );
-      final tips = await supabaseService.getAllTips();
+      //final tips = await supabaseService.getAllTips();
       final videoUrlData = await supabaseService.getMessageByKey('video_url');
       // final videoThumbnailUrlData =
       //     await supabaseService.getMessageByKey('image_thumbnail');

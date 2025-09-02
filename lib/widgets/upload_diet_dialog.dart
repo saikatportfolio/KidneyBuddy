@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/analytics_event_names.dart';
+import 'package:myapp/utils/logger_config.dart';
 
 class UploadDietDialog extends StatefulWidget {
   const UploadDietDialog({super.key});
@@ -29,6 +30,8 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
         _fileBytes = result.files.single.bytes;
         _fileName = result.files.single.name;
       });
+      logger.d('Event triggered: file_picked');
+      AnalyticsService().logEvent('file_picked', {});
     }
   }
 
@@ -48,6 +51,8 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
       final supabaseService = SupabaseService();
       final fileUrl = await supabaseService.uploadFile(_fileBytes!, _fileName!);
       await supabaseService.insertUserFile(fileUrl, _fileName!);
+      logger.d('Event triggered: upload_successful');
+      AnalyticsService().logEvent('upload_successful', {});
       if (!mounted) return;
       Navigator.of(context).pop(); // Close the dialog
       showDialog(
@@ -74,6 +79,8 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
         _fileName = null;
       });
     } catch (e) {
+      logger.d('Event triggered: upload_failed, error: ${e.toString()}');
+      AnalyticsService().logEvent('upload_failed', {'error': e.toString()});
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
@@ -98,7 +105,11 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
               const SizedBox(height: 16),
             ],
             ElevatedButton(
-              onPressed: _pickFile,
+              onPressed: () {
+                logger.d('Event triggered: Pick_a_file');
+                AnalyticsService().logEvent('Pick_a_file', {});
+                _pickFile();
+              },
               child: const Text('Pick a file'),
             ),
             const SizedBox(height: 16),

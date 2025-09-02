@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/services/analytics_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:myapp/screens/auth_screen.dart';
@@ -41,7 +42,9 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSeenOnboarding', true);
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const AuthScreen()), // Navigate to AuthScreen
+      MaterialPageRoute(
+        builder: (_) => const AuthScreen(),
+      ), // Navigate to AuthScreen
     );
     logger.i('OnboardingScreen: Navigated to HomePage');
   }
@@ -78,17 +81,22 @@ class OnboardingScreenState extends State<OnboardingScreen> {
               setState(() {
                 _currentPage = index;
               });
+              AnalyticsService().logEvent('onboarding_funnel', {"step_name": 'page_$index'});
               logger.d('OnboardingScreen: Page changed to $index');
             },
             itemBuilder: (context, index) {
               final item = onboardingData[index];
               logger.d('OnboardingScreen: Building page $index');
-              return SingleChildScrollView( // Wrap with SingleChildScrollView
+              return SingleChildScrollView(
+                // Wrap with SingleChildScrollView
                 child: Column(
                   children: [
                     // Image Section (Top Half)
-                    SizedBox( // Use SizedBox instead of Expanded with fixed height
-                      height: MediaQuery.of(context).size.height * 0.6, // Adjust height as needed
+                    SizedBox(
+                      // Use SizedBox instead of Expanded with fixed height
+                      height:
+                          MediaQuery.of(context).size.height *
+                          0.6, // Adjust height as needed
                       child: Container(
                         alignment: Alignment.center,
                         child: Image.asset(
@@ -109,7 +117,10 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0,
+                          vertical: 20.0,
+                        ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -124,7 +135,10 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                             const SizedBox(height: 15),
                             Text(
-                              _getLocalizedText(context, item["descriptionKey"]!),
+                              _getLocalizedText(
+                                context,
+                                item["descriptionKey"]!,
+                              ),
                               style: TextStyle(
                                 fontSize: 15.0,
                                 color: Colors.grey[600],
@@ -138,7 +152,9 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                               effect: WormEffect(
                                 dotHeight: 10.0,
                                 dotWidth: 10.0,
-                                activeDotColor: Theme.of(context).colorScheme.primary,
+                                activeDotColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                                 dotColor: Colors.grey.shade300,
                               ),
                               onDotClicked: (index) {
@@ -152,18 +168,29 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                             const SizedBox(height: 30),
                             _currentPage == onboardingData.length - 1
                                 ? SizedBox(
-width: double.infinity,
+                                    width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () => _onIntroEnd(context),
-style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 15.0,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderRadius: BorderRadius.circular(
+                                            10.0,
+                                          ),
                                         ),
                                       ),
-                                      child: Text(AppLocalizations.of(context)!.getStartedButton, style: const TextStyle(fontSize: 18)),
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.getStartedButton,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
                                     ),
                                   )
                                 : SizedBox(
@@ -171,19 +198,32 @@ style: ElevatedButton.styleFrom(
                                     child: ElevatedButton(
                                       onPressed: () {
                                         _pageController.nextPage(
-                                          duration: const Duration(milliseconds: 500),
+                                          duration: const Duration(
+                                            milliseconds: 500,
+                                          ),
                                           curve: Curves.ease,
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                         foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 15.0,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderRadius: BorderRadius.circular(
+                                            10.0,
+                                          ),
                                         ),
                                       ),
-                                      child: Text(AppLocalizations.of(context)!.nextButton, style: const TextStyle(fontSize: 18)),
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.nextButton,
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
                                     ),
                                   ),
                           ],
@@ -203,15 +243,24 @@ style: ElevatedButton.styleFrom(
   String _getLocalizedText(BuildContext context, String key) {
     final localizations = AppLocalizations.of(context)!;
     switch (key) {
-      case "welcomeTitle": return localizations.welcomeTitle;
-      case "welcomeDescription": return localizations.welcomeDescription;
-      case "renalDietTitle": return localizations.renalDietTitle;
-      case "renalDietDescription": return localizations.renalDietDescription;
-      case "vitalTrackingOnboardingTitle": return localizations.vitalTrackingOnboardingTitle;
-      case "vitalTrackingOnboardingDescription": return localizations.vitalTrackingOnboardingDescription;
-      case "connectDieticiansTitle": return localizations.connectDieticiansTitle;
-      case "connectDieticiansDescription": return localizations.connectDieticiansDescription;
-      default: return ''; // Fallback
+      case "welcomeTitle":
+        return localizations.welcomeTitle;
+      case "welcomeDescription":
+        return localizations.welcomeDescription;
+      case "renalDietTitle":
+        return localizations.renalDietTitle;
+      case "renalDietDescription":
+        return localizations.renalDietDescription;
+      case "vitalTrackingOnboardingTitle":
+        return localizations.vitalTrackingOnboardingTitle;
+      case "vitalTrackingOnboardingDescription":
+        return localizations.vitalTrackingOnboardingDescription;
+      case "connectDieticiansTitle":
+        return localizations.connectDieticiansTitle;
+      case "connectDieticiansDescription":
+        return localizations.connectDieticiansDescription;
+      default:
+        return ''; // Fallback
     }
   }
 }
