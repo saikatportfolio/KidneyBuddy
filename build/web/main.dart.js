@@ -34656,7 +34656,7 @@ n=A
 m=J
 l=B.bB
 s=3
-return A.r($.yA().jA(0,"assets/images/practo_icon.png"),$async$aC9)
+return A.r($.yA().jA(0,"assets/images/praacto_splash.png"),$async$aC9)
 case 3:o=n.b6w(m.f2(l.gau(d)))
 J.yD(b,new A.aCa())
 p.QX(A.b6z(new A.aCb(a,b),new A.aCc(o),B.uO.RX(36,36,36,36)))
@@ -34695,7 +34695,7 @@ n=A
 m=J
 l=B.bB
 s=3
-return A.r($.yA().jA(0,"assets/images/practo_icon.png"),$async$aCd)
+return A.r($.yA().jA(0,"assets/images/praacto_splash.png"),$async$aCd)
 case 3:o=n.b6w(m.f2(l.gau(d)))
 J.yD(b,new A.aCe())
 p.QX(A.b6z(new A.aCf(a,b),new A.aCg(o),B.uO.RX(36,36,36,36)))
@@ -129040,7 +129040,7 @@ $2(a,b){return b.d.bF(0,a.d)},
 $S:93}
 A.aCc.prototype={
 $1(a){var s=null
-return new A.lg(B.r7,A.b7g(A.a([A.et("Creatinine Report",A.dL(s,s,s,s,s,s,s,s,s,B.b6,s,s,24,s,B.bX,s,!0,s,s,s,s),s,s),A.b6d(this.a,50,50)],t.n_),B.ul))},
+return new A.lg(B.r7,A.b7g(A.a([A.et("Creatinine Report",A.dL(s,s,s,s,s,s,s,s,s,B.b6,s,s,24,s,B.bX,s,!0,s,s,s,s),s,s),A.b6d(this.a,70,70)],t.n_),B.ul))},
 $S:147}
 A.aCb.prototype={
 $1(a){var s,r=null,q=t.n_,p=A.a([new A.fk(r,20,r)],q),o=this.a
@@ -129075,7 +129075,7 @@ $2(a,b){return b.d.bF(0,a.d)},
 $S:98}
 A.aCg.prototype={
 $1(a){var s=null
-return new A.lg(B.r7,A.b7g(A.a([A.et("Weight Report",A.dL(s,s,s,s,s,s,s,s,s,B.b6,s,s,24,s,B.bX,s,!0,s,s,s,s),s,s),A.b6d(this.a,50,50)],t.n_),B.ul))},
+return new A.lg(B.r7,A.b7g(A.a([A.et("Weight Report",A.dL(s,s,s,s,s,s,s,s,s,B.b6,s,s,24,s,B.bX,s,!0,s,s,s,s),s,s),A.b6d(this.a,70,70)],t.n_),B.ul))},
 $S:147}
 A.aCf.prototype={
 $1(a){var s,r=null,q=t.n_,p=A.a([new A.fk(r,20,r)],q),o=this.a

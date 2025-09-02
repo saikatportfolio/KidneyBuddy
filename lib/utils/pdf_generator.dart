@@ -159,7 +159,7 @@ class PdfGenerator {
     final pdf = pw.Document();
 
     // Load the image
-    final imageBytes = await rootBundle.load('assets/images/practo_icon.png');
+    final imageBytes = await rootBundle.load('assets/images/praacto_splash.png');
     final image = pw.MemoryImage(imageBytes.buffer.asUint8List());
 
     // Sort readings by timestamp in descending order (newest first)
@@ -181,7 +181,7 @@ class PdfGenerator {
               pw.Text('Creatinine Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.Image(image, width: 50, height: 50),
+              pw.Image(image, width: 70, height: 70),
             ],
           ),
         ),
@@ -300,7 +300,7 @@ class PdfGenerator {
     final pdf = pw.Document();
 
     // Load the image
-    final imageBytes = await rootBundle.load('assets/images/practo_icon.png');
+    final imageBytes = await rootBundle.load('assets/images/praacto_splash.png');
     final image = pw.MemoryImage(imageBytes.buffer.asUint8List());
 
     // Sort readings by timestamp in descending order (newest first)
@@ -322,7 +322,7 @@ class PdfGenerator {
               pw.Text('Weight Report',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.Image(image, width: 50, height: 50),
+              pw.Image(image, width: 70, height: 70),
             ],
           ),
         ),
