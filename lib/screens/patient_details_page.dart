@@ -39,8 +39,9 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
   bool _isThumbnailVisible = true;
 
   Widget _buildStepOne() {
-    AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {
-      AnalyticsEventNames.type: 'step1 called',
+    logger.i('"Navigated to _buildStepOne()');
+    AnalyticsService().logEvent('pateint_details_funnel', {
+      "step_name": 'step1',
     });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,8 +105,8 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
 
   Widget _buildStepTwo() {
     logger.i('"Navigated to _buildStepTwo()');
-    AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {
-      AnalyticsEventNames.type: 'step2 called',
+    AnalyticsService().logEvent('pateint_details_funnel', {
+      "step_name": 'step2',
     });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -275,8 +276,8 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
   void _savePatientDetails() async {
     if (_formKey.currentState!.validate()) {
       logger.i('Save patient details called');
-      AnalyticsService().pushToGTM(AnalyticsEventNames.patientDetails, {
-        AnalyticsEventNames.type: 'save details',
+      AnalyticsService().logEvent('pateint_details_funnel', {
+        "step_name": 'details_saved',
       });
       // Get existing patient details from provider if available
       final existingDetails = Provider.of<PatientDetailsProvider>(
@@ -349,13 +350,9 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      AnalyticsService().pushToGTM(
-                        AnalyticsEventNames.buttonClick,
-                        {
-                          AnalyticsEventNames.buttonClickType:
-                              'Skip_click',
-                        },
-                      );
+                      AnalyticsService().logEvent('pateint_details_funnel', {
+                        "step_name": 'skipped',
+                      });
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setBool('isSkipEnabled', true);
                       Navigator.of(context).pushReplacement(

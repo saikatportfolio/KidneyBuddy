@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/creatine.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -197,16 +198,6 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
   Future<void> _generatePdfReport(AppLocalizations localizations) async {
     logger.i('Attempting to generate PDF report for Creatinine...');
 
-    if (widget.patientDetails == null) {
-      logger.w('Patient details not available for PDF generation.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations.pdfGenerationErrorNoPatientDetails),
-        ),
-      );
-      return;
-    }
-
     try {
       if (_creatineReadings.isEmpty) {
         logger.w('No creatine readings available for PDF generation.');
@@ -215,14 +206,43 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
         );
         return;
       }
+
+      PatientDetails? patientDetails;
+      if (widget.patientDetails == null) {
+        final prefs = await SharedPreferences.getInstance();
+        String? googleName = prefs.getString('google_user_name');
+        logger.w(
+          'Patient details not available for PDF generation. Using Google name: $googleName',
+        );
+        if (googleName != null) {
+          patientDetails = PatientDetails(
+            name: googleName,
+            phoneNumber: '',
+            email: '',
+            ckdStage: '',
+          ); // Create a temporary PatientDetails object
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(localizations.pdfGenerationErrorNoPatientDetails),
+              ),
+            );
+          }
+          return;
+        }
+      } else {
+        patientDetails = widget.patientDetails!;
+      }
+
       final pdfBytes = await PdfGenerator.generateCreatineReport(
-        widget.patientDetails!,
+        patientDetails,
         _creatineReadings,
       );
 
       String fileName = 'creatine_report.pdf';
-      if (widget.patientDetails != null) {
-        final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
+      if (patientDetails != null) {
+        final patientName = patientDetails.name.replaceAll(' ', '_');
         fileName = '${patientName}_creatine_report.pdf';
       }
 
@@ -234,10 +254,12 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
         error: e,
         stackTrace: stack,
       );
-      if(mounted){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.pdfGenerationError(e.toString()))),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.pdfGenerationError(e.toString())),
+          ),
+        );
       }
     }
   }

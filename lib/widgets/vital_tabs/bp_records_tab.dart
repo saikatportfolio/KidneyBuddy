@@ -13,6 +13,7 @@ import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:printing/printing.dart'; // Import printing for PDF sharing
 import 'package:myapp/services/database_helper.dart'; // Import DatabaseHelper
 import 'package:myapp/services/anomaly_detection_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BpRecordsTab extends StatefulWidget {
   final String userId;
@@ -31,6 +32,7 @@ class BpRecordsTab extends StatefulWidget {
 class _BpRecordsTabState extends State<BpRecordsTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   bool _isLoading = true;
+  String? _googleName;
   final SupabaseService _supabaseService = SupabaseService();
   final AnomalyDetectionService _anomalyService = AnomalyDetectionService();
 
@@ -198,16 +200,6 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
   Future<void> _generatePdfReport(AppLocalizations localizations) async {
     logger.i('Attempting to generate PDF report for BP...');
 
-    if (widget.patientDetails == null) {
-      logger.w('Patient details not available for PDF generation.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations.pdfGenerationErrorNoPatientDetails),
-        ),
-      );
-      return;
-    }
-
     try {
       if (_bloodPressureReadings.isEmpty) {
         logger.w('No blood pressure readings available for PDF generation.');
@@ -216,14 +208,34 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
         );
         return;
       }
+
+      PatientDetails? patientDetails;
+      if (widget.patientDetails == null) {
+        final prefs = await SharedPreferences.getInstance();
+        _googleName = prefs.getString('google_user_name');
+        logger.w('Patient details not available for PDF generation. Using Google name: $_googleName');
+        if (_googleName != null) {
+          patientDetails = PatientDetails(name: _googleName!, phoneNumber: '', email: '', ckdStage: ''); // Create a temporary PatientDetails object
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(localizations.pdfGenerationErrorNoPatientDetails),
+            ),
+          );
+          return;
+        }
+      } else {
+        patientDetails = widget.patientDetails!;
+      }
+
       final pdfBytes = await PdfGenerator.generateBpReport(
-        widget.patientDetails!,
+        patientDetails,
         _bloodPressureReadings,
       );
 
       String fileName = 'BP_report.pdf';
-      if (widget.patientDetails != null) {
-        final patientName = widget.patientDetails!.name.replaceAll(' ', '_');
+      if (patientDetails != null) {
+        final patientName = patientDetails.name.replaceAll(' ', '_');
         fileName = '${patientName}_BP_report.pdf';
       }
       await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
