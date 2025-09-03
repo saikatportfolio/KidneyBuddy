@@ -58,6 +58,16 @@ class OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     logger.d('OnboardingScreen: build called. Current page: $_currentPage');
+    if(_currentPage == 0) {
+      AnalyticsService().logEvent('onboarding_page_0', {});
+      logger.d('OnboardingScreen: Logged onboarding_page_0 event');
+    } else if(_currentPage == 1) {
+      AnalyticsService().logEvent('onboarding_page_1', {});
+      logger.d('OnboardingScreen: Logged onboarding_page_1 event');
+    } else if(_currentPage == 2) {
+      AnalyticsService().logEvent('onboarding_page_2', {});
+      logger.d('OnboardingScreen: Logged onboarding_page_2 event');
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -81,7 +91,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
               setState(() {
                 _currentPage = index;
               });
-              AnalyticsService().logEvent('onboarding_funnel', {"step_name": 'page_$index'});
+              
               logger.d('OnboardingScreen: Page changed to $index');
             },
             itemBuilder: (context, index) {

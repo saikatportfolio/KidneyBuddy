@@ -35,6 +35,7 @@ class _AddBpPageState extends State<AddBpPage> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService().trackScreen('add_bp_reading_page');
     _selectedDate = DateTime.now();
     _selectedTime = TimeOfDay.now();
   }
@@ -357,6 +358,7 @@ class _AddBpPageState extends State<AddBpPage> {
                                   AnalyticsEventNames.buttonClickType:
                                       'save_bp_click',
                                 });
+                                AnalyticsService().logEvent('save_bp_click', {});
                             _saveBloodPressure();
                           },
                           style: ElevatedButton.styleFrom(

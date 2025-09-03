@@ -553,6 +553,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                         AnalyticsEventNames.buttonClickType:
                             'export_creatine_pdf_click',
                       });
+                  AnalyticsService().logEvent('export_creatine_pdf_click', {});
                 },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
@@ -566,6 +567,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                         AnalyticsEventNames.buttonClickType:
                             'view_creatine_trend_click',
                       });
+                  AnalyticsService().logEvent('view_creatine_trend_click', {});
                 },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
@@ -581,6 +583,7 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                           'filter_creatine_click',
                     },
                   );
+                  AnalyticsService().logEvent('filter_creatine_click', {});
                 },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,
@@ -600,6 +603,13 @@ class _CreatinineRecordsTabState extends State<CreatinineRecordsTab> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        logger.d(
+                          'Event triggered: creatine_add_dialog_opened',
+                        );
+                        AnalyticsService().logEvent(
+                          'creatine_add_dialog_opened',
+                          {},
+                        );
                         return AddCreatineDialog(
                           userId: widget.userId,
                           refreshData: refreshData,

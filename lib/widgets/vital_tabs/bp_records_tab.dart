@@ -579,6 +579,7 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                           'export_bp_pdf_click',
                     },
                   );
+                  AnalyticsService().logEvent('export_bp_pdf_click', {});
                 },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
@@ -594,6 +595,7 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                           'view_bp_trend_click',
                     },
                   );
+                  AnalyticsService().logEvent('view_bp_trend_click', {});
                 },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
@@ -606,6 +608,7 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
                     AnalyticsEventNames.buttonClick,
                     {AnalyticsEventNames.buttonClickType: 'filter_bp_click'},
                   );
+                  AnalyticsService().logEvent('filter_bp_click', {});
                 },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,

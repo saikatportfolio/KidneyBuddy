@@ -186,16 +186,23 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       if (widget.patientDetails == null) {
         final prefs = await SharedPreferences.getInstance();
         String? googleName = prefs.getString('google_user_name');
-        logger.w('Patient details not available for PDF generation. Using Google name: $googleName');
+        logger.w(
+          'Patient details not available for PDF generation. Using Google name: $googleName',
+        );
         if (googleName != null) {
-          patientDetails = PatientDetails(name: googleName, phoneNumber: '', email: '', ckdStage: ''); // Create a temporary PatientDetails object
+          patientDetails = PatientDetails(
+            name: googleName,
+            phoneNumber: '',
+            email: '',
+            ckdStage: '',
+          ); // Create a temporary PatientDetails object
         } else {
-          if (mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(localizations.pdfGenerationErrorNoPatientDetails),
-            ),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(localizations.pdfGenerationErrorNoPatientDetails),
+              ),
+            );
           }
           return;
         }
@@ -522,6 +529,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                         AnalyticsEventNames.buttonClickType:
                             'export_weight_pdf_click',
                       });
+                  AnalyticsService().logEvent('export_weight_pdf_click', {});
                 },
                 icon: const Icon(Icons.picture_as_pdf),
                 label: Text(localizations.exportPdfButton),
@@ -535,6 +543,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                         AnalyticsEventNames.buttonClickType:
                             'view_weight_trend_click',
                       });
+                  AnalyticsService().logEvent('view_weight_trend_click', {});
                 },
                 icon: const Icon(Icons.trending_up),
                 label: Text(localizations.trend),
@@ -550,6 +559,7 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                           'filter_weight_click',
                     },
                   );
+                  AnalyticsService().logEvent('filter_weight_click', {});
                 },
                 icon: const Icon(Icons.filter_list),
                 tooltip: localizations.filter,
@@ -569,6 +579,11 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        logger.d('Event triggered: weight_add_dialog_opened');
+                        AnalyticsService().logEvent(
+                          'weight_add_dialog_opened',
+                          {},
+                        );
                         return AddWeightDialog(
                           userId: widget.userId,
                           refreshData: refreshData,

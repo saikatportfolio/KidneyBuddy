@@ -44,6 +44,7 @@ class FeedbackPageState extends State<FeedbackPage> {
   void initState() {
     super.initState();
     _loadPatientDetails();
+     AnalyticsService().trackScreen('feedback_page');
   }
 
   _loadPatientDetails() async {

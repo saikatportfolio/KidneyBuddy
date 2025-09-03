@@ -27,6 +27,12 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
     super.dispose();
   }
 
+    @override
+  void initState() {
+    super.initState();
+    AnalyticsService().trackScreen('egfr_calculator_page');
+  }
+
   // eGFR calculation function based on user-provided logic
   double _calculateEGFR(String sex, int age, double scrMgDl) {
     final k = sex == 'Female' ? 0.7 : 0.9;
@@ -62,6 +68,7 @@ class _EgfrCalculatorScreenState extends State<EgfrCalculatorScreen> {
   }
 
   void _performCalculation() {
+    AnalyticsService().logEvent('calculate_egfr_click', {});
     AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
       AnalyticsEventNames.buttonClickType: 'calculate_egfr_click',
     });

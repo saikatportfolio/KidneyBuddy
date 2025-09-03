@@ -39,9 +39,7 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
 
   Widget _buildStepOne() {
     logger.i('"Navigated to _buildStepOne()');
-    AnalyticsService().logEvent('pateint_details_funnel', {
-      "step_name": 'step1',
-    });
+    AnalyticsService().logEvent('pateint_details_step1', {});
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -104,9 +102,7 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
 
   Widget _buildStepTwo() {
     logger.i('"Navigated to _buildStepTwo()');
-    AnalyticsService().logEvent('pateint_details_funnel', {
-      "step_name": 'step2',
-    });
+    AnalyticsService().logEvent('pateint_details_step2', {});
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -279,9 +275,7 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
   void _savePatientDetails() async {
     if (_formKey.currentState!.validate()) {
       logger.i('Save patient details called');
-      AnalyticsService().logEvent('pateint_details_funnel', {
-        "step_name": 'details_saved',
-      });
+      AnalyticsService().logEvent('pateint_details_submit', {});
       // Get existing patient details from provider if available
       final existingDetails = Provider.of<PatientDetailsProvider>(
         context,
@@ -353,9 +347,7 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      AnalyticsService().logEvent('pateint_details_funnel', {
-                        "step_name": 'skipped',
-                      });
+                      AnalyticsService().logEvent('pateint_details_skipped', {});
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setBool('isSkipEnabled', true);
                       Navigator.of(context).pushReplacement(

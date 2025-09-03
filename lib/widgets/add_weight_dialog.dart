@@ -120,16 +120,16 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
       await SupabaseService().insertWeight(weight);
       logger.i('AddWeightDialog: Weight saved to Supabase: ${weight.value}');
       if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            LocalizationHelper.translateKey(
-              context,
-              'Weight saved successfully',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              LocalizationHelper.translateKey(
+                context,
+                'Weight saved successfully',
+              ),
             ),
           ),
-        ),
-      );
+        );
       }
 
       widget.refreshData();
@@ -230,7 +230,10 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.of(context).pop();
+            AnalyticsService().logEvent('weight_dialog_closed', {});
+          },
           child: Text(LocalizationHelper.translateKey(context, 'close')),
         ),
         ElevatedButton(
@@ -238,6 +241,7 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
             AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
               AnalyticsEventNames.buttonClickType: 'save_weight_click',
             });
+            AnalyticsService().logEvent('weight_save_clicked', {});
             _saveWeight();
           },
           child: Text(LocalizationHelper.translateKey(context, 'save')),

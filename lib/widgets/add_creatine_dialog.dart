@@ -124,16 +124,16 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
         'AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}',
       );
       if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            LocalizationHelper.translateKey(
-              context,
-              'Creatine saved Successfully',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              LocalizationHelper.translateKey(
+                context,
+                'Creatine saved Successfully',
+              ),
             ),
           ),
-        ),
-      );
+        );
       }
 
       widget.refreshData();
@@ -149,7 +149,7 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       //   );
       // }
       if (mounted) {
-      Navigator.of(context).pop();
+        Navigator.of(context).pop();
       }
     } catch (e) {
       logger.e('Error saving Creatine: $e');
@@ -187,7 +187,9 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
               const Text('Recommendations:'),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: recommendations.map((recommendation) => Text('- $recommendation')).toList(),
+                children: recommendations
+                    .map((recommendation) => Text('- $recommendation'))
+                    .toList(),
               ),
             ],
           ),
@@ -231,14 +233,18 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            AnalyticsService().logEvent('creatine_dialog_closed', {});
+            Navigator.of(context).pop();
+          },
           child: Text(LocalizationHelper.translateKey(context, 'close')),
         ),
         ElevatedButton(
           onPressed: () {
-             AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
-      AnalyticsEventNames.buttonClickType: 'save_creatine_click',
-    });
+            AnalyticsService().pushToGTM(AnalyticsEventNames.buttonClick, {
+              AnalyticsEventNames.buttonClickType: 'save_creatine_click',
+            });
+            AnalyticsService().logEvent('creatine_save_clicked', {});
             _saveCreatine();
           },
           child: Text(LocalizationHelper.translateKey(context, 'save')),
