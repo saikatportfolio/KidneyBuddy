@@ -234,11 +234,9 @@ class _BpRecordsTabState extends State<BpRecordsTab> {
       );
 
       String fileName = 'BP_report.pdf';
-      if (patientDetails != null) {
-        final patientName = patientDetails.name.replaceAll(' ', '_');
-        fileName = '${patientName}_BP_report.pdf';
-      }
-      await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
+      final patientName = patientDetails.name.replaceAll(' ', '_');
+      fileName = '${patientName}_BP_report.pdf';
+          await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
       logger.e(

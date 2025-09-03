@@ -3,7 +3,6 @@ import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/education_video.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/screens/educational_content_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class EducationItemScreen extends StatefulWidget {
   final String categoryId;

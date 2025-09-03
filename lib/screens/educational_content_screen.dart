@@ -57,17 +57,17 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                     Navigator.pop(context);
                   },
                 ),
-                    Expanded(
-                      child: Text(
-                        widget.categoryName, // Fixed title as requested
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade800,
-                              fontSize: 24.0,
-                            ),
-                      ),
-                    ),
+                Expanded(
+                  child: Text(
+                    widget.categoryName,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                          fontSize: 24.0,
+                        ),
+                  ),
+                ),
               ],
             ),
             Expanded(
@@ -85,6 +85,7 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                       )
                     else
                       const Center(child: CircularProgressIndicator()),
+                      if (!_isLoading)
                     FloatingActionButton(
                       backgroundColor: Colors.blue.withValues(alpha: 0.5),
                       onPressed: () {

@@ -4,7 +4,6 @@ import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/models/patient_details.dart';
 import 'package:myapp/services/database_helper.dart';
 import 'package:myapp/services/supabase_service.dart';
-import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/utils/logger_config.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -204,7 +203,11 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
         _videoPlayerController =
             VideoPlayerController.networkUrl(Uri.parse(_videoUrl!))
               ..initialize().then((_) {
-                setState(() {});
+                setState(() {
+                  _isVideoPlaying = true;
+                  _videoPlayerController.play();
+                  _isThumbnailVisible = false;
+                });
               });
 
         _videoPlayerController.addListener(() {
