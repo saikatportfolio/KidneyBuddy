@@ -12,7 +12,10 @@ import 'package:uuid/uuid.dart'; // Import uuid package
 import 'package:numberpicker/numberpicker.dart'; // Import numberpicker
 import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/screens/bp_confirmation_screen.dart'; // Import BpConfirmationScreen
 // Import AnomalyDetectionService
+import 'package:myapp/widgets/vital_tabs/bp_records_tab.dart';
+import 'package:myapp/screens/vital_tracking_page.dart';
 
 class AddBpPage extends StatefulWidget {
   const AddBpPage({super.key});
@@ -162,21 +165,19 @@ class _AddBpPageState extends State<AddBpPage> {
         _currentDiastolicValue = 80; // Reset to default
       });
 
-      // Pop back to the previous screen (VitalTrackingPage) with a result indicating success
-      // final anomalyService = AnomalyDetectionService();
-      // logger.i("anomalyService.detectVitalAnomaly call");
-      // final anomalyResult = await anomalyService.detectVitalAnomaly(bloodPressure: bloodPressure);
-
-      // if (anomalyResult['isAnomalous'] == true) {
-      //   _showAnomalyDialog(
-      //     context,
-      //     anomalyResult['explanation'],
-      //     anomalyResult['recommendations'],
-      //   );
-      // }
-
       if (mounted) {
-        Navigator.of(context).pop(true); // Pass true to indicate success
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BpConfirmationScreen(
+              systolic: _currentSystolicValue,
+              diastolic: _currentDiastolicValue,
+              timestamp: combinedDateTime,
+            ),
+          ),
+        ).then((_) {
+          Navigator.of(context).pop(true);
+        });
       }
     } catch (e) {
       logger.e('Error saving BP: $e');
@@ -187,8 +188,7 @@ class _AddBpPageState extends State<AddBpPage> {
               LocalizationHelper.translateKey(
                 context,
                 'bpSaveError',
-              ).replaceFirst('{error}', e.toString()),
-            ),
+              ).replaceFirst('{error}', e.toString())),
           ),
         );
       }

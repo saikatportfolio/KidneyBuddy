@@ -26,10 +26,10 @@ class BpRecordsTab extends StatefulWidget {
   });
 
   @override
-  State<BpRecordsTab> createState() => _BpRecordsTabState();
+  State<BpRecordsTab> createState() => BpRecordsTabState();
 }
 
-class _BpRecordsTabState extends State<BpRecordsTab> {
+class BpRecordsTabState extends State<BpRecordsTab> {
   List<BloodPressure> _bloodPressureReadings = [];
   bool _isLoading = true;
   String? _googleName;
