@@ -145,15 +145,15 @@ class _AddBpPageState extends State<AddBpPage> {
       logger.i(
         'AddBpPage: BP saved to Supabase: ${bloodPressure.systolic}/${bloodPressure.diastolic}',
       );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              LocalizationHelper.translateKey(context, 'BP Saved Successfully'),
-            ),
-          ),
-        );
-      }
+      // if (mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(
+      //         LocalizationHelper.translateKey(context, 'BP Saved Successfully'),
+      //       ),
+      //     ),
+      //   );
+      // }
 
       // Clear fields after successful save
       _commentController.clear();
@@ -161,8 +161,6 @@ class _AddBpPageState extends State<AddBpPage> {
         _selectedDate = DateTime.now();
         _selectedTime = TimeOfDay.now();
         _updateDateAndTimeControllers();
-        _currentSystolicValue = 120; // Reset to default
-        _currentDiastolicValue = 80; // Reset to default
       });
 
       if (mounted) {

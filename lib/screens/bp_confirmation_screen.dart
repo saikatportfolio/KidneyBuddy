@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myapp/screens/bp_explanation_screen.dart';
+import 'package:myapp/utils/logger_config.dart';
 
 class BpConfirmationScreen extends StatelessWidget {
   final int systolic;
@@ -14,23 +15,31 @@ class BpConfirmationScreen extends StatelessWidget {
     required this.timestamp,
   });
 
-  String _getBloodPressureStatus(int systolic, int diastolic) {
-    if (systolic >= 180 || diastolic >= 120) {
-      return "Hypertensive Crisis – Emergency (Seek immediate care)";
-    } else if (systolic >= 140 || diastolic >= 90) {
-      return "Stage 2 Hypertension (Very high BP; not at goal for CKD)";
+  Map<String, String> _getBloodPressureStatus(int systolic, int diastolic) {
+    String status;
+    String action;
+    
+logger.d('systolic: $systolic, diastolic: $diastolic');
+    if (systolic >= 140 || diastolic >= 90) {
+      status = "Uncontrolled Hypertension";
+      action = "Your BP is in the uncontrolled range. Consult your Doctor immediately. This requires urgent review.";
     } else if (systolic >= 130 || diastolic >= 80) {
-      return "Stage 1 Hypertension (Above recommended target for CKD)";
-    } else if (systolic >= 120 && diastolic < 80) {
-      return "Elevated BP (Slightly above normal)";
+      status = "Above Optimal Target";
+      action = "Your BP is above the optimal target. Discuss with your Doctor if treatment needs to be intensified.";
+    }  else if (systolic < 130 && diastolic < 80) {
+      status = "At Optimal Target";
+      action = "Excellent! Your BP is within the optimal target range. Continue with your current medication and lifestyle plan as prescribed.";
     } else {
-      return "Normal BP (Ideal range for CKD)";
+      status = "Normal BP";
+      action = "Your blood pressure is in a normal range.";
     }
+
+    return {'status': status, 'action': action};
   }
 
   @override
   Widget build(BuildContext context) {
-    final String bpStatus = _getBloodPressureStatus(systolic, diastolic);
+    final Map<String, String> bpStatus = _getBloodPressureStatus(systolic, diastolic);
     final String formattedDate = DateFormat('MMMM d, yyyy at h:mm a').format(timestamp);
 
     return Scaffold(
@@ -45,10 +54,13 @@ class BpConfirmationScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
+              Expanded(
+                child: Column(
+                  children: [
+                    Container(
                 width: double.infinity,
                 margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(20),
@@ -75,13 +87,22 @@ class BpConfirmationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      bpStatus,
+                      bpStatus['status']!,
                       style: const TextStyle(fontSize: 18, color: Colors.red),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      bpStatus['action']!,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -99,7 +120,7 @@ class BpConfirmationScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 16),
                       textStyle: const TextStyle(fontSize: 18),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -117,7 +138,7 @@ class BpConfirmationScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: const BorderSide(color: Colors.blue, width: 2),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                       textStyle: const TextStyle(fontSize: 18),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

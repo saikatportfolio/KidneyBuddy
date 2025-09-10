@@ -216,11 +216,9 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
       );
 
       String fileName = 'weight_report.pdf';
-      if (patientDetails != null) {
-        final patientName = patientDetails.name.replaceAll(' ', '_');
-        fileName = '${patientName}_weight_report.pdf';
-      }
-
+      final patientName = patientDetails.name.replaceAll(' ', '_');
+      fileName = '${patientName}_weight_report.pdf';
+    
       await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
       logger.i('PDF report shared successfully.');
     } catch (e, stack) {
