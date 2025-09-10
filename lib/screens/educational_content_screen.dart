@@ -76,32 +76,44 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    if (_isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else if (_controller.value.isInitialized)
-                      AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      )
-                    else
-                      const Center(child: CircularProgressIndicator()),
-                      if (!_isLoading)
-                    FloatingActionButton(
-                      backgroundColor: Colors.blue.withValues(alpha: 0.5),
-                      onPressed: () {
-                        setState(() {
-                          if (_isVideoPlaying) {
-                            _controller.pause();
-                            _isVideoPlaying = false;
-                          } else {
-                            _controller.play();
-                            _isVideoPlaying = true;
-                          }
-                        });
-                      },
-                      child: Icon(
-                        _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
-                      ),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        if (_isLoading)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text("Loading. Please wait..."),
+                              SizedBox(height: 16),
+                              CircularProgressIndicator(),
+                            ],
+                          )
+                        else if (_controller.value.isInitialized)
+                          AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child: VideoPlayer(_controller),
+                          )
+                        else
+                          const Center(child: CircularProgressIndicator()),
+                        if (!_isLoading)
+                          FloatingActionButton(
+                            backgroundColor: Colors.blue.withValues(alpha: 0.5),
+                            onPressed: () {
+                              setState(() {
+                                if (_isVideoPlaying) {
+                                  _controller.pause();
+                                  _isVideoPlaying = false;
+                                } else {
+                                  _controller.play();
+                                  _isVideoPlaying = true;
+                                }
+                              });
+                            },
+                            child: Icon(
+                              _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
