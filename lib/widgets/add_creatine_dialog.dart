@@ -125,34 +125,22 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       logger.i(
         'AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}',
       );
-      // if (mounted) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       content: Text(
-      //         LocalizationHelper.translateKey(
-      //           context,
-      //           'Creatine saved Successfully',
-      //         ),
-      //       ),
-      //     ),
-      //   );
-      // }
 
-            if (mounted) {
+      if (mounted) {
         Navigator.of(context).pop();
       }
 
-            if (mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => CreatineConfirmationScreen(
-            creatineValue: _currentCreatineValue,
-            timestamp: combinedDateTime,
-            refreshData: widget.refreshData,
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CreatineConfirmationScreen(
+              creatineValue: _currentCreatineValue,
+              timestamp: combinedDateTime,
+              refreshData: widget.refreshData,
+            ),
           ),
-        ),
-      );
-            }
+        );
+      }
     } catch (e) {
       logger.e('Error saving Creatine: $e');
       if (mounted) {
