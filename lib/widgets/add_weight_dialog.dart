@@ -13,6 +13,7 @@ import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
 // Import AnomalyDetectionService
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:myapp/screens/weight_confirmation_screen.dart';
 
 class AddWeightDialog extends StatefulWidget {
   final String userId;
@@ -119,34 +120,20 @@ class _AddWeightDialogState extends State<AddWeightDialog> {
 
       await SupabaseService().insertWeight(weight);
       logger.i('AddWeightDialog: Weight saved to Supabase: ${weight.value}');
+      widget.refreshData();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              LocalizationHelper.translateKey(
-                context,
-                'Weight saved successfully',
-              ),
+        Navigator.of(context).pop(true);
+      }
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => WeightConfirmationScreen(
+              weightValue: _currentWeightValue,
+              timestamp: combinedDateTime,
+              refreshData: widget.refreshData,
             ),
           ),
         );
-      }
-
-      widget.refreshData();
-
-      // final anomalyService = AnomalyDetectionService();
-      // final anomalyResult = await anomalyService.detectVitalAnomaly(weight: weight);
-
-      // if (anomalyResult['isAnomalous'] == true) {
-      //   _showAnomalyDialog(
-      //     context,
-      //     anomalyResult['explanation'],
-      //     anomalyResult['recommendations'],
-      //   );
-      // }
-
-      if (mounted) {
-        Navigator.of(context).pop(true);
       }
     } catch (e) {
       logger.e('Error saving Weight: $e');

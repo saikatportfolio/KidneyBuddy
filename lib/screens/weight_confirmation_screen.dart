@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class WeightConfirmationScreen extends StatelessWidget {
+  final double weightValue;
+  final DateTime timestamp;
+  final Function refreshData;
+
+  const WeightConfirmationScreen({
+    super.key,
+    required this.weightValue,
+    required this.timestamp,
+    required this.refreshData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String formattedDate = DateFormat('MMMM d, yyyy at h:mm a').format(timestamp);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Weight Confirmation'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        automaticallyImplyLeading: false,
+      ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                          Image.asset(
+                            'assets/images/bp_confirmation.gif',
+                            width: 100,
+                            height: 100,
+                          ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Weight: ${weightValue.toStringAsFixed(2)} kg',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        formattedDate,
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {
+                  refreshData();
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
