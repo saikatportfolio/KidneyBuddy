@@ -14,6 +14,8 @@ import 'package:myapp/services/analytics_service.dart';
 // Import AnomalyDetectionService
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'package:myapp/screens/creatine_confirmation_screen.dart';
+
 class AddCreatineDialog extends StatefulWidget {
   final String userId;
   final Function refreshData;
@@ -123,34 +125,34 @@ class _AddCreatineDialogState extends State<AddCreatineDialog> {
       logger.i(
         'AddCreatineDialog: Creatine saved to Supabase: ${creatine.value}',
       );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              LocalizationHelper.translateKey(
-                context,
-                'Creatine saved Successfully',
-              ),
-            ),
-          ),
-        );
-      }
-
-      widget.refreshData();
-
-      // final anomalyService = AnomalyDetectionService();
-      // final anomalyResult = await anomalyService.detectVitalAnomaly(creatine: creatine);
-
-      // if (anomalyResult['isAnomalous'] == true) {
-      //   _showAnomalyDialog(
-      //     context,
-      //     anomalyResult['explanation'],
-      //     anomalyResult['recommendations'],
+      // if (mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text(
+      //         LocalizationHelper.translateKey(
+      //           context,
+      //           'Creatine saved Successfully',
+      //         ),
+      //       ),
+      //     ),
       //   );
       // }
-      if (mounted) {
+
+            if (mounted) {
         Navigator.of(context).pop();
       }
+
+            if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => CreatineConfirmationScreen(
+            creatineValue: _currentCreatineValue,
+            timestamp: combinedDateTime,
+            refreshData: widget.refreshData,
+          ),
+        ),
+      );
+            }
     } catch (e) {
       logger.e('Error saving Creatine: $e');
       if (mounted) {
