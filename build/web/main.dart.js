@@ -127174,7 +127174,7 @@ j=k==null
 h=!j?A.f(k.c)+" kg":f
 k=j?f:k.d
 o.push(A.h1(new A.aI(B.hL,A.aV(A.a([A.mQ(A.cc(A.a([l,B.pa,m,B.pa,g.Rp(a,i,B.a4Z,h,k,e.gUe())],r),B.R,B.L,B.K,0,f),f,f,B.bV),B.VV,A.c8(A.bpJ(B.a5g,A.U(e.gLH(),f,f,f,f,f,f,f),new A.aU3(g,a),A.rh(f,f,f,f,f,f,f,f,f,f,f,f,B.a3e,f,new A.ch(A.dd(10),B.T),f,f,f,f,f)),f,1/0)],r),B.R,B.L,B.K,0,B.U),f),f,B.Q,4,B.a3d,f,new A.ch(n,B.T)))
-r=A.aIC(A.a([g.x3(a,e.gVE(),"assets/images/vital.png",B.Xj),g.x3(a,"Your meals","assets/images/your_meal.jpg",B.Xn),g.x3(a,e.gRN(),"assets/images/dietician.jpg",B.a2w),g.x3(a,"Understand CKD","assets/images/understand_ckd.png",B.a3B),g.x3(a,e.gSJ(),"assets/images/gfr.png",B.a3C),g.x3(a,e.gLF(),"assets/images/feedback.jpg",B.a44)],r),!0,!0,!0)
+r=A.aIC(A.a([g.x3(a,e.gVE(),"assets/images/vital.png",B.Xj),g.x3(a,"Your Diet Plan","assets/images/your_meal.jpg",B.Xn),g.x3(a,e.gRN(),"assets/images/dietician.jpg",B.a2w),g.x3(a,"Understand CKD","assets/images/understand_ckd.png",B.a3B),g.x3(a,e.gSJ(),"assets/images/gfr.png",B.a3C),g.x3(a,e.gLF(),"assets/images/feedback.jpg",B.a44)],r),!0,!0,!0)
 o.push(new A.Ae(new A.a4H(2,16,16,1),r,f,B.az,!1,f,f,B.ki,!0,f,6,B.b4,f,f,B.Z,B.bt,f))
 e=A.mQ(A.aV(o,B.aA,B.L,B.K,0,B.U),B.bF,f,B.az)}return A.hX(f,f,e,f)},
 Rp(a,b,c,d,e,f){var s=null,r=A.O(a),q=A.dd(10),p=A.alK(B.dC),o=t.p,n=A.a([A.l4(c,A.O(a).ax.b,s,30),B.cq,A.U(b,s,s,s,A.cV(s,s,A.O(a).ax.b,s,s,s,s,s,s,s,s,13,s,s,B.aB,s,s,!0,s,s,s,s,s,s,s,s),B.ba,s,s),B.dP],o)
@@ -127988,7 +127988,7 @@ r===$&&A.b()
 this.d=new A.es(r).t0()
 this.e=new A.es(s.b).Ef()},
 L(a){var s=null,r=A.eE(s,s,B.f0,s,s,new A.b1i(a),s,s,s),q=A.O(a).ok.e,p=t.p
-q=A.cc(A.a([r,A.bS(A.U("Your Meals",s,s,s,q==null?s:q.xi(B.eo,24,B.aB),B.ba,s,s),1),B.pb],p),B.R,B.L,B.K,0,s)
+q=A.cc(A.a([r,A.bS(A.U("Your Diet Plan",s,s,s,q==null?s:q.xi(B.eo,24,B.aB),B.ba,s,s),1),B.pb],p),B.R,B.L,B.K,0,s)
 r=this.d
 r===$&&A.b()
 return A.hX(s,s,A.iW(!0,A.dh(s,new A.aI(B.bF,A.aV(A.a([q,B.bm,A.Ab(new A.b1j(this),r,t.a)],p),B.aA,B.L,B.K,0,B.U),s),B.a1,B.Q,s,s,s,s,s,s,s,s,s,s),B.aM,!0),A.arB(B.a57,B.bhd,new A.b1k(a)))}}

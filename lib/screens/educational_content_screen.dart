@@ -5,7 +5,7 @@ class EducationalContentScreen extends StatefulWidget {
   final String videoUrl;
   final String categoryName;
 
-  const EducationalContentScreen({Key? key, required this.videoUrl, required this.categoryName}) : super(key: key);
+  const EducationalContentScreen({super.key, required this.videoUrl, required this.categoryName});
 
   @override
   State<EducationalContentScreen> createState() => _EducationalContentScreenState();

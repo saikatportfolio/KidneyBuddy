@@ -516,7 +516,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       buildFeatureItem(
                         context,
-                        "Your meals",
+                        "Your Diet Plan",
                         'assets/images/your_meal.jpg', // Placeholder image
                         const YourMealsScreen(),
                       ),

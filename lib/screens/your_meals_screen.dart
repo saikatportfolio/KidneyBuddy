@@ -80,7 +80,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Your Meals', // Fixed title as requested
+                        'Your Diet Plan', // Fixed title as requested
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
