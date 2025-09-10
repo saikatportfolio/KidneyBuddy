@@ -35218,7 +35218,7 @@ apr:function apr(){},
 aLt(){var s=0,r=A.y(t.H)
 var $async$aLt=A.u(function(a,b){if(a===1)return A.v(b,r)
 while(true)switch(s){case 0:s=2
-return A.t(A.aLv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVraG15bWJnZnpicHVsd3NmbXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMxNTIsImV4cCI6MjA2NzM2OTE1Mn0.WcimbbltoqdRewLh7Wnh3DP7f-BMgRuQ8115oZoGpjo","https://ukhmymbgfzbpulwsfmrd.supabase.co"),$async$aLt)
+return A.t(A.aLv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamloeXV4aWVqZWlseGdscG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NzA2MTQsImV4cCI6MjA2OTM0NjYxNH0.x1eoWQ8Ycd7495K_NZirwJhxWqm-0CT8JWaLKCHrqfc","https://igjihyuxiejeilxglpni.supabase.co"),$async$aLt)
 case 2:return A.w(null,r)}})
 return A.x($async$aLt,r)},
 en:function en(a){this.a=a},
@@ -129331,7 +129331,7 @@ return A.x($async$lj,r)},
 F9(){var s=0,r=A.y(t.H),q=this
 var $async$F9=A.u(function(a,b){if(a===1)return A.v(b,r)
 while(true)switch(s){case 0:s=2
-return A.t(A.Zl(q.a.ge6(),B.b5p,"https://ukhmymbgfzbpulwsfmrd.supabase.co/auth/v1/callback"),$async$F9)
+return A.t(A.Zl(q.a.ge6(),B.b5p,"https://igjihyuxiejeilxglpni.supabase.co/auth/v1/callback"),$async$F9)
 case 2:return A.w(null,r)}})
 return A.x($async$F9,r)},
 Es(a){return this.aeG(a)},
