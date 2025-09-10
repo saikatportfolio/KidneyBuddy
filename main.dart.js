@@ -39832,7 +39832,7 @@ $S:2}
 A.b3q.prototype={
 $1(a){var s=A.fc().b
 s=s==null?null:s.canvasKitBaseUrl
-return(s==null?"https://www.gstatic.com/flutter-canvaskit/a8bfdfc394deaed5c57bd45a64ac4294dc976a72/":s)+a},
+return(s==null?"https://www.gstatic.com/flutter-canvaskit/ddf47dd3ff96dbde6d9c614db0d7f019d7c7a2b7/":s)+a},
 $S:35}
 A.anC.prototype={
 hS(a,b){var s,r=this.a
@@ -128220,7 +128220,7 @@ j=k==null
 h=!j?A.h(k.c)+" kg":f
 k=j?f:k.d
 o.push(A.h4(new A.aH(B.hN,A.aW(A.b([A.mW(A.cc(A.b([l,B.pl,m,B.pl,g.S2(a,i,B.a5e,h,k,e.gUT())],r),B.R,B.L,B.K,0,f),f,f,B.bX),B.W8,A.cd(A.brI(B.a5w,A.V(e.gMm(),f,f,f,f,f,f,f),new A.aVv(g,a),A.rq(f,f,f,f,f,f,f,f,f,f,f,f,B.a3y,f,new A.ci(A.de(10),B.S),f,f,f,f,f)),f,1/0)],r),B.R,B.L,B.K,0,B.U),f),f,B.Q,4,B.a3x,f,new A.ci(n,B.S)))
-r=A.aJW(A.b([g.xm(a,e.gWh(),"assets/images/vital.png",B.Xx),g.xm(a,"Your meals","assets/images/your_meal.jpg",B.XB),g.xm(a,e.gSo(),"assets/images/dietician.jpg",B.a2S),g.xm(a,"Understand CKD","assets/images/understand_ckd.png",B.a3V),g.xm(a,e.gTl(),"assets/images/gfr.png",B.a3W),g.xm(a,e.gMk(),"assets/images/feedback.jpg",B.a4k)],r),!0,!0,!0)
+r=A.aJW(A.b([g.xm(a,e.gWh(),"assets/images/vital.png",B.Xx),g.xm(a,"Your Diet Plan","assets/images/your_meal.jpg",B.XB),g.xm(a,e.gSo(),"assets/images/dietician.jpg",B.a2S),g.xm(a,"Understand CKD","assets/images/understand_ckd.png",B.a3V),g.xm(a,e.gTl(),"assets/images/gfr.png",B.a3W),g.xm(a,e.gMk(),"assets/images/feedback.jpg",B.a4k)],r),!0,!0,!0)
 o.push(new A.Aq(new A.a5v(2,16,16,1),r,f,B.ay,!1,f,f,B.ko,!0,f,6,B.b3,f,f,B.Z,B.bu,f))
 e=A.mW(A.aW(o,B.az,B.L,B.K,0,B.U),B.bF,f,B.ay)}return A.i2(f,f,e,f)},
 S2(a,b,c,d,e,f){var s=null,r=A.P(a),q=A.de(10),p=A.b6Z(B.dE),o=t.p,n=A.b([A.lc(c,A.P(a).ax.b,s,30),B.cq,A.V(b,s,s,s,A.cX(s,s,A.P(a).ax.b,s,s,s,s,s,s,s,s,13,s,s,B.aA,s,s,!0,s,s,s,s,s,s,s,s),B.be,s,s),B.dP],o)
@@ -129034,7 +129034,7 @@ r===$&&A.a()
 this.d=new A.eo(r).tg()
 this.e=new A.eo(s.b).EA()},
 L(a){var s=null,r=A.eE(s,s,B.f5,s,s,new A.b30(a),s,s,s),q=A.P(a).ok.e,p=t.p
-q=A.cc(A.b([r,A.bX(A.V("Your Meals",s,s,s,q==null?s:q.xD(B.es,24,B.aA),B.be,s,s),1),B.pm],p),B.R,B.L,B.K,0,s)
+q=A.cc(A.b([r,A.bX(A.V("Your Diet Plan",s,s,s,q==null?s:q.xD(B.es,24,B.aA),B.be,s,s),1),B.pm],p),B.R,B.L,B.K,0,s)
 r=this.d
 r===$&&A.a()
 return A.i2(s,s,A.iX(!0,A.dh(s,new A.aH(B.bF,A.aW(A.b([q,B.bl,A.An(new A.b31(this),r,t.a)],p),B.az,B.L,B.K,0,B.U),s),B.a0,B.Q,s,s,s,s,s,s,s,s,s,s),B.aN,!0),A.asN(B.a5n,B.bhP,new A.b32(a)))}}
