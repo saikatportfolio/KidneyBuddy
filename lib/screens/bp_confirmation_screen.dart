@@ -49,10 +49,16 @@ class BpConfirmationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Confirmation'),
+        title: const Text('BP Confirmation'),
+        centerTitle: true,
         backgroundColor: Colors.white,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
       body: Center(
@@ -75,10 +81,10 @@ class BpConfirmationScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 40,
+                          Image.asset(
+                            'assets/images/bp_confirmation.gif',
+                            width: 100,
+                            height: 100,
                           ),
                           const SizedBox(height: 20),
                           Text(

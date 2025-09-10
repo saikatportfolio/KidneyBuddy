@@ -20,9 +20,15 @@ class CreatineConfirmationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Creatine Confirmation'),
+        centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
       body: Center(
@@ -41,11 +47,11 @@ class CreatineConfirmationScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     children: [
-                      const Icon(
-                        Icons.check_circle_outline,
-                        color: Colors.green,
-                        size: 60,
-                      ),
+                          Image.asset(
+                            'assets/images/bp_confirmation.gif',
+                            width: 100,
+                            height: 100,
+                          ),
                       const SizedBox(height: 20),
                       Text(
                         'Creatine Value: ${creatineValue.toStringAsFixed(2)} mg/dL',
