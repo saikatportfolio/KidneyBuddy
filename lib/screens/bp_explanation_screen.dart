@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/services/anomaly_detection_service.dart'; // Import AnomalyDetectionService
+import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
 
-class BpExplanationScreen extends StatelessWidget {
+class BpExplanationScreen extends StatefulWidget {
   final int systolic;
   final int diastolic;
 
@@ -11,10 +13,28 @@ class BpExplanationScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Future<String> _getGeminiExplanation(int systolic, int diastolic) async {
-    // Replace this with actual Gemini API call
-    await Future.delayed(const Duration(seconds: 1)); // Simulate API delay
-    return 'This is a dummy explanation for systolic: $systolic and diastolic: $diastolic. Please consult with your doctor for accurate information.';
+  State<BpExplanationScreen> createState() => _BpExplanationScreenState();
+}
+
+class _BpExplanationScreenState extends State<BpExplanationScreen> {
+  final AnomalyDetectionService _anomalyDetectionService =
+      AnomalyDetectionService();
+  late Future<Map<String, dynamic>> _explanationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _explanationFuture = _anomalyDetectionService.detectVitalAnomaly(
+      bloodPressure: BloodPressure(
+        systolic: widget.systolic,
+        diastolic: widget.diastolic,
+        timestamp: DateTime.now(),
+      ),
+    );
+  }
+
+  String _removeMarkdown(String text) {
+    return text.replaceAll(RegExp(r'\*\*'), '').replaceAll(RegExp(r'\*'), '');
   }
 
   @override
@@ -30,29 +50,53 @@ class BpExplanationScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Systolic: $systolic, Diastolic: $diastolic',
+                'Systolic: ${widget.systolic}, Diastolic: ${widget.diastolic}',
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Explanation from Gemini API will be displayed here.',
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder<String>(
-                future: _getGeminiExplanation(systolic, diastolic),
+              FutureBuilder<Map<String, dynamic>>(
+                future: _explanationFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
-                  } else {
-                    return Text(
-                      snapshot.data ?? 'No explanation available.',
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
+                  } else if (snapshot.hasData) {
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            _removeMarkdown(snapshot.data!['explanation'] ??
+                                'No explanation available.'),
+                            style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Recommendations:',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: (snapshot.data!['recommendations'] as List<dynamic>).length,
+                              itemBuilder: (context, index) {
+                                final recommendation = (snapshot.data!['recommendations'] as List<dynamic>)[index];
+                                return SizedBox(
+                                  child: Text(
+                                    _removeMarkdown(recommendation),
+                                    style: const TextStyle(fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     );
+                  } else {
+                    return const Text('No data available.');
                   }
                 },
               ),

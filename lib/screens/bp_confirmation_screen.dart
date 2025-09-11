@@ -24,11 +24,11 @@ class BpConfirmationScreen extends StatelessWidget {
       status = "Uncontrolled Hypertension";
       action =
           "Your BP is in the uncontrolled range. Consult your Doctor immediately. This requires urgent review.";
-    } else if (systolic >= 130 || diastolic >= 80) {
+    } else if (systolic > 130 || diastolic > 80) {
       status = "Above Optimal Target";
       action =
           "Your BP is above the optimal target. Discuss with your Doctor if treatment needs to be intensified.";
-    } else if (systolic < 130 && diastolic < 80) {
+    } else if (systolic <= 130 && diastolic <= 80) {
       status = "At Optimal Target";
       action =
           "Excellent! Your BP is within the optimal target range. Continue with your current medication and lifestyle plan as prescribed.";
@@ -100,9 +100,9 @@ class BpConfirmationScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           Text(
                             bpStatus['status']!,
-                            style: const TextStyle(fontSize: 18, color: Colors.red),
+                            style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 10),
                           Text(
                             bpStatus['action']!,
                             style: const TextStyle(fontSize: 16),

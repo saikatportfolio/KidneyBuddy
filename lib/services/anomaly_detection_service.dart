@@ -7,7 +7,7 @@ import 'package:google_generative_ai/google_generative_ai.dart'; // Import Gemin
 
 class AnomalyDetectionService {
   final SupabaseClient _supabase = Supabase.instance.client;
-  final _gemini = GenerativeModel(model: 'gemini-1.5-pro-latest', apiKey: 'AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q'); // Replace with your Gemini API key
+  final _gemini = GenerativeModel(model: 'gemini-2.0-flash', apiKey: 'AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q'); // Replace with your Gemini API key
 
   Future<Map<String, dynamic>> detectVitalAnomaly({
     BloodPressure? bloodPressure,
