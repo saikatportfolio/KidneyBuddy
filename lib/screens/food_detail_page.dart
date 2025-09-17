@@ -22,7 +22,7 @@ class FoodDetailPage extends StatelessWidget {
               key: const Key('backButton'),
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).maybePop();
               },
             ),
           ),

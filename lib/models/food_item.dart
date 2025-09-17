@@ -1,10 +1,3 @@
-import 'package:flutter/material.dart';
-
-enum SafetyFlag {
-  green,
-  yellow,
-  red,
-}
 
 class FoodItem {
   final int id;
@@ -20,8 +13,6 @@ class FoodItem {
   final String? imageUrl;
 
   // Properties to be calculated dynamically based on patient's CKD stage
-  SafetyFlag? safetyFlag;
-  String? safetyExplanation;
 
   FoodItem({
     required this.id,
@@ -35,8 +26,6 @@ class FoodItem {
     required this.category,
     this.source,
     this.imageUrl,
-    this.safetyFlag,
-    this.safetyExplanation,
   });
 
   factory FoodItem.fromMap(Map<String, dynamic> map) {
@@ -52,7 +41,6 @@ class FoodItem {
       category: map['category'] as String,
       source: map['source'] as String?,
       imageUrl: map['imageUrl'] as String?,
-      // Safety flag and explanation are not stored in DB, calculated dynamically
     );
   }
 
@@ -70,33 +58,5 @@ class FoodItem {
       'source': source,
       'imageUrl': imageUrl,
     };
-  }
-
-  // Helper to get color for the safety flag
-  Color get flagColor {
-    switch (safetyFlag) {
-      case SafetyFlag.green:
-        return Colors.green;
-      case SafetyFlag.yellow:
-        return Colors.yellow[700]!;
-      case SafetyFlag.red:
-        return Colors.red;
-      default:
-        return Colors.grey; // Default for uncalculated or unknown
-    }
-  }
-
-  // Helper to get text for the safety flag
-  String get flagText {
-    switch (safetyFlag) {
-      case SafetyFlag.green:
-        return 'Safe';
-      case SafetyFlag.yellow:
-        return 'Limit';
-      case SafetyFlag.red:
-        return 'Danger';
-      default:
-        return 'N/A'; // Default for uncalculated or unknown
-    }
   }
 }
