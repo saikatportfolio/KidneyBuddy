@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
@@ -18,35 +19,43 @@ class EducationalContentScreen extends StatefulWidget {
 }
 
 class _EducationalContentScreenState extends State<EducationalContentScreen> {
-  late VideoPlayerController _controller;
-  bool _isVideoPlaying = false;
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
-      ..initialize().then((_) {
-        setState(() {
-          _isVideoPlaying = true;
-          _isLoading = false;
-          _controller.play();
-        });
-      });
+    _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController,
+      autoInitialize: true,
+      looping: false,
+      showControls: true,
+      errorBuilder: (context, errorMessage) {
+        return Center(
+          child: Text(
+            errorMessage,
+            style: const TextStyle(color: Colors.white),
+          ),
+        );
+      },
+    );
 
-    _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
-        setState(() {
-          _isVideoPlaying = false;
-        });
-      }
+    _videoPlayerController.initialize().then((_) {
+      setState(() {
+        _isLoading = false;
+        _chewieController!.play();
+        
+      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
   }
 
   @override
@@ -94,10 +103,10 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                               SpinKitWave(color: Colors.blue, size: 40.0),
                             ],
                           )
-                        else if (_controller.value.isInitialized)
+                        else if (_chewieController != null && _chewieController!.videoPlayerController.value.isInitialized)
                           AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: VideoPlayer(_controller),
+                            aspectRatio: _videoPlayerController.value.aspectRatio,
+                            child: Chewie(controller: _chewieController!),
                           )
                         else
                           const Center(
@@ -108,17 +117,15 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                             backgroundColor: Colors.blue.withValues(alpha: 0.5),
                             onPressed: () {
                               setState(() {
-                                if (_isVideoPlaying) {
-                                  _controller.pause();
-                                  _isVideoPlaying = false;
+                                if (_chewieController!.isPlaying) {
+                                  _chewieController!.pause();
                                 } else {
-                                  _controller.play();
-                                  _isVideoPlaying = true;
+                                  _chewieController!.play();
                                 }
                               });
                             },
                             child: Icon(
-                              _isVideoPlaying
+                              _chewieController!.isPlaying
                                   ? Icons.pause
                                   : Icons.play_circle_filled_rounded,
                             ),
