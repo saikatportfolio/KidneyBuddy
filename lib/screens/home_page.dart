@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
@@ -100,8 +101,7 @@ class _HomePageState extends State<HomePage> {
       }
     } catch (e) {
       logger.e('Error loading dynamic content: $e');
-      setState(() {
-      });
+      setState(() {});
     } finally {
       setState(() {
         _isLoadingContent = false;
@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: _isLoadingContent
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: SpinKitWave(color: Colors.blue, size: 40.0))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -331,12 +331,12 @@ class _HomePageState extends State<HomePage> {
                               if (_isThumbnailVisible)
                                 AspectRatio(
                                   aspectRatio: 15 / 8,
-                                   child: _videoThumbnailUrl != null
-                                       ? Image.asset(
-                                           _videoThumbnailUrl!,
-                                           fit: BoxFit.cover,
-                                         )
-                                       : Container(
+                                  child: _videoThumbnailUrl != null
+                                      ? Image.asset(
+                                          _videoThumbnailUrl!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
                                           color: Colors.grey[300],
                                           child: const Center(
                                             child: Icon(
@@ -347,7 +347,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                 )
-                              else if (_videoPlayerController.value.isInitialized)
+                              else if (_videoPlayerController
+                                  .value
+                                  .isInitialized)
                                 Column(
                                   children: [
                                     AspectRatio(
@@ -369,7 +371,10 @@ class _HomePageState extends State<HomePage> {
                                 )
                               else
                                 const Center(
-                                  child: CircularProgressIndicator(),
+                                  child: SpinKitWave(
+                                    color: Colors.blue,
+                                    size: 40.0,
+                                  ),
                                 ),
                               FloatingActionButton(
                                 backgroundColor: Colors.blue.withValues(
@@ -377,11 +382,16 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 onPressed: () {
                                   AnalyticsService().pushToGTM(
-                                      AnalyticsEventNames.buttonClick, {
-                                    'user': _googleuserId ?? '', // Replace with actual user ID
-                                    'video_url': _videoUrl ?? '',
-                                    AnalyticsEventNames.buttonClickType : 'Home_Video_click'
-                                  });
+                                    AnalyticsEventNames.buttonClick,
+                                    {
+                                      'user':
+                                          _googleuserId ??
+                                          '', // Replace with actual user ID
+                                      'video_url': _videoUrl ?? '',
+                                      AnalyticsEventNames.buttonClickType:
+                                          'Home_Video_click',
+                                    },
+                                  );
                                   setState(() {
                                     logger.d('Video paused');
                                     if (_isVideoPlaying) {
@@ -616,7 +626,8 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 14.0,
                 fontStyle: FontStyle.italic,
-                color: Colors.grey[600]),
+                color: Colors.grey[600],
+              ),
             ),
         ],
       ),

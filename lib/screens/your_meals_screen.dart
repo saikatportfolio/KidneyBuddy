@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/models/meal.dart';
 import 'package:myapp/models/meal_item.dart';
 import 'package:myapp/models/meal_item_option.dart';
@@ -102,7 +103,9 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Expanded(
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                          child: SpinKitWave(color: Colors.blue, size: 40.0),
+                        ),
                       );
                     } else if (snapshot.hasError) {
                       return Expanded(
@@ -165,7 +168,10 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Center(
-                                  child: CircularProgressIndicator(),
+                                  child: SpinKitWave(
+                                    color: Colors.blue,
+                                    size: 40.0,
+                                  ),
                                 );
                               } else if (snapshot.hasError) {
                                 return Center(

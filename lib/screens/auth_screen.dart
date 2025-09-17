@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/services/analytics_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:myapp/l10n/app_localizations.dart';
@@ -146,7 +147,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: 40), // Increased spacing
                     if (_isLoading)
-                      const CircularProgressIndicator()
+                      const SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              )
                     else
                       SizedBox(
                         width: double.infinity,

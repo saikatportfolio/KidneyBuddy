@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/screens/vital_tracking_page.dart';
 import 'package:myapp/screens/your_meals_screen.dart';
 import 'package:myapp/models/patient_details.dart';
@@ -347,7 +348,10 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      AnalyticsService().logEvent('pateint_details_skipped', {});
+                      AnalyticsService().logEvent(
+                        'pateint_details_skipped',
+                        {},
+                      );
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setBool('isSkipEnabled', true);
                       Navigator.of(context).pushReplacement(
@@ -423,7 +427,10 @@ class PatientDetailsPageState extends State<PatientDetailsPage> {
                                     )
                                   else
                                     const Center(
-                                      child: CircularProgressIndicator(),
+                                      child: SpinKitWave(
+                                        color: Colors.blue,
+                                        size: 40.0,
+                                      ),
                                     ),
                                   FloatingActionButton(
                                     backgroundColor: Colors.blue.withValues(

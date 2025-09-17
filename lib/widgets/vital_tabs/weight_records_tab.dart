@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/weight.dart';
@@ -383,7 +384,10 @@ class _WeightRecordsTabState extends State<WeightRecordsTab> {
     final localizations = AppLocalizations.of(context)!;
 
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),);
     }
 
     Widget mainContent;

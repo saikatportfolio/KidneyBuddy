@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import '../models/food_item.dart';
 import '../models/patient_details.dart';
@@ -54,7 +55,10 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
       future: _foodItemsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),);
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

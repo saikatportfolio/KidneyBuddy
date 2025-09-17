@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 
 class EducationalContentScreen extends StatefulWidget {
   final String videoUrl;
   final String categoryName;
 
-  const EducationalContentScreen({super.key, required this.videoUrl, required this.categoryName});
+  const EducationalContentScreen({
+    super.key,
+    required this.videoUrl,
+    required this.categoryName,
+  });
 
   @override
-  State<EducationalContentScreen> createState() => _EducationalContentScreenState();
+  State<EducationalContentScreen> createState() =>
+      _EducationalContentScreenState();
 }
 
 class _EducationalContentScreenState extends State<EducationalContentScreen> {
@@ -62,10 +68,10 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                     widget.categoryName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade800,
-                          fontSize: 24.0,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade800,
+                      fontSize: 24.0,
+                    ),
                   ),
                 ),
               ],
@@ -85,7 +91,7 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                             children: const [
                               Text("Loading. Please wait..."),
                               SizedBox(height: 16),
-                              CircularProgressIndicator(),
+                              SpinKitWave(color: Colors.blue, size: 40.0),
                             ],
                           )
                         else if (_controller.value.isInitialized)
@@ -94,7 +100,9 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                             child: VideoPlayer(_controller),
                           )
                         else
-                          const Center(child: CircularProgressIndicator()),
+                          const Center(
+                            child: SpinKitWave(color: Colors.blue, size: 40.0),
+                          ),
                         if (!_isLoading)
                           FloatingActionButton(
                             backgroundColor: Colors.blue.withValues(alpha: 0.5),
@@ -110,7 +118,9 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
                               });
                             },
                             child: Icon(
-                              _isVideoPlaying ? Icons.pause : Icons.play_circle_filled_rounded,
+                              _isVideoPlaying
+                                  ? Icons.pause
+                                  : Icons.play_circle_filled_rounded,
                             ),
                           ),
                       ],

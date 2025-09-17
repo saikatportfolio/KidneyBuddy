@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/services/supabase_service.dart';
 import 'package:myapp/utils/analytics_event_names.dart';
@@ -114,7 +115,10 @@ class _UploadDietDialogState extends State<UploadDietDialog> {
             ),
             const SizedBox(height: 16),
             if (_isLoading)
-              const CircularProgressIndicator()
+              const SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              )
             else
               ElevatedButton(
                 onPressed: _fileBytes != null ? _uploadFile : null,

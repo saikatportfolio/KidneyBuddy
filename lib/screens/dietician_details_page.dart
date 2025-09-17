@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/models/dietician.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart'
@@ -354,7 +355,10 @@ class _DieticianDetailsPageState extends State<DieticianDetailsPage> {
                   ),
                   const SizedBox(height: 8),
                   _isLoadingReviews
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(child : SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),)
                       : _reviews.isEmpty
                       ? const Center(child: Text('No reviews yet.'))
                       : ListView.builder(

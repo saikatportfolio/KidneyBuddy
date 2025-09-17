@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/education_video.dart';
 import 'package:myapp/services/supabase_service.dart';
@@ -66,7 +67,10 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                 future: _educationVideosFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),);
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -130,7 +134,10 @@ class _EducationItemScreenState extends State<EducationItemScreen> {
                         future: precacheImage(NetworkImage(video.videoImageURL), context),
                         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),);
                           } else if (snapshot.hasError) {
                             return const Center(
                               child: Icon(

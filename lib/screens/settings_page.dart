@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/screens/language_selection_screen.dart';
 import 'package:myapp/services/supabase_service.dart';
@@ -124,7 +125,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ),)
                   : ListView(
                       children: [
                         ListTile(

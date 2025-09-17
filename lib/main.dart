@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/screens/onboarding_screen.dart'; // Import OnboardingScreen
 import 'package:myapp/screens/home_page.dart';
 import 'package:myapp/screens/auth_screen.dart'; // Import AuthScreen
@@ -257,7 +258,10 @@ class MyAppState extends State<MyApp> {
     if (_isLoading) {
       logger.d('MyAppState: Building loading screen');
       return MaterialApp(
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
+        home: Scaffold(body: Center(child: SpinKitWave(
+                color: Colors.blue,
+                size: 40.0,
+              ))),
       );
     }
 

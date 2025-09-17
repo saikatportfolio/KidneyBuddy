@@ -20,14 +20,9 @@ class AnomalyDetectionService {
     try {
       String prompt = '';
       if (bloodPressure != null) {
-        prompt = '''Input BP: Systolic: ${bloodPressure.systolic}, Diastolic: ${bloodPressure.diastolic}. 
+        prompt = '''Analyze the following BP ${bloodPressure.systolic}, Diastolic: ${bloodPressure.diastolic}. 
         Targets for adult CKD patients: recommended goal <=130/80 mmHg.
-
-Write:
-1) Say clearly whether this reading is at target or above target.
-2) Provide a brief explanation and recommendations.
-3) Use bullets if helpful.
-4) End with: "This is general information and not medical advice."
+         Provide a brief explanation and recommendations.
 ''';
       } else if (creatine != null) {
         prompt = 'Analyze the following creatinine level: ${creatine.value}. Is this level anomalous? Provide a brief explanation and recommendations.';
