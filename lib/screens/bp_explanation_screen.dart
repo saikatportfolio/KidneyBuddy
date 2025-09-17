@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/services/anomaly_detection_service.dart'; // Import AnomalyDetectionService
-import 'package:myapp/models/blood_pressure.dart'; // Import BloodPressure model
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:myapp/services/anomaly_detection_service.dart';
+import 'package:myapp/models/blood_pressure.dart';
 
 class BpExplanationScreen extends StatefulWidget {
   final int systolic;
   final int diastolic;
 
   const BpExplanationScreen({
-    Key? key,
+    super.key,
     required this.systolic,
     required this.diastolic,
-  }) : super(key: key);
+  });
 
   @override
   State<BpExplanationScreen> createState() => _BpExplanationScreenState();
@@ -33,76 +34,56 @@ class _BpExplanationScreenState extends State<BpExplanationScreen> {
     );
   }
 
-  String _removeMarkdown(String text) {
-    return text.replaceAll(RegExp(r'\*\*'), '').replaceAll(RegExp(r'\*'), '');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BP Explanation'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Systolic: ${widget.systolic}, Diastolic: ${widget.diastolic}',
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder<Map<String, dynamic>>(
-                future: _explanationFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          Text(
-                            _removeMarkdown(snapshot.data!['explanation'] ??
-                                'No explanation available.'),
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Recommendations:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: (snapshot.data!['recommendations'] as List<dynamic>).length,
-                              itemBuilder: (context, index) {
-                                final recommendation = (snapshot.data!['recommendations'] as List<dynamic>)[index];
-                                return SizedBox(
-                                  child: Text(
-                                    _removeMarkdown(recommendation),
-                                    style: const TextStyle(fontSize: 16),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
+      appBar: AppBar(title: const Text("Blood Pressure Explanation")),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _explanationFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('No data available.'));
+          } else {
+            return ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                Text(
+                  "Systolic: ${widget.systolic}, Diastolic: ${widget.diastolic}",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Markdown(
+                  data: snapshot.data!['explanation'] ?? '',
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                ),
+                const SizedBox(height: 20),
+                ...List.generate(
+                  (snapshot.data!['recommendations'] as List<dynamic>).length,
+                  (index) {
+                    final rec = (snapshot.data!['recommendations']
+                        as List<dynamic>)[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Markdown(
+                        data: rec,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                       ),
                     );
-                  } else {
-                    return const Text('No data available.');
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
+                  },
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

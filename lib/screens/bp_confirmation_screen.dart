@@ -117,6 +117,37 @@ class BpConfirmationScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BpExplanationScreen(
+                          systolic: systolic,
+                          diastolic: diastolic,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    textStyle: const TextStyle(fontSize: 18.0),
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'See Explanation',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 margin: const EdgeInsets.only(bottom: 30.0),
                 child: ElevatedButton(
                   onPressed: () {

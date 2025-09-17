@@ -18,7 +18,7 @@ import 'package:myapp/widgets/vital_tabs/bp_records_tab.dart';
 import 'package:myapp/screens/add_bp_page.dart';
 
 class VitalTrackingPage extends StatefulWidget {
-  const VitalTrackingPage({Key? key}) : super(key: key);
+  const VitalTrackingPage({super.key});
   @override
   _VitalTrackingPageState createState() => _VitalTrackingPageState();
 }
@@ -28,7 +28,7 @@ class _VitalTrackingPageState extends State<VitalTrackingPage> with SingleTicker
   int _selectedCategoryIndex = 0;
   final SupabaseService _supabaseService = SupabaseService();
   final GlobalKey<BpRecordsTabState> _bpRecordsTabKey = GlobalKey<BpRecordsTabState>();
-  List<Map<String, dynamic>> _categoryCards = [
+  final List<Map<String, dynamic>> _categoryCards = [
     {'nameKey': 'bpTab', 'icon': Icons.monitor_heart, 'vitalType': 'BP'},
     {'nameKey': 'creatinineTab', 'icon': Icons.science, 'vitalType': 'Creatinine'},
     {'nameKey': 'weightTab', 'icon': Icons.monitor_weight, 'vitalType': 'Weight'}

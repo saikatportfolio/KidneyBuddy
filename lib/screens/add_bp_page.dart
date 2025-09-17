@@ -14,8 +14,6 @@ import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/screens/bp_confirmation_screen.dart'; // Import BpConfirmationScreen
 // Import AnomalyDetectionService
-import 'package:myapp/widgets/vital_tabs/bp_records_tab.dart';
-import 'package:myapp/screens/vital_tracking_page.dart';
 
 class AddBpPage extends StatefulWidget {
   const AddBpPage({super.key});

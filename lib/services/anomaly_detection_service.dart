@@ -7,7 +7,10 @@ import 'package:google_generative_ai/google_generative_ai.dart'; // Import Gemin
 
 class AnomalyDetectionService {
   final SupabaseClient _supabase = Supabase.instance.client;
-  final _gemini = GenerativeModel(model: 'gemini-2.0-flash', apiKey: 'AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q'); // Replace with your Gemini API key
+  final _gemini = GenerativeModel(model: 'gemini-2.0-flash', apiKey: 'AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q',systemInstruction: Content.text(
+          'You are a nephrology clinician writing for Indian adult CKD patients. '
+          'Give concise, plain-English explanations. Avoid diagnosis or medication changes.',
+        )); // Replace with your Gemini API key
 
   Future<Map<String, dynamic>> detectVitalAnomaly({
     BloodPressure? bloodPressure,
@@ -17,7 +20,15 @@ class AnomalyDetectionService {
     try {
       String prompt = '';
       if (bloodPressure != null) {
-        prompt = 'Analyze the following blood pressure reading: Systolic: ${bloodPressure.systolic}, Diastolic: ${bloodPressure.diastolic}. Is this reading anomalous? Provide a brief explanation and recommendations.';
+        prompt = '''Input BP: Systolic: ${bloodPressure.systolic}, Diastolic: ${bloodPressure.diastolic}. 
+        Targets for adult CKD patients: recommended goal <=130/80 mmHg.
+
+Write:
+1) Say clearly whether this reading is at target or above target.
+2) Provide a brief explanation and recommendations.
+3) Use bullets if helpful.
+4) End with: "This is general information and not medical advice."
+''';
       } else if (creatine != null) {
         prompt = 'Analyze the following creatinine level: ${creatine.value}. Is this level anomalous? Provide a brief explanation and recommendations.';
       } else if (weight != null) {
