@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/screens/feedback_page.dart';
 import 'package:myapp/screens/dietician_list_page.dart';
 import 'package:myapp/l10n/app_localizations.dart';
+import 'package:myapp/screens/food_list_page.dart';
 import 'package:myapp/screens/settings_page.dart';
 import 'package:myapp/screens/education_category_screen.dart';
 // Import NotificationPage
@@ -530,12 +531,12 @@ class _HomePageState extends State<HomePage> {
                         'assets/images/your_meal.jpg', // Placeholder image
                         const YourMealsScreen(),
                       ),
-                      // buildFeatureItem(
-                      //   context,
-                      //   'Nutritions Info',
-                      //   'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
-                      //   const FoodListPage(),
-                      // ),
+                      buildFeatureItem(
+                        context,
+                        'Nutritions Info',
+                        'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
+                        const FoodListPage(),
+                      ),
                       buildFeatureItem(
                         context,
                         localizations.contactDieticianCard,

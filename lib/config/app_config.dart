@@ -1,6 +1,7 @@
 class AppConfig {
   // // Supabase Configuration test
-  // static const String supabaseUrl = 'https://ukhmymbgfzbpulwsfmrd.supabase.co'; // Replace with your Production Supabase URL
+  // static const String supabaseUrl = 'https://ukhmymbgfzbpulwsfmrd.supabase.co';
+  // static const String geminiApiKey = "AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q";
   // static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVraG15bWJnZnpicHVsd3NmbXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3OTMxNTIsImV4cCI6MjA2NzM2OTE1Mn0.WcimbbltoqdRewLh7Wnh3DP7f-BMgRuQ8115oZoGpjo'; // Replace with your Production Supabase Anon Key
 
   // // Google OAuth Redirect URL (for web)
@@ -12,6 +13,7 @@ class AppConfig {
     
     // Supabase Configuration Prod
   static const String supabaseUrl = 'https://igjihyuxiejeilxglpni.supabase.co'; // Replace with your Production Supabase URL
+    static const String geminiApiKey = "AIzaSyDVg3LAJPdd7S1KKHn7G2210kVzTrXYm4Q";
   static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnamloeXV4aWVqZWlseGdscG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3NzA2MTQsImV4cCI6MjA2OTM0NjYxNH0.x1eoWQ8Ycd7495K_NZirwJhxWqm-0CT8JWaLKCHrqfc'; // Replace with your Production Supabase Anon Key
 
   // Google OAuth Redirect URL (for web)
