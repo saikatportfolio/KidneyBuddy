@@ -47,4 +47,40 @@ class FoodItem {
       'imageUrl': imageUrl,
     };
   }
+
+  String getPotassiumType() {
+    if (potassium == 12) {
+      return 'Low Potassium';
+    } else if (potassium == 13) {
+      return 'Medium Potassium';
+    } else if (potassium == 14) {
+      return 'High Potassium';
+    } else {
+      return 'Unknown Potassium';
+    }
+  }
+
+  String getPhosphorusType() {
+    if (phosphorus == 22) {
+      return 'Low Phosphorus';
+    } else if (phosphorus == 23) {
+      return 'Medium Phosphorus';
+    } else if (phosphorus == 24) {
+      return 'High Phosphorus';
+    } else {
+      return 'Unknown Phosphorus';
+    }
+  }
+
+  String getSodiumType() {
+    if (sodium == 32) {
+      return 'Low Sodium';
+    } else if (sodium == 33) {
+      return 'Medium Sodium';
+    } else if (sodium == 34) {
+      return 'High Sodium';
+    } else {
+      return 'Unknown Sodium';
+    }
+  }
 }
