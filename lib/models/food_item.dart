@@ -50,37 +50,37 @@ class FoodItem {
 
   String getPotassiumType() {
     if (potassium == 12) {
-      return 'Low Potassium';
+      return 'Low';
     } else if (potassium == 13) {
-      return 'Medium Potassium';
+      return 'Medium';
     } else if (potassium == 14) {
-      return 'High Potassium';
+      return 'High';
     } else {
-      return 'Unknown Potassium';
+      return 'Unknown';
     }
   }
 
   String getPhosphorusType() {
     if (phosphorus == 22) {
-      return 'Low Phosphorus';
+      return 'Low';
     } else if (phosphorus == 23) {
-      return 'Medium Phosphorus';
+      return 'Medium';
     } else if (phosphorus == 24) {
-      return 'High Phosphorus';
+      return 'High';
     } else {
-      return 'Unknown Phosphorus';
+      return 'Unknown';
     }
   }
 
   String getSodiumType() {
     if (sodium == 32) {
-      return 'Low Sodium';
+      return 'Low';
     } else if (sodium == 33) {
-      return 'Medium Sodium';
+      return 'Medium';
     } else if (sodium == 34) {
-      return 'High Sodium';
+      return 'High';
     } else {
-      return 'Unknown Sodium';
+      return 'Unknown';
     }
   }
 }
