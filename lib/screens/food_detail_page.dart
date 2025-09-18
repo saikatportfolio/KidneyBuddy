@@ -8,7 +8,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 class FoodDetailPage extends StatelessWidget {
   final FoodItem foodItem;
 
-  const FoodDetailPage({Key? key, required this.foodItem}) : super(key: key);
+  const FoodDetailPage({super.key, required this.foodItem});
 
   @override
   Widget build(BuildContext context) {

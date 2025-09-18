@@ -1,15 +1,12 @@
 
 class FoodItem {
-  final int id;
+  final String id;
   final String name;
-  final double sodium; // in mg
-  final double potassium; // in mg
-  final double phosphorus; // in mg
-  final double protein; // in grams
-  final double carbs; // in grams
-  final double fat; // in grams
+  final int sodium; // in mg
+  final int potassium; // in mg
+  final int phosphorus; // in mg
+  final int protein; // in grams
   final String category;
-  final String? source;
   final String? imageUrl;
 
   // Properties to be calculated dynamically based on patient's CKD stage
@@ -21,25 +18,19 @@ class FoodItem {
     required this.potassium,
     required this.phosphorus,
     required this.protein,
-    required this.carbs,
-    required this.fat,
     required this.category,
-    this.source,
     this.imageUrl,
   });
 
   factory FoodItem.fromMap(Map<String, dynamic> map) {
     return FoodItem(
-      id: map['id'] as int,
+      id: map['id'] as String,
       name: map['name'] as String,
-      sodium: (map['sodium'] as num).toDouble(),
-      potassium: (map['potassium'] as num).toDouble(),
-      phosphorus: (map['phosphorus'] as num).toDouble(),
-      protein: (map['protein'] as num).toDouble(),
-      carbs: (map['carbs'] as num).toDouble(),
-      fat: (map['fat'] as num).toDouble(),
+      sodium: (map['sodium'] as num?)?.toInt() ?? 0,
+      potassium: (map['potassium'] as num?)?.toInt() ?? 0,
+      phosphorus: (map['phosphorus'] as num?)?.toInt() ?? 0,
+      protein: (map['protein'] as num?)?.toInt() ?? 0,
       category: map['category'] as String,
-      source: map['source'] as String?,
       imageUrl: map['imageUrl'] as String?,
     );
   }
@@ -52,10 +43,7 @@ class FoodItem {
       'potassium': potassium,
       'phosphorus': phosphorus,
       'protein': protein,
-      'carbs': carbs,
-      'fat': fat,
       'category': category,
-      'source': source,
       'imageUrl': imageUrl,
     };
   }
