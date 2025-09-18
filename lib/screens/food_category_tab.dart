@@ -129,7 +129,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                                       const SizedBox(width: 4),
                                       Text(
                                         'Potassium: ',
-                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -163,7 +163,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                                       const SizedBox(width: 4),
                                       Text(
                                         'Phosphorus: ',
-                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -197,7 +197,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                                       const SizedBox(width: 4),
                                       Text(
                                         'Sodium: ',
-                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                       ),
                                     ],
                                   ),
