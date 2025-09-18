@@ -13,32 +13,28 @@ class FoodDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: 16,
-            left: 16,
-            child: IconButton(
-              key: const Key('backButton'),
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.of(context).maybePop();
-              },
-            ),
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(foodItem.name),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    foodItem.name,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
                 const SizedBox(height: 16),
                 if (foodItem.imageUrl != null && foodItem.imageUrl!.isNotEmpty)
                   Center(
@@ -91,6 +87,8 @@ class FoodDetailPage extends StatelessWidget {
             ),
           ),
         ],
+                ),
+      ),
       ),
     );
   }
