@@ -118,70 +118,106 @@ class _FoodCategoryTabState extends State<FoodCategoryTab> with AutomaticKeepAli
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.eco, color: Colors.green), // Leaf icon for Potassium
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Potassium: ',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  foodItem.getPotassiumType(),
-                                  style: TextStyle(
-                                    color: foodItem.getPotassiumType() == 'Low'
-                                        ? Colors.green
-                                        : foodItem.getPotassiumType() == 'Medium'
-                                            ? Colors.grey
-                                            : Colors.orange,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.eco, color: Colors.green), // Leaf icon for Potassium
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Potassium: ',
+                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: foodItem.getPotassiumType() == 'Low'
+                                          ? Colors.blue
+                                          : foodItem.getPotassiumType() == 'Medium'
+                                              ? Colors.green
+                                              : Colors.red,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      foodItem.getPotassiumType(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.local_hospital, color: Colors.orange), // Hospital icon for Phosphorus
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Phosphorus: ',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  foodItem.getPhosphorusType(),
-                                  style: TextStyle(
-                                    color: foodItem.getPhosphorusType() == 'Low'
-                                        ? Colors.green
-                                        : foodItem.getPhosphorusType() == 'Medium'
-                                            ? Colors.grey
-                                            : Colors.orange,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.local_hospital, color: Colors.orange), // Hospital icon for Phosphorus
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Phosphorus: ',
+                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: foodItem.getPhosphorusType() == 'Low'
+                                          ? Colors.blue
+                                          : foodItem.getPhosphorusType() == 'Medium'
+                                              ? Colors.green
+                                              : Colors.red,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      foodItem.getPhosphorusType(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.water_drop, color: Colors.blue), // Water drop icon for Sodium
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Sodium: ',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  foodItem.getSodiumType(),
-                                  style: TextStyle(
-                                    color: foodItem.getSodiumType() == 'Low'
-                                        ? Colors.green
-                                        : foodItem.getSodiumType() == 'Medium'
-                                            ? Colors.grey
-                                            : Colors.orange,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.water_drop, color: Colors.blue), // Water drop icon for Sodium
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Sodium: ',
+                                        style: const TextStyle(fontWeight: FontWeight.normal),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: foodItem.getSodiumType() == 'Low'
+                                          ? Colors.grey
+                                          : foodItem.getSodiumType() == 'Medium'
+                                              ? Colors.green
+                                              : Colors.red,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      foodItem.getSodiumType(),
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
