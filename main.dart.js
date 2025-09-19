@@ -135316,7 +135316,7 @@ j=k==null
 h=!j?A.i(k.c)+" kg":f
 k=j?f:k.d
 o.push(A.fb(new A.ag(B.eN,A.aI(A.b([A.jo(A.bw(A.b([l,B.ld,m,B.ld,g.Tq(a,i,B.a8Q,h,k,e.gWn())],r),B.M,B.G,B.E,0,f,f),f,f,f,B.bH),B.Yk,A.c5(A.bAI(B.a9a,A.U(e.gNw(),f,f,f,f,f,f,f),new A.b17(g,a),A.kQ(f,f,f,f,f,f,f,f,f,f,f,f,B.a6K,f,new A.c3(A.cg(10),B.R),f,f,f,f,f)),f,1/0)],r),B.M,B.G,B.E,0,B.O),f),f,B.L,4,B.a6F,f,new A.c3(n,B.R)))
-r=A.aPM(A.b([g.v1(a,e.gXR(),"assets/images/vital.png",B.ZN),g.v1(a,"Your Diet Plan","assets/images/your_meal.jpg",B.ZU),g.v1(a,"Kidney-Friendly Nutrition","assets/images/nutrition_guide_ckd.jpeg",B.a7U),g.v1(a,e.gTP(),"assets/images/dietician.jpg",B.a5Y),g.v1(a,"Understand CKD","assets/images/understand_ckd.png",B.a78),g.v1(a,e.gUR(),"assets/images/gfr.png",B.a79),g.v1(a,e.gNu(),"assets/images/feedback.jpg",B.a7y)],r),!0,!0,!0)
+r=A.aPM(A.b([g.v1(a,e.gXR(),"assets/images/vital.png",B.ZN),g.v1(a,"Your Diet Plan","assets/images/your_meal.jpg",B.ZU),g.v1(a,"Nutritional Info","assets/images/nutrition_guide_ckd.jpeg",B.a7U),g.v1(a,e.gTP(),"assets/images/dietician.jpg",B.a5Y),g.v1(a,"Understand CKD","assets/images/understand_ckd.png",B.a78),g.v1(a,e.gUR(),"assets/images/gfr.png",B.a79),g.v1(a,e.gNu(),"assets/images/feedback.jpg",B.a7y)],r),!0,!0,!0)
 o.push(new A.BA(new A.O8(2,16,16,1),r,f,B.ar,!1,f,f,B.fz,!0,f,7,B.ap,f,f,B.X,B.bw,f))
 e=A.jo(A.aI(o,B.aD,B.G,B.E,0,B.O),f,B.b3,f,B.ar)}return A.eN(f,f,e,f,f)},
 Tq(a,b,c,d,e,f){var s=null,r=A.O(a),q=A.cg(10),p=A.beW(B.dR),o=t.p,n=A.b([A.ek(c,A.O(a).ax.b,s,30),B.cr,A.U(b,s,s,s,A.cT(s,s,A.O(a).ax.b,s,s,s,s,s,s,s,s,13,s,s,B.ax,s,s,!0,s,s,s,s,s,s,s,s),B.au,s,s),B.da],o)
