@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/utils/logger_config.dart';
-import 'package:provider/provider.dart';
 import '../models/food_item.dart';
-import '../models/patient_details.dart';
 import '../services/food_recommendation_service.dart';
 import '../widgets/food_filter_options.dart';
 import 'food_detail_page.dart';
@@ -13,10 +11,10 @@ class FoodCategoryTab extends StatefulWidget {
   final List<String> selectedFilters;
 
   const FoodCategoryTab({
-    Key? key,
+    super.key,
     required this.categories,
     required this.selectedFilters,
-  }) : super(key: key);
+  });
 
   @override
   State<FoodCategoryTab> createState() => _FoodCategoryTabState();
@@ -30,29 +28,21 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
   @override
   void initState() {
     super.initState();
-    _loadFoodItems();
+    _loadFoodItems(0);
   }
 
-  void _loadFoodItems() {
+  void _loadFoodItems(int selectedFilters) {
     logger.d("selected categories: ${widget.categories}");
     logger.d("selected filter saikat: ${widget.selectedFilters}");
 
-    _foodItemsFuture = FoodRecommendationService().getRecommendedFoods(widget.categories[0]).then((
-      allFoods,
-    ) {
-      logger.d("Filtering foods for categories: ${widget.categories}");
-      _foodItems = allFoods; // If 'All' category is requested, return all foods
-      return allFoods;
-      // if (widget.categories.contains('All')) {
-      //   logger.d("Filtering foods for categories: ${widget.categories}");
-      //   _foodItems = allFoods; // If 'All' category is requested, return all foods
-      //   return allFoods;
-      // } else {
-      //   logger.d("Filtering foods for categories: ${widget.categories}");
-      //   _foodItems = allFoods.where((food) => widget.categories.contains(food.category)).toList();
-      //   return _foodItems;
-      // }
-    });
+    _foodItemsFuture = FoodRecommendationService()
+        .getRecommendedFoods(widget.categories[0], selectedFilters)
+        .then((allFoods) {
+          logger.d("Filtering foods for categories: ${widget.categories}");
+          _foodItems =
+              allFoods; // If 'All' category is requested, return all foods
+          return allFoods;
+        });
   }
 
   @override
@@ -60,7 +50,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
     super.didUpdateWidget(oldWidget);
     // Reload food items if the categories change
     if (widget.categories != oldWidget.categories) {
-      _loadFoodItems();
+      _loadFoodItems(0);
     }
   }
 
@@ -109,6 +99,31 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
     }).toList();
   }
 
+  int getNutritionFilterValue(List<String> filters) {
+    switch (filters[0]) {
+      case 'Low Potassium':
+        return 12;
+      case 'Medium Potassium':
+        return 13;
+      case 'High Potassium':
+        return 14;
+      case 'Low Phosphorus':
+        return 22;
+      case 'Medium Phosphorus':
+        return 23;
+      case 'High Phosphorus':
+        return 24;
+      case 'Low Sodium':
+        return 32;
+      case 'Medium Sodium':
+        return 33;
+      case 'High Sodium':
+        return 34;
+      default:
+        return -1; // Unknown filter
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
@@ -124,7 +139,9 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
                   Navigator.pop(context);
                   setState(() {
                     logger.d("Selected Filters: $filters");
-                    _loadFoodItems();
+                    int filterno = getNutritionFilterValue(filters);
+                    logger.d("Selected Filters number: $filterno");
+                    _loadFoodItems(filterno);
                   });
                 },
               );
