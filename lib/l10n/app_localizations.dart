@@ -619,7 +619,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportPdfButton.
   ///
   /// In en, this message translates to:
-  /// **'Export PDF'**
+  /// **'Generate Report for Doctor'**
   String get exportPdfButton;
 
   /// No description provided for @filter.
@@ -885,6 +885,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to Vital Monitoring'**
   String get goToVitalMonitoring;
+
+  /// No description provided for @filterButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterButton;
 }
 
 class _AppLocalizationsDelegate

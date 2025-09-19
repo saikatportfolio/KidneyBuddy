@@ -533,7 +533,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       buildFeatureItem(
                         context,
-                        'Nutritions Info',
+                        'Kidney-Friendly Nutrition',
                         'assets/images/nutrition_guide_ckd.jpeg', // Placeholder image
                         const FoodListPage(),
                       ),

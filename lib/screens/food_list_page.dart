@@ -62,7 +62,7 @@ class _FoodListPageState extends State<FoodListPage> {
                   ),
                   Expanded(
                     child: Text(
-                      'Nutritional Info',
+                      'Kidney-Friendly Nutrition',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 20.0,

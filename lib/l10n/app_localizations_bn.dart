@@ -297,7 +297,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noButton => 'না';
 
   @override
-  String get exportPdfButton => 'Export PDF';
+  String get exportPdfButton => 'Generate Report for Doctor';
 
   @override
   String get filter => 'Filter';
@@ -446,4 +446,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get goToVitalMonitoring => 'Go to Vital Monitoring';
+
+  @override
+  String get filterButton => 'Filter';
 }

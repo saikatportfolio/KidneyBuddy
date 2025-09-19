@@ -54,51 +54,6 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
     }
   }
 
-  List<FoodItem> _applyFilters(List<FoodItem> foodItems) {
-    //logger.d("Applying filters: ${widget.selectedFilters}");
-    //logger.d("foodItems: $foodItems");
-    if (widget.selectedFilters.isEmpty) {
-      return foodItems;
-    }
-
-    return foodItems.where((foodItem) {
-      bool passesFilters = true;
-      for (String filter in widget.selectedFilters) {
-        switch (filter) {
-          case 'Low Potassium':
-            if (foodItem.getPotassiumType() != 'Low') passesFilters = false;
-            break;
-          case 'Medium Potassium':
-            if (foodItem.getPotassiumType() != 'Medium') passesFilters = false;
-            break;
-          case 'High Potassium':
-            if (foodItem.getPotassiumType() != 'High') passesFilters = false;
-            break;
-          case 'Low Phosphorus':
-            if (foodItem.getPhosphorusType() != 'Low') passesFilters = false;
-            break;
-          case 'Medium Phosphorus':
-            if (foodItem.getPhosphorusType() != 'Medium') passesFilters = false;
-            break;
-          case 'High Phosphorus':
-            if (foodItem.getPhosphorusType() != 'High') passesFilters = false;
-            break;
-          case 'Low Sodium':
-            if (foodItem.getSodiumType() != 'Low') passesFilters = false;
-            break;
-          case 'Medium Sodium':
-            if (foodItem.getSodiumType() != 'Medium') passesFilters = false;
-            break;
-          case 'High Sodium':
-            if (foodItem.getSodiumType() != 'High') passesFilters = false;
-            break;
-        }
-        if (!passesFilters) break;
-      }
-      return passesFilters;
-    }).toList();
-  }
-
   int getNutritionFilterValue(List<String> filters) {
     switch (filters[0]) {
       case 'Low Potassium':
@@ -128,7 +83,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -148,7 +103,7 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
             },
           );
         },
-        child: const Icon(Icons.filter_list),
+        label: const Text('Filter',style: TextStyle(fontWeight: FontWeight.bold),),
       ),
       body: FutureBuilder<List<FoodItem>>(
         future: _foodItemsFuture,
@@ -166,15 +121,13 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
               ),
             );
           } else {
-            List<FoodItem> filteredFoodItems = _applyFilters(_foodItems);
             return GridView.builder(
               padding: const EdgeInsets.all(16.0),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // 2 items per row
                 crossAxisSpacing: 16.0,
                 mainAxisSpacing: 16.0,
-                childAspectRatio:
-                    1, // Adjust aspect ratio for better card sizing
+                childAspectRatio: 0.8, // Adjust aspect ratio for better card sizing
               ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {

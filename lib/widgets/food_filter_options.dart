@@ -41,7 +41,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
     
         ListTile(
           title: const Text(
-            'Filter Options',
+            'Renal Nutrition Filters',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
