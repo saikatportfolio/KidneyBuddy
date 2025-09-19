@@ -60,6 +60,10 @@ class FoodItem {
     }
   }
 
+  // int getNutritionFilterValue(){
+    
+  // }
+
   String getPhosphorusType() {
     if (phosphorus == 22) {
       return 'Low';

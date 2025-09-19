@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'food_category_tab.dart'; // Import the new FoodCategoryTab
+import '../widgets/food_filter_options.dart';
 
 class FoodListPage extends StatefulWidget {
-  const FoodListPage({super.key});
+  const FoodListPage({Key? key}) : super(key: key);
 
   @override
   State<FoodListPage> createState() => _FoodListPageState();
@@ -10,6 +11,7 @@ class FoodListPage extends StatefulWidget {
 
 class _FoodListPageState extends State<FoodListPage> {
   int _selectedCategoryIndex = 0; // New state variable for selected category
+  List<String> _selectedFilters = [];
 
   final List<Map<String, dynamic>> _categoryCards = [
     {'name': 'All Foods', 'icon': Icons.fastfood, 'categories': ['All']},
@@ -21,6 +23,26 @@ class _FoodListPageState extends State<FoodListPage> {
     {'name': 'Dairy', 'icon': Icons.local_drink, 'categories': ['Dairy']},
     {'name': 'Other', 'icon': Icons.category, 'categories': ['Other']},
   ];
+
+  void _showFilterOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+          builder: (BuildContext context) {
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: FoodFilterOptions(
+                  selectedFilters: _selectedFilters,
+                  onFiltersChanged: (List<String> filters) {
+                    setState(() {
+                      _selectedFilters = filters;
+                    });
+                  },
+                ),
+              ),
+            );
+          },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +135,7 @@ class _FoodListPageState extends State<FoodListPage> {
             Expanded(
               child: FoodCategoryTab(
                 categories: _categoryCards[_selectedCategoryIndex]['categories'],
+                selectedFilters: _selectedFilters,
               ),
             ),
           ],
