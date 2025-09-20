@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/utils/logger_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/food_item.dart';
 import '../services/food_recommendation_service.dart';
 import '../widgets/food_filter_options.dart';
@@ -51,7 +52,14 @@ class _FoodCategoryTabState extends State<FoodCategoryTab>
     // Reload food items if the categories change
     if (widget.categories != oldWidget.categories) {
       _loadFoodItems(0);
+      logger.d("Categories changed, reloading food items.");
+      removeSelectedFilters();
     }
+  }
+
+      Future<void> removeSelectedFilters() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('selectedFilters');
   }
 
   int getNutritionFilterValue(List<String> filters) {
