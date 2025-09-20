@@ -18,13 +18,10 @@ class FoodFilterOptions extends StatefulWidget {
 
 class _FoodFilterOptionsState extends State<FoodFilterOptions> {
   late List<String> _selectedFilters;
-  final ScrollController _scrollController = ScrollController();
-  bool _isScrolledToBottom = true;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
     _loadSelectedFilters();
   }
 
@@ -35,37 +32,14 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
     });
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      setState(() {
-        _isScrolledToBottom = true;
-      });
-    } else {
-      setState(() {
-        _isScrolledToBottom = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.6,
-      child: Stack(
-        children: [
-          NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification notification) {
-              setState(() {
-                _isScrolledToBottom = notification.metrics.pixels ==
-                    notification.metrics.maxScrollExtent;
-              });
-              return true;
-            },
-            child: ListView(
-              controller: _scrollController,
-              children: <Widget>[
-                ListTile(
+      child: ListView(
+        children: <Widget>[
+    
+        ListTile(
           title: const Text(
             'Renal Nutrition Filters',
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -73,7 +47,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Low Potassium'),
-          tileColor: _selectedFilters.contains('Low Potassium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Low Potassium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Low Potassium')) {
@@ -89,7 +63,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Medium Potassium'),
-          tileColor: _selectedFilters.contains('Medium Potassium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Medium Potassium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Medium Potassium')) {
@@ -105,7 +79,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('High Potassium'),
-          tileColor: _selectedFilters.contains('High Potassium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('High Potassium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('High Potassium')) {
@@ -121,7 +95,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Low Phosphorus'),
-          tileColor: _selectedFilters.contains('Low Phosphorus') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Low Phosphorus') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Low Phosphorus')) {
@@ -137,7 +111,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Medium Phosphorus'),
-          tileColor: _selectedFilters.contains('Medium Phosphorus') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Medium Phosphorus') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Medium Phosphorus')) {
@@ -153,7 +127,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('High Phosphorus'),
-          tileColor: _selectedFilters.contains('High Phosphorus') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('High Phosphorus') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('High Phosphorus')) {
@@ -169,7 +143,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Low Sodium'),
-          tileColor: _selectedFilters.contains('Low Sodium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Low Sodium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Low Sodium')) {
@@ -185,7 +159,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('Medium Sodium'),
-          tileColor: _selectedFilters.contains('Medium Sodium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('Medium Sodium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('Medium Sodium')) {
@@ -201,7 +175,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
         ),
         ListTile(
           title: const Text('High Sodium'),
-          tileColor: _selectedFilters.contains('High Sodium') ? const Color.fromARGB(255, 162, 200, 231) : null,
+          tileColor: _selectedFilters.contains('High Sodium') ? Colors.blue[50] : null,
           onTap: () {
             setState(() {
               if (_selectedFilters.contains('High Sodium')) {
@@ -230,35 +204,7 @@ class _FoodFilterOptionsState extends State<FoodFilterOptions> {
             removeSelectedFilters();
           },
         ),
-              ],
-            ),
-          ),
-          if (!_isScrolledToBottom)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.white,
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: const Center(
-                  child: Text(
-                    'Scroll down for more fliter options',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
-        ],
+      ],
       ),
     );
   }
