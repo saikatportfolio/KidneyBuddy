@@ -15,7 +15,6 @@ import 'package:myapp/services/supabase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myapp/services/analytics_service.dart';
 import 'package:myapp/widgets/vital_tabs/bp_records_tab.dart';
-import 'package:myapp/screens/add_bp_page.dart';
 
 class VitalTrackingPage extends StatefulWidget {
   const VitalTrackingPage({super.key});

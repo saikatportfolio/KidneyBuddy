@@ -3,7 +3,7 @@ import 'food_category_tab.dart'; // Import the new FoodCategoryTab
 import '../widgets/food_filter_options.dart';
 
 class FoodListPage extends StatefulWidget {
-  const FoodListPage({Key? key}) : super(key: key);
+  const FoodListPage({super.key});
 
   @override
   State<FoodListPage> createState() => _FoodListPageState();

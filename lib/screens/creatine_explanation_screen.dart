@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CreatineExplanationScreen extends StatelessWidget {
   final double creatineValue;
 
-  const CreatineExplanationScreen({Key? key, required this.creatineValue}) : super(key: key);
+  const CreatineExplanationScreen({super.key, required this.creatineValue});
 
   @override
   Widget build(BuildContext context) {
