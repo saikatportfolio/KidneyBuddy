@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/utils/logger_config.dart';
+import 'package:myapp/widgets/food_filter_options.dart';
 import '../models/food_item.dart';
 import '../services/food_recommendation_service.dart';
-import '../widgets/food_filter_options.dart';
 import 'food_detail_page.dart';
 
 class FoodCategoryTab extends StatefulWidget {

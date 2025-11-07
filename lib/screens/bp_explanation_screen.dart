@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/services/anomaly_detection_service.dart';
 import 'package:myapp/models/blood_pressure.dart';
+import 'package:myapp/services/gemini_service.dart';
 
 class BpExplanationScreen extends StatefulWidget {
   final int systolic;
@@ -26,7 +27,7 @@ class _BpExplanationScreenState extends State<BpExplanationScreen> {
   @override
   void initState() {
     super.initState();
-    _explanationFuture = _anomalyDetectionService.detectVitalAnomaly(
+    _explanationFuture = GeminiService.detectVitalAnomaly(
       bloodPressure: BloodPressure(
         systolic: widget.systolic,
         diastolic: widget.diastolic,
