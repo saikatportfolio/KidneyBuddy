@@ -181,18 +181,17 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                         .map((e) => MealItemOption.fromMap(e))
                         .toList();
 
-                    // Extract unique meal types and reorder them
+                    // Extract unique meal types
                     List<String> uniqueMealTypes =
                         meals.map((m) => m.mealType).toSet().toList();
                         logger.i('Unique meal types $uniqueMealTypes');
 
-                    if (_selectedMealType != null &&
-                        uniqueMealTypes.contains(_selectedMealType)) {
-                      // Move the selected meal type to the front
-                      uniqueMealTypes.remove(_selectedMealType);
-                      uniqueMealTypes.insert(0, _selectedMealType!);
-                    } else if (uniqueMealTypes.isNotEmpty) {
-                      _selectedMealType = uniqueMealTypes.first;
+                    // Ensure _selectedMealType is set if it's null or not present in the current meal types
+                    // The order of uniqueMealTypes will not be changed.
+                    if (_selectedMealType == null || !uniqueMealTypes.contains(_selectedMealType)) {
+                      _selectedMealType = uniqueMealTypes.isNotEmpty
+                          ? uniqueMealTypes.first
+                          : null;
                     }
 
 
