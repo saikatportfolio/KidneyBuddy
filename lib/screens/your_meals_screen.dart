@@ -20,6 +20,8 @@ class YourMealsScreen extends StatefulWidget {
 class _YourMealsScreenState extends State<YourMealsScreen> {
   late Future<Map<String, dynamic>> _mealPlanFuture;
   late Future<List<NutritionRestriction>> _nutritionRestrictionsFuture;
+  String? _selectedMealType; // New state variable for selected meal type
+  final ScrollController _mealTypeScrollController = ScrollController(); // Controller for horizontal scroll
 
   final List<List<Color>> _gradientColors = [
     [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9)], // Light Green
@@ -53,12 +55,36 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
         Icons.fastfood; // Default icon
   }
 
+  // Helper to determine current meal type
+  String _getCurrentMealType() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 5 && hour < 11) {
+      return 'BREAKFAST';
+    } else if (hour >= 11 && hour < 16) {
+      return 'LUNCH';
+    } else if (hour >= 16 && hour < 21) {
+      return 'DINNER';
+    } else {
+      return 'Snack'; // Default or catch-all for other times
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     AnalyticsService().trackScreen('Your_meals_screen');
     _mealPlanFuture = SupabaseService().getMealPlan();
     _nutritionRestrictionsFuture = SupabaseService().getNutritionRestrictions();
+    _selectedMealType = _getCurrentMealType(); // Initialize with current meal type
+    logger.d('Event triggered: diet_chart_upload_dialog_opened $_selectedMealType');
+  }
+
+  @override
+  void dispose() {
+    _mealTypeScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -155,12 +181,26 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                         .map((e) => MealItemOption.fromMap(e))
                         .toList();
 
+                    // Extract unique meal types and reorder them
+                    List<String> uniqueMealTypes =
+                        meals.map((m) => m.mealType).toSet().toList();
+                        logger.i('Unique meal types $uniqueMealTypes');
+
+                    if (_selectedMealType != null &&
+                        uniqueMealTypes.contains(_selectedMealType)) {
+                      // Move the selected meal type to the front
+                      uniqueMealTypes.remove(_selectedMealType);
+                      uniqueMealTypes.insert(0, _selectedMealType!);
+                    } else if (uniqueMealTypes.isNotEmpty) {
+                      _selectedMealType = uniqueMealTypes.first;
+                    }
+
+
                     return Expanded(
                       // Wrap the rest of the content in Expanded
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Original meal plan name and description, now inside FutureBuilder
                           // Nutritional Restrictions Grid List
                           FutureBuilder<List<NutritionRestriction>>(
                             future: _nutritionRestrictionsFuture,
@@ -287,6 +327,48 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                               );
                             },
                           ),
+                          const SizedBox(height: 16),
+                          // Horizontal Meal Type Selector
+                          if (uniqueMealTypes.isNotEmpty)
+                            SizedBox(
+                              height: 60, // Height for the horizontal meal type selector
+                              child: ListView.builder(
+                                controller: _mealTypeScrollController,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: uniqueMealTypes.length,
+                                itemBuilder: (context, index) {
+                                  final mealType = uniqueMealTypes[index];
+                                  final isSelected = mealType == _selectedMealType;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedMealType = mealType;
+                                      });
+                                    },
+                                    child: Card(
+                                      elevation: isSelected ? 8 : 4,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                      color: isSelected ? Theme.of(context).primaryColor : Colors.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        child: Center(
+                                          child: Text(
+                                            mealType,
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: isSelected ? Colors.white : Colors.blue.shade800,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           const SizedBox(height: 16), // Added spacing
                           // Moved planName and description here
                           Column(
@@ -317,9 +399,13 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           // Added spacing
                           Expanded(
                             child: ListView.builder(
-                              itemCount: meals.length,
+                              itemCount: meals
+                                  .where((meal) => meal.mealType == _selectedMealType)
+                                  .length,
                               itemBuilder: (context, index) {
-                                final meal = meals[index];
+                                final meal = meals
+                                    .where((meal) => meal.mealType == _selectedMealType)
+                                    .toList()[index];
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

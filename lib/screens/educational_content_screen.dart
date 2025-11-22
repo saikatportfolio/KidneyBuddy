@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myapp/services/analytics_service.dart';
+import 'package:myapp/utils/analytics_event_names.dart';
 import 'package:video_player/video_player.dart';
 
 class EducationalContentScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _EducationalContentScreenState extends State<EducationalContentScreen> {
   void initState() {
     super.initState();
     _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
-        AnalyticsService().trackScreen('Education_video_screen');
+        AnalyticsService().trackScreen(AnalyticsEventNames.educationVideoScreen);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       autoInitialize: true,
