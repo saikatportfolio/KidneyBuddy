@@ -21,7 +21,8 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
   late Future<Map<String, dynamic>> _mealPlanFuture;
   late Future<List<NutritionRestriction>> _nutritionRestrictionsFuture;
   String? _selectedMealType; // New state variable for selected meal type
-  final ScrollController _mealTypeScrollController = ScrollController(); // Controller for horizontal scroll
+  final ScrollController _mealTypeScrollController =
+      ScrollController(); // Controller for horizontal scroll
 
   final List<List<Color>> _gradientColors = [
     [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9)], // Light Green
@@ -77,8 +78,11 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
     AnalyticsService().trackScreen('Your_meals_screen');
     _mealPlanFuture = SupabaseService().getMealPlan();
     _nutritionRestrictionsFuture = SupabaseService().getNutritionRestrictions();
-    _selectedMealType = _getCurrentMealType(); // Initialize with current meal type
-    logger.d('Event triggered: diet_chart_upload_dialog_opened $_selectedMealType');
+    _selectedMealType =
+        _getCurrentMealType(); // Initialize with current meal type
+    logger.d(
+      'Event triggered: diet_chart_upload_dialog_opened $_selectedMealType',
+    );
   }
 
   @override
@@ -114,7 +118,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.blue.shade800,
-                              fontSize: 24.0,
+                              fontSize: 18.0,
                             ),
                       ),
                     ),
@@ -182,18 +186,20 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                         .toList();
 
                     // Extract unique meal types
-                    List<String> uniqueMealTypes =
-                        meals.map((m) => m.mealType).toSet().toList();
-                        logger.i('Unique meal types $uniqueMealTypes');
+                    List<String> uniqueMealTypes = meals
+                        .map((m) => m.mealType)
+                        .toSet()
+                        .toList();
+                    logger.i('Unique meal types $uniqueMealTypes');
 
                     // Ensure _selectedMealType is set if it's null or not present in the current meal types
                     // The order of uniqueMealTypes will not be changed.
-                    if (_selectedMealType == null || !uniqueMealTypes.contains(_selectedMealType)) {
+                    if (_selectedMealType == null ||
+                        !uniqueMealTypes.contains(_selectedMealType)) {
                       _selectedMealType = uniqueMealTypes.isNotEmpty
                           ? uniqueMealTypes.first
                           : null;
                     }
-
 
                     return Expanded(
                       // Wrap the rest of the content in Expanded
@@ -232,7 +238,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                     child: Text(
                                       'Your Daily Nutritional Limit',
                                       style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blue.shade800,
                                       ),
@@ -311,7 +317,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                             .blue
                                                             .shade800, // Adjusted color for better contrast on gradients
                                                         fontSize:
-                                                            10.0, // Set font size to 10
+                                                            13.0, // Set font size to 10
                                                       ),
                                                 ),
                                               ],
@@ -327,17 +333,30 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
+                          Text(
+                            userMealPlan.planName,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade800,
+                                  fontSize: 18.0,
+                                ),
+                          ),
+                          const SizedBox(height: 10),
                           // Horizontal Meal Type Selector
                           if (uniqueMealTypes.isNotEmpty)
                             SizedBox(
-                              height: 60, // Height for the horizontal meal type selector
+                              height:
+                                  60, // Height for the horizontal meal type selector
                               child: ListView.builder(
                                 controller: _mealTypeScrollController,
                                 scrollDirection: Axis.horizontal,
                                 itemCount: uniqueMealTypes.length,
                                 itemBuilder: (context, index) {
                                   final mealType = uniqueMealTypes[index];
-                                  final isSelected = mealType == _selectedMealType;
+                                  final isSelected =
+                                      mealType == _selectedMealType;
                                   return GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -345,21 +364,36 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                       });
                                     },
                                     child: Card(
-                                      elevation: isSelected ? 8 : 4,
+                                      elevation: 4,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12.0),
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
                                       ),
-                                      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                      color: isSelected ? Theme.of(context).primaryColor : Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                        vertical: 4.0,
+                                      ),
+                                      color: isSelected
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 8.0,
+                                        ),
                                         child: Center(
                                           child: Text(
                                             mealType,
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: isSelected ? Colors.white : Colors.blue.shade800,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : Colors.blue.shade800,
+                                                ),
                                           ),
                                         ),
                                       ),
@@ -368,24 +402,11 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                 },
                               ),
                             ),
-                          const SizedBox(height: 16), // Added spacing
+                          const SizedBox(height: 5), // Added spacing
                           // Moved planName and description here
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                userMealPlan.planName,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue.shade800,
-                                      fontSize: 24.0,
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
                               Text(
                                 userMealPlan.description ?? '',
                                 textAlign: TextAlign.center,
@@ -399,18 +420,24 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                           Expanded(
                             child: ListView.builder(
                               itemCount: meals
-                                  .where((meal) => meal.mealType == _selectedMealType)
+                                  .where(
+                                    (meal) =>
+                                        meal.mealType == _selectedMealType,
+                                  )
                                   .length,
                               itemBuilder: (context, index) {
                                 final meal = meals
-                                    .where((meal) => meal.mealType == _selectedMealType)
+                                    .where(
+                                      (meal) =>
+                                          meal.mealType == _selectedMealType,
+                                    )
                                     .toList()[index];
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0,
+                                        vertical: 5.0,
                                         horizontal: 0.0,
                                       ),
                                       child: Text(
@@ -427,7 +454,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                       (item) => item.mealId == meal.mealId,
                                     ))
                                       Card(
-                                        elevation: 6,
+                                        elevation: 4,
                                         shadowColor: Colors.blue.shade200
                                             .withOpacity(0.7),
                                         margin: const EdgeInsets.only(
@@ -454,7 +481,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                               12.0,
                                             ),
                                           ),
-                                          padding: const EdgeInsets.all(20.0),
+                                          padding: const EdgeInsets.all(10.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -551,7 +578,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                                       .bodyMedium
                                                                       ?.copyWith(
                                                                         fontSize:
-                                                                            14.0,
+                                                                            12.0,
                                                                         fontWeight:
                                                                             FontWeight.bold,
                                                                         color: Colors
@@ -571,7 +598,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                                                       .bodyMedium
                                                                       ?.copyWith(
                                                                         fontSize:
-                                                                            16.0,
+                                                                            14.0,
                                                                         color: Colors
                                                                             .blue
                                                                             .shade900,
