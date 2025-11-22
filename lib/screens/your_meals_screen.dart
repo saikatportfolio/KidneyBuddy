@@ -441,7 +441,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                         horizontal: 0.0,
                                       ),
                                       child: Text(
-                                        '${meal.mealType} (${meal.timing})',
+                                        'Time - ${meal.timing}',
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
