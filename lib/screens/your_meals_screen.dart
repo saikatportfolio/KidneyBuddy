@@ -21,8 +21,10 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
   late Future<Map<String, dynamic>> _mealPlanFuture;
   late Future<List<NutritionRestriction>> _nutritionRestrictionsFuture;
   String? _selectedMealType; // New state variable for selected meal type
+  List<String> uniqueMealTypes = [];
   final ScrollController _mealTypeScrollController =
       ScrollController(); // Controller for horizontal scroll
+  bool _isFirstVisit = true; // Flag to track the first visit to the screen
 
   final List<List<Color>> _gradientColors = [
     [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9)], // Light Green
@@ -184,16 +186,37 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                     final mealItemOptions = (data['mealItemOptions'] as List)
                         .map((e) => MealItemOption.fromMap(e))
                         .toList();
+                    // Reorder uniqueMealTypes if it's the first visit and current meal type is available
 
-                    // Extract unique meal types
-                    List<String> uniqueMealTypes = meals
+                    if (_isFirstVisit ) {
+                      uniqueMealTypes = meals
                         .map((m) => m.mealType)
                         .toSet()
                         .toList();
-                    logger.i('Unique meal types $uniqueMealTypes');
+                      final currentMealType = _getCurrentMealType();
+                      final currentMealTypeIndex = uniqueMealTypes.indexOf(currentMealType);
+
+                      if (currentMealTypeIndex != -1) {
+                        logger.i('uniqueMealTypes position removed at  $currentMealTypeIndex');
+                        final reorderedMealType = uniqueMealTypes.removeAt(currentMealTypeIndex);
+                        uniqueMealTypes?.insert(0, reorderedMealType);
+                        // Update selected meal type to the one moved to the front
+                        _selectedMealType = reorderedMealType;
+
+                        // Scroll to the beginning of the list to show the reordered item
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _mealTypeScrollController.animateTo(
+                            0.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        });
+                      }
+                      _isFirstVisit = false; // Set to false after first visit logic
+                    }
+
 
                     // Ensure _selectedMealType is set if it's null or not present in the current meal types
-                    // The order of uniqueMealTypes will not be changed.
                     if (_selectedMealType == null ||
                         !uniqueMealTypes.contains(_selectedMealType)) {
                       _selectedMealType = uniqueMealTypes.isNotEmpty
@@ -220,7 +243,7 @@ class _YourMealsScreenState extends State<YourMealsScreen> {
                                 );
                               } else if (snapshot.hasError) {
                                 return Center(
-                                  child: Text('Error: ${snapshot.error}'),
+                                  child: Text('Error: ${snapshot.error}')
                                 );
                               } else if (!snapshot.hasData ||
                                   snapshot.data!.isEmpty) {
